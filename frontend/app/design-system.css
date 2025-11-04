@@ -1,0 +1,589 @@
+/* ========================================
+   Design System - Presentation 2 & 3
+   ======================================== */
+
+/* ========================================
+   1. CSS Custom Properties (Design Tokens)
+   ======================================== */
+
+:root {
+  /* === Typography === */
+  /* Font Family */
+  --font-pretendard: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-roboto: 'Roboto', sans-serif;
+
+  /* Font Sizes */
+  --font-size-headline-1: 30px;
+  --font-size-headline-2: 26px;
+  --font-size-title-1: 22px;
+  --font-size-title-2: 20px;
+  --font-size-body-1: 17px;
+  --font-size-body-2: 15px;
+  --font-size-body-3: 14px;
+  --font-size-label-1: 13px;
+  --font-size-label-2: 11px;
+
+  /* Line Heights */
+  --line-height-headline-1: 40px;
+  --line-height-headline-2: 35px;
+  --line-height-title-1: 31px;
+  --line-height-title-2: 29px;
+  --line-height-body-1: 25.5px;
+  --line-height-body-2: 22.5px;
+  --line-height-body-3: 21px;
+  --line-height-label-1: 19.5px;
+  --line-height-label-2: 16.5px;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* === Colors === */
+  /* Primary */
+  --color-primary: #562699;
+  --color-primary-container: #f0ebf7;
+  --color-on-primary: #ffffff;
+
+  /* Secondary */
+  --color-secondary: #000000;
+  --color-secondary-container: #f3f3f3;
+  --color-on-secondary: #ffffff;
+
+  /* Alert */
+  --color-alert: #f3335d;
+  --color-alert-container: #fceff2;
+
+  /* Positive */
+  --color-positive: #5bb16b;
+  --color-positive-container: #cee7d3;
+
+  /* Warning */
+  --color-warning: #eeb156;
+  --color-warning-container: #f8e0bb;
+
+  /* Surface */
+  --color-surface-1: #ffffff;
+  --color-surface-2: #f7f8fc;
+  --color-surface-3: #f2f0f0;
+
+  /* On Surface */
+  --color-on-surface: #1f1e1e;
+  --color-on-surface-subtle: #666666;
+  --color-on-surface-subtlest: #cbc8c8;
+
+  /* Border */
+  --color-border: #dfdfdf;
+  --color-border-subtle: #efefef;
+  --color-border-subtlest: #f1f1f1;
+
+  /* === Shadows === */
+  --shadow-1: 0px 8px 32px 0px rgba(33, 43, 54, 0.14);
+  --shadow-2: 0px 1px 8px 0px rgba(33, 43, 54, 0.12);
+
+  /* === Border Radius === */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-full: 999px;
+
+  /* === Spacing === */
+  --spacing-2: 2px;
+  --spacing-4: 4px;
+  --spacing-6: 6px;
+  --spacing-8: 8px;
+  --spacing-10: 10px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-48: 48px;
+  --spacing-54: 54px;
+  --spacing-120: 120px;
+  --spacing-140: 140px;
+  --spacing-160: 160px;
+
+  /* === Component Sizes === */
+  --field-height: 48px;
+  --button-height: 48px;
+  --chip-height: 40px;
+  --icon-size: 24px;
+  --icon-size-sm: 16.667px;
+}
+
+/* ========================================
+   2. Typography Classes
+   ======================================== */
+
+.headline-1 {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-headline-1);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-headline-1);
+}
+
+.headline-2 {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-headline-2);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-headline-2);
+}
+
+.title-1 {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-title-1);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-title-1);
+}
+
+.title-2 {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-title-2);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-title-2);
+}
+
+.body-1 {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-body-1);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-1);
+}
+
+.body-2 {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-body-2);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-2);
+}
+
+.body-2-medium {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-body-2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-body-2);
+}
+
+.body-3 {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-body-3);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-3);
+}
+
+.label-1 {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-label-1);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-label-1);
+}
+
+.label-2 {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-label-2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-label-2);
+}
+
+/* ========================================
+   3. Color Utility Classes
+   ======================================== */
+
+/* Background Colors */
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-container { background-color: var(--color-primary-container); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-secondary-container { background-color: var(--color-secondary-container); }
+.bg-alert { background-color: var(--color-alert); }
+.bg-alert-container { background-color: var(--color-alert-container); }
+.bg-positive { background-color: var(--color-positive); }
+.bg-positive-container { background-color: var(--color-positive-container); }
+.bg-warning { background-color: var(--color-warning); }
+.bg-warning-container { background-color: var(--color-warning-container); }
+.bg-surface-1 { background-color: var(--color-surface-1); }
+.bg-surface-2 { background-color: var(--color-surface-2); }
+.bg-surface-3 { background-color: var(--color-surface-3); }
+
+/* Text Colors */
+.text-primary { color: var(--color-primary); }
+.text-on-primary { color: var(--color-on-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-on-secondary { color: var(--color-on-secondary); }
+.text-alert { color: var(--color-alert); }
+.text-on-surface { color: var(--color-on-surface); }
+.text-on-surface-subtle { color: var(--color-on-surface-subtle); }
+.text-on-surface-subtlest { color: var(--color-on-surface-subtlest); }
+
+/* Border Colors */
+.border-default { border-color: var(--color-border); }
+.border-subtle { border-color: var(--color-border-subtle); }
+.border-subtlest { border-color: var(--color-border-subtlest); }
+.border-primary { border-color: var(--color-primary); }
+.border-alert { border-color: var(--color-alert); }
+
+/* ========================================
+   4. Shadow Utility Classes
+   ======================================== */
+
+.shadow-1 { box-shadow: var(--shadow-1); }
+.shadow-2 { box-shadow: var(--shadow-2); }
+
+/* ========================================
+   5. Border Radius Utility Classes
+   ======================================== */
+
+.rounded-xs { border-radius: var(--radius-xs); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* ========================================
+   6. Component Base Styles
+   ======================================== */
+
+/* Button Base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--button-height);
+  padding: var(--spacing-8) var(--spacing-20);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-body-2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-body-2);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  outline: none;
+}
+
+/* Button Variants */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background-color: var(--color-primary-container);
+  color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+  opacity: 0.9;
+}
+
+.btn-tertiary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.btn-tertiary:hover {
+  background-color: var(--color-primary-container);
+}
+
+.btn-quaternary {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+.btn-quaternary:hover {
+  background-color: var(--color-primary-container);
+}
+
+/* Button Default Type */
+.btn-default-primary {
+  background-color: var(--color-secondary);
+  color: var(--color-on-secondary);
+}
+
+.btn-default-secondary {
+  background-color: var(--color-secondary-container);
+  color: var(--color-secondary);
+}
+
+.btn-default-tertiary {
+  background-color: transparent;
+  color: var(--color-secondary);
+  border: 1px solid var(--color-border);
+}
+
+/* Button Alert Type */
+.btn-alert-primary {
+  background-color: var(--color-alert);
+  color: var(--color-on-primary);
+}
+
+.btn-alert-secondary {
+  background-color: var(--color-alert-container);
+  color: var(--color-alert);
+}
+
+.btn-alert-tertiary {
+  background-color: transparent;
+  color: var(--color-alert);
+  border: 1px solid var(--color-alert);
+}
+
+/* Field Base */
+.field {
+  display: flex;
+  align-items: center;
+  height: var(--field-height);
+  padding: var(--spacing-8) var(--spacing-16);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-1);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-body-2);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-2);
+  color: var(--color-on-surface);
+  transition: border-color 0.2s ease-in-out;
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.field::placeholder {
+  color: var(--color-on-surface-subtlest);
+}
+
+.field-textbox {
+  min-height: 120px;
+  height: auto;
+  align-items: flex-start;
+  padding: var(--spacing-12) var(--spacing-16);
+}
+
+/* Field Label */
+.field-label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  width: 100%;
+}
+
+.field-label-text {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-body-3);
+  font-weight: var(--font-weight-medium);
+  line-height: 20px;
+  color: var(--color-on-surface);
+}
+
+.field-helptext {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-label-1);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-label-1);
+  color: var(--color-on-surface-subtle);
+}
+
+.field-required {
+  color: var(--color-alert);
+}
+
+/* Chip Base */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--chip-height);
+  padding: var(--spacing-8) var(--spacing-16);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-body-3);
+  font-weight: var(--font-weight-regular);
+  line-height: 21px;
+  color: var(--color-on-surface-subtle);
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.chip-selected {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-container);
+  color: var(--color-primary);
+}
+
+/* Tooltip Base */
+.tooltip {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.tooltip-content {
+  background-color: var(--color-secondary);
+  color: var(--color-on-secondary);
+  padding: var(--spacing-8) var(--spacing-16);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-roboto);
+  font-size: var(--font-size-body-3);
+  font-weight: var(--font-weight-regular);
+  line-height: 20px;
+}
+
+.tooltip-arrow {
+  width: 12px;
+  height: 8px;
+}
+
+/* Tab Bar Base */
+.tab-bar {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-surface-1);
+  border-top: 1px solid var(--color-border-subtlest);
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-12) var(--spacing-16) var(--spacing-32);
+  background-color: var(--color-surface-1);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.tab-item-icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.tab-item-label {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-label-2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-label-2);
+  color: var(--color-on-surface-subtle);
+}
+
+.tab-item-active .tab-item-label {
+  font-size: var(--font-size-label-1);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-label-1);
+  color: var(--color-primary);
+}
+
+/* GNB Base */
+.gnb {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-surface-1);
+  padding: var(--spacing-16);
+}
+
+.gnb-logo {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-title-1);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-title-1);
+  color: var(--color-primary);
+}
+
+.gnb-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  cursor: pointer;
+}
+
+.gnb-notification-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-alert);
+  border-radius: var(--radius-full);
+}
+
+/* Select Base */
+.select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--spacing-16);
+  background-color: var(--color-surface-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-roboto);
+  font-size: var(--font-size-body-3);
+  font-weight: var(--font-weight-medium);
+  line-height: 20px;
+  color: var(--color-on-surface-subtle);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.select:hover {
+  background-color: var(--color-primary-container);
+}
+
+.select-active {
+  color: var(--color-primary);
+}
+
+.select-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+
+/* ========================================
+   7. Utility Classes
+   ======================================== */
+
+/* Container */
+.container-presentation {
+  padding: var(--spacing-120) var(--spacing-160);
+  background-color: var(--color-surface-1);
+}
+
+/* Section Spacing */
+.section-spacing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-140);
+}
+
+/* Card */
+.card {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--spacing-24);
+  background-color: var(--color-surface-1);
+}
+
+/* Grid Layouts */
+.grid-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-48);
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
