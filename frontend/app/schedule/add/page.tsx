@@ -49,12 +49,13 @@ export default function AddSchedulePage() {
           onClick={() => router.back()}
           className="w-10 h-10 flex items-center justify-center"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z"
-              fill="#1F1E1E"
-            />
-          </svg>
+          <Image
+            className="relative w-6 h-6"
+            alt=""
+            src="/img/arrow_back.svg"
+            width={24}
+            height={24}
+          />
         </button>
         <h1 className="body-3 font-semibold text-on-surface">드레스샵 찾기</h1>
         <div className="w-10 h-10 opacity-0" />

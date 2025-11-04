@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function ReviewsPage() {
   const router = useRouter();
@@ -18,18 +19,13 @@ export default function ReviewsPage() {
           className="w-6 h-6 flex items-center justify-center"
           aria-label="뒤로가기"
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
-              fill="#1F1E1E"
-            />
-          </svg>
+          <Image
+            className="relative w-6 h-6"
+            alt=""
+            src="/img/arrow_back.svg"
+            width={24}
+            height={24}
+          />
         </button>
         <h1 className="flex-1 text-center body-2-medium text-on-surface">
           리뷰보기

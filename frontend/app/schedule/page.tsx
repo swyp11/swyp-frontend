@@ -6,6 +6,65 @@ import { useRouter } from "next/navigation";
 import { WeekCalendar } from "../../components/schedule/WeekCalendar";
 import { DayCalendar } from "../../components/schedule/DayCalendar";
 import { ViewSelector, CalendarView } from "../../components/schedule/ViewSelector";
+import Image from "next/image";
+
+interface NavigationHeaderProps {
+  onPrev: () => void;
+  onNext: () => void;
+  title: string;
+  showDropdown?: boolean;
+}
+
+const NavigationHeader: React.FC<NavigationHeaderProps> = ({
+  onPrev,
+  onNext,
+  title,
+  showDropdown = true,
+}) => {
+  return (
+    <div className="flex items-center justify-between px-2 pb-5">
+      <button
+        onClick={onPrev}
+        className="w-10 h-10 bg-surface-2 rounded-lg flex items-center justify-center"
+      >
+        <Image
+          className="relative w-6 h-6"
+          alt=""
+          src="/img/chevron_backward.svg"
+          width={24}
+          height={24}
+        />
+      </button>
+
+      <button className="bg-surface-2 rounded-lg px-5 py-2 flex items-center gap-1">
+        <span className="title-2 text-on-surface">{title}</span>
+        {showDropdown && (
+          <Image
+            className="relative w-6 h-6"
+            alt=""
+            src="/img/keyboard-arrow-down.svg"
+            width={24}
+            height={24}
+          />
+        )}
+      </button>
+
+      <button
+        onClick={onNext}
+        className="w-10 h-10 bg-surface-2 rounded-lg flex items-center justify-center"
+      >
+        <Image
+          className="relative w-6 h-6 rotate-180"
+          alt=""
+          src="/img/chevron_backward.svg"
+          width={24}
+          height={24}
+        />
+      </button>
+    </div>
+  );
+};
+
 interface Event {
   id: string;
   title: string;
@@ -268,12 +327,12 @@ export default function SchedulePage() {
             <div className="flex items-center gap-2">
               <span className="body-2-medium text-[#787878]">결혼식까지</span>
               <span className="body-2-medium text-primary font-bold">D-99</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-                  fill="#1F1E1E"
-                />
-              </svg>
+              <Image
+                alt=""
+                src="/img/edit.svg"
+                width={16}
+                height={16}
+              />
             </div>
             <ViewSelector
               currentView={calendarView}
@@ -284,109 +343,32 @@ export default function SchedulePage() {
 
         {/* Month Navigator - 월별 뷰에서만 표시 */}
         {calendarView === "monthly" && (
-          <div className="flex items-center justify-between px-2 pb-5">
-            <button
-              onClick={handlePrevMonth}
-              className="w-10 h-10 bg-surface-2 rounded-lg flex items-center justify-center"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
-                  fill="#1F1E1E"
-                />
-              </svg>
-            </button>
-
-            <button className="bg-surface-2 rounded-lg px-5 py-2 flex items-center gap-1">
-              <span className="title-2 text-on-surface">{currentMonth}월</span>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M7 10l5 5 5-5z" fill="#1F1E1E" />
-              </svg>
-            </button>
-
-            <button
-              onClick={handleNextMonth}
-              className="w-10 h-10 bg-surface-2 rounded-lg flex items-center justify-center"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M9.29 6.71L10.7 5.3L17.4 12L10.7 18.7L9.29 17.29L14.58 12L9.29 6.71Z"
-                  fill="#1F1E1E"
-                />
-              </svg>
-            </button>
-          </div>
+          <NavigationHeader
+            onPrev={handlePrevMonth}
+            onNext={handleNextMonth}
+            title={`${currentMonth}월`}
+            showDropdown={true}
+          />
         )}
 
         {/* Week Navigator - 주별 뷰에서만 표시 */}
         {calendarView === "weekly" && (
-          <div className="flex items-center justify-between px-2 pb-5">
-            <button
-              onClick={handlePrevWeek}
-              className="w-10 h-10 bg-surface-2 rounded-lg flex items-center justify-center"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
-                  fill="#1F1E1E"
-                />
-              </svg>
-            </button>
-
-            <button className="bg-surface-2 rounded-lg px-5 py-2 flex items-center gap-1">
-              <span className="title-2 text-on-surface">{currentMonth}월</span>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M7 10l5 5 5-5z" fill="#1F1E1E" />
-              </svg>
-            </button>
-
-            <button
-              onClick={handleNextWeek}
-              className="w-10 h-10 bg-surface-2 rounded-lg flex items-center justify-center"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M9.29 6.71L10.7 5.3L17.4 12L10.7 18.7L9.29 17.29L14.58 12L9.29 6.71Z"
-                  fill="#1F1E1E"
-                />
-              </svg>
-            </button>
-          </div>
+          <NavigationHeader
+            onPrev={handlePrevWeek}
+            onNext={handleNextWeek}
+            title={`${currentMonth}월`}
+            showDropdown={true}
+          />
         )}
 
         {/* Day Navigator - 일별 뷰에서만 표시 */}
         {calendarView === "daily" && (
-          <div className="flex items-center justify-between px-2 pb-5">
-            <button
-              onClick={handlePrevDay}
-              className="w-10 h-10 bg-surface-2 rounded-lg flex items-center justify-center"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
-                  fill="#1F1E1E"
-                />
-              </svg>
-            </button>
-
-            <button className="bg-surface-2 rounded-lg px-5 py-2 flex items-center gap-1">
-              <span className="title-2 text-on-surface">
-                {currentMonth}월 {selectedDate}일
-              </span>
-            </button>
-
-            <button
-              onClick={handleNextDay}
-              className="w-10 h-10 bg-surface-2 rounded-lg flex items-center justify-center"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M9.29 6.71L10.7 5.3L17.4 12L10.7 18.7L9.29 17.29L14.58 12L9.29 6.71Z"
-                  fill="#1F1E1E"
-                />
-              </svg>
-            </button>
-          </div>
+          <NavigationHeader
+            onPrev={handlePrevDay}
+            onNext={handleNextDay}
+            title={`${currentMonth}월 ${selectedDate}일`}
+            showDropdown={false}
+          />
         )}
 
         {/* 월별 캘린더 */}
@@ -436,17 +418,17 @@ export default function SchedulePage() {
       <button
         onClick={() => router.push("/schedule/add")}
         className="fixed bottom-24 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg z-40"
-        style={{ 
+        style={{
           right: "calc(50% - var(--app-width)/2 + 1rem)"
         }}
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
-            fill="#FFFFFF"
-          />
-        </svg>
+        <Image
+          alt=""
+          src="/img/add.svg"
+          width={24}
+          height={24}
+        />
       </button>
-    </div>
+    </div >
   );
 }

@@ -27,7 +27,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       colorType = "accent",
       withIcon = false,
       selected = false,
-      iconSrc = "/img/keyboard-arrow-down-1.svg",
+      iconSrc = "/img/keyboard-arrow-down.svg",
       ariaLabel,
       className = "",
       children,

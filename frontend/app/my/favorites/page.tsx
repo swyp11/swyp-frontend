@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface FavoriteItem {
   id: number;
@@ -81,18 +82,13 @@ export default function FavoritesPage() {
           className="w-6 h-6 flex items-center justify-center"
           aria-label="뒤로가기"
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
-              fill="#1F1E1E"
-            />
-          </svg>
+          <Image
+            className="relative w-6 h-6"
+            alt=""
+            src="/img/arrow_back.svg"
+            width={24}
+            height={24}
+          />
         </button>
         <h1 className="flex-1 text-center body-2-medium text-on-surface">
           찜
@@ -106,11 +102,10 @@ export default function FavoritesPage() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 py-3 body-2 transition-colors relative ${
-              activeTab === tab
-                ? "text-primary font-medium"
-                : "text-on-surface-subtle"
-            }`}
+            className={`flex-1 py-3 body-2 transition-colors relative ${activeTab === tab
+              ? "text-primary font-medium"
+              : "text-on-surface-subtle"
+              }`}
           >
             {tab}
             {activeTab === tab && (
@@ -149,19 +144,13 @@ export default function FavoritesPage() {
               className="p-2 flex items-center justify-center shrink-0"
               aria-label={item.isFavorite ? "찜 해제" : "찜하기"}
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill={item.isFavorite ? "#F3335D" : "none"}
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z"
-                  stroke="#F3335D"
-                  strokeWidth="1.5"
-                />
-              </svg>
+              <Image
+                className="relative w-6 h-6"
+                alt=""
+                src="/img/favorite_color.svg"
+                width={24}
+                height={24}
+              />
             </button>
           </div>
         ))}

@@ -40,7 +40,7 @@ export const CalendarSelect = React.forwardRef<HTMLDivElement, CalendarSelectPro
       >
         <span>{value}</span>
         <Image
-          src="/keyboard_arrow_down.svg"
+          src="/img/keyboard-arrow-down.svg"
           alt="펼치기"
           width={24}
           height={24}

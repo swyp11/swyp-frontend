@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
 export type CalendarView = "monthly" | "weekly" | "daily";
 
@@ -53,15 +54,12 @@ export const ViewSelector: React.FC<ViewSelectorProps> = ({
         <span className="body-2-medium text-on-surface">
           {viewLabels[currentView]}
         </span>
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
-        >
-          <path d="M7 10l5 5 5-5z" fill="#1F1E1E" />
-        </svg>
+        <Image
+          alt=""
+          src="/img/keyboard-arrow-down.svg"
+          width={24}
+          height={24}
+        />
       </button>
 
       {/* 드롭다운 메뉴 */}
@@ -71,11 +69,10 @@ export const ViewSelector: React.FC<ViewSelectorProps> = ({
             <button
               key={view}
               onClick={() => handleSelect(view)}
-              className={`w-full px-4 py-3 text-left body-2-medium transition-colors hover:bg-surface-2 ${
-                currentView === view
-                  ? "text-primary bg-primary-container"
-                  : "text-on-surface"
-              }`}
+              className={`w-full px-4 py-3 text-left body-2-medium transition-colors hover:bg-surface-2 ${currentView === view
+                ? "text-primary bg-primary-container"
+                : "text-on-surface"
+                }`}
             >
               {viewLabels[view]}
             </button>
