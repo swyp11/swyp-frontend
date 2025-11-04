@@ -1,15 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
+import { OptionGroup } from "../ui";
+import { Button } from "../ui";
 
-interface OptionGroup {
+interface OptionGroupData {
   id: string;
   label: string;
   options: string[];
 }
 
 export const OptionsSection = () => {
-  const optionGroups: OptionGroup[] = [
+  const optionGroups: OptionGroupData[] = [
     {
       id: "bodyType",
       label: "체형",
@@ -41,7 +43,7 @@ export const OptionsSection = () => {
     Record<string, string>
   >({});
 
-  const handleOptionClick = (groupId: string, option: string) => {
+  const handleOptionSelect = (groupId: string, option: string) => {
     setSelectedOptions((prev) => ({
       ...prev,
       [groupId]: option,
@@ -62,64 +64,26 @@ export const OptionsSection = () => {
 
         <div className="flex flex-col items-start gap-10 relative self-stretch w-full flex-[0_0_auto]">
           {optionGroups.map((group) => (
-            <fieldset
+            <OptionGroup
               key={group.id}
-              className="flex flex-col items-start gap-3 relative self-stretch w-full flex-[0_0_auto]"
-            >
-              <legend className="flex items-start gap-1 relative self-stretch w-full flex-[0_0_auto]">
-                <span className="relative flex items-center justify-center flex-1 mt-[-1.00px] font-body-2-medium font-[number:var(--body-2-medium-font-weight)] text-black text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] [font-style:var(--body-2-medium-font-style)]">
-                  {group.label}
-                </span>
-              </legend>
-
-              <div
-                className="flex items-start gap-2 relative self-stretch w-full flex-[0_0_auto]"
-                role="group"
-                aria-labelledby={`${group.id}-label`}
-              >
-                {group.options.map((option) => {
-                  const isSelected = selectedOptions[group.id] === option;
-                  return (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => handleOptionClick(group.id, option)}
-                      className={`flex flex-col h-11 items-center justify-center gap-2.5 px-4 py-2 relative flex-1 grow rounded-[999px] overflow-hidden border border-solid ${
-                        isSelected
-                          ? "border-primary bg-primary"
-                          : "border-border"
-                      }`}
-                      aria-pressed={isSelected}
-                    >
-                      <span
-                        className={`relative flex items-center justify-center w-fit font-body-3 font-[number:var(--body-3-font-weight)] ${
-                          isSelected
-                            ? "text-on-primary"
-                            : "text-on-surface-subtle"
-                        } text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]`}
-                      >
-                        {option}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </fieldset>
+              label={group.label}
+              options={group.options}
+              selectedOption={selectedOptions[group.id]}
+              onOptionSelect={(option) => handleOptionSelect(group.id, option)}
+              variant="pill"
+              className="self-stretch"
+            />
           ))}
         </div>
       </div>
 
-      <button
-        type="button"
+      <Button
         disabled={!isAllSelected}
-        className={`all-[unset] box-border flex flex-col h-11 items-center justify-center gap-2.5 px-5 py-2 relative self-stretch w-full bg-primary rounded-lg overflow-hidden ${
-          !isAllSelected ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
-        }`}
+        className="self-stretch"
+        variant="primary"
       >
-        <span className="relative flex items-center justify-center w-fit font-body-2-medium font-[number:var(--body-2-medium-font-weight)] text-on-primary text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] whitespace-nowrap [font-style:var(--body-2-medium-font-style)]">
-          완료
-        </span>
-      </button>
+        완료
+      </Button>
     </section>
   );
 };

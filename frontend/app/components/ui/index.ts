@@ -21,3 +21,15 @@ export type { GNBProps } from "./GNB";
 
 export { CalendarSelect } from "./CalendarSelect";
 export type { CalendarSelectProps } from "./CalendarSelect";
+
+export { Chip } from "./Chip";
+export type { ChipProps } from "./Chip";
+
+export { OptionGroup } from "./OptionGroup";
+export type { OptionGroupProps } from "./OptionGroup";
+
+export { SearchInput } from "./SearchInput";
+export type { SearchInputProps } from "./SearchInput";
+
+export { NavigationTabs } from "./NavigationTabs";
+export type { NavigationTabsProps, NavigationTab } from "./NavigationTabs";
