@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { Header } from "../components/common/Header";
-import { BottomNavigation } from "../components/common/BottomNavigation";
-import { NavigationTabSection } from "../components/main/NavigationTabSection";
-import { FeaturedItemsSection } from "../components/main/FeaturedItemsSection";
-import { MainContentSection } from "../components/main/MainContentSection";
-import { RecommendationSection } from "../components/main/RecommendationSection";
+import { useNavigation } from "../../contexts/NavigationContext";
+import { Header } from "../../components/common/Header";
+import { BottomNavigation } from "../../components/common/BottomNavigation";
+import { NavigationTabSection } from "../../components/main/NavigationTabSection";
+import { FeaturedItemsSection } from "../../components/main/FeaturedItemsSection";
+import { MainContentSection } from "../../components/main/MainContentSection";
+import { RecommendationSection } from "../../components/main/RecommendationSection";
 
 export default function MainPage() {
   return (

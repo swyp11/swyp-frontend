@@ -3,7 +3,8 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useNavigation } from "../../context/NavigationContext";
+import { usePathname } from "next/navigation";
+import { useNavigation } from "../../contexts/NavigationContext";
 
 interface TabItem {
   id: string;

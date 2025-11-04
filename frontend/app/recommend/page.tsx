@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { Header } from "../components/common/Header";
-import { BottomNavigation } from "../components/common/BottomNavigation";
-import { OptionsSection } from "../components/recommend/OptionsSection";
+import { useNavigation } from "../../contexts/NavigationContext";
+import { Header } from "../../components/common/Header";
+import { BottomNavigation } from "../../components/common/BottomNavigation";
+import { OptionsSection } from "../../components/recommend/OptionsSection";
 
 export default function RecommendPage() {
   return (

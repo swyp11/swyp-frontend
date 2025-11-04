@@ -98,7 +98,7 @@ export const RecommendationSection = () => {
   const renderShopCard = (shop: ShopCard, index: number) => (
     <article
       key={index}
-      className="flex flex-col min-w-[140px] w-[140px] items-start gap-2 snap-start"
+      className="flex flex-col min-w-[140px] w-[140px] items-start gap-2 snap-start flex-shrink-0"
     >
       <div className="relative self-stretch w-full rounded aspect-[1.5] overflow-hidden">
         <Image
@@ -127,7 +127,7 @@ export const RecommendationSection = () => {
         <h2 className="w-fit mt-[-1.00px] font-title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
           지금 인기있는 드레스샵
         </h2>
-        <HorizontalSlider gap={12} className="w-full px-0">
+        <HorizontalSlider gap={12} className="w-full px-0 py-1">
           {popularShops.map((shop, index) => renderShopCard(shop, index))}
         </HorizontalSlider>
       </div>
@@ -137,7 +137,7 @@ export const RecommendationSection = () => {
         <h2 className="w-fit mt-[-1.00px] font-title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
           서울시 소재 드레스샵
         </h2>
-        <HorizontalSlider gap={12} className="w-full px-0">
+        <HorizontalSlider gap={12} className="w-full px-0 py-1">
           {seoulShops.map((shop, index) => renderShopCard(shop, index))}
         </HorizontalSlider>
       </div>
@@ -147,7 +147,7 @@ export const RecommendationSection = () => {
         <h2 className="w-fit mt-[-1.00px] font-m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-black text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--m3-body-medium-emphasized-font-style)]">
           호텔 웨딩홀
         </h2>
-        <HorizontalSlider gap={12} className="w-full px-0">
+        <HorizontalSlider gap={12} className="w-full px-0 py-1">
           {hotelWeddingHalls.map((shop, index) => renderShopCard(shop, index))}
         </HorizontalSlider>
       </div>

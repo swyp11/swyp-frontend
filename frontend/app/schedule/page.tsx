@@ -1,5 +1,5 @@
 import React from "react";
-import { BottomNavigation } from "../components/common/BottomNavigation";
+import { BottomNavigation } from "../../components/common/BottomNavigation";
 
 export default function SchedulePage() {
   return (
