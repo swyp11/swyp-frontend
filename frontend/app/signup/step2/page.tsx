@@ -33,9 +33,11 @@ export default function SignupStep2Page() {
   const handleComplete = () => {
     if (!isFormValid) return;
 
-    // TODO: 회원가입 완료 로직 구현
+    // TODO: 회원가입 완료 로직 구현 (API 호출 등)
     console.log("Complete sign up:", formData);
-    // router.push("/login"); // 로그인 페이지로 이동
+
+    // 회원가입 완료 페이지로 이동
+    router.push("/signup/complete");
   };
 
   // 뒤로가기 핸들러
