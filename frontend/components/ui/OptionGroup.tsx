@@ -24,7 +24,7 @@ export const OptionGroup = React.forwardRef<HTMLDivElement, OptionGroupProps>(
       return (
         <div ref={ref} className={`flex flex-col items-start gap-3 relative self-stretch w-full flex-[0_0_auto] ${className}`}>
           <div className="flex items-start gap-1 relative self-stretch w-full flex-[0_0_auto]">
-            <span className="relative flex items-center justify-center flex-1 mt-[-1.00px] font-body-2-medium font-[number:var(--body-2-medium-font-weight)] text-black text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] [font-style:var(--body-2-medium-font-style)]">
+            <span className="relative flex items-center justify-center flex-1 mt-[-1.00px] body-2-medium font-[number:var(--body-2-medium-font-weight)] text-black text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] [font-style:var(--body-2-medium-font-style)]">
               {label}
             </span>
           </div>
@@ -54,7 +54,7 @@ export const OptionGroup = React.forwardRef<HTMLDivElement, OptionGroupProps>(
         <h3 className="relative self-stretch mt-[-1.00px] font-heading-4 font-[number:var(--heading-4-font-weight)] text-on-surface text-[length:var(--heading-4-font-size)] tracking-[var(--heading-4-letter-spacing)] leading-[var(--heading-4-line-height)] [font-style:var(--heading-4-font-style)]">
           {label}
         </h3>
-        
+
         <div className="inline-flex items-start gap-2 relative flex-[0_0_auto] flex-wrap">
           {options.map((option) => (
             <Chip

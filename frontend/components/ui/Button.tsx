@@ -41,14 +41,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <button
           ref={ref}
           type="button"
-          className={`inline-flex items-center justify-center pl-4 pr-2 py-2 relative flex-[0_0_auto] bg-surface-2 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity ${
-            selected ? "bg-primary text-on-primary" : ""
-          } ${className}`}
+          className={`inline-flex items-center justify-center pl-4 pr-2 py-2 relative flex-[0_0_auto] bg-surface-2 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity ${selected ? "bg-primary text-on-primary" : ""
+            } ${className}`}
           aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
           aria-expanded="false"
           {...props}
         >
-          <span className="w-fit font-m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-on-surface-subtle text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--m3-body-medium-emphasized-font-style)]">
+          <span className="w-fit m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-on-surface-subtle text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--m3-body-medium-emphasized-font-style)]">
             {children}
           </span>
 

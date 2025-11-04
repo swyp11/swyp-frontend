@@ -114,10 +114,10 @@ export const RecommendationSection = () => {
         />
       </div>
       <div className="inline-flex flex-col items-start relative flex-[0_0_auto]">
-        <h3 className="w-fit mt-[-1.00px] font-body-2-medium font-[number:var(--body-2-medium-font-weight)] text-black text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--body-2-medium-font-style)]">
+        <h3 className="w-fit mt-[-1.00px] body-2-medium font-[number:var(--body-2-medium-font-weight)] text-black text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--body-2-medium-font-style)]">
           {shop.title}
         </h3>
-        <p className="w-fit font-label-1-regular font-[number:var(--label-1-regular-font-weight)] text-on-surface-subtle text-[length:var(--label-1-regular-font-size)] tracking-[var(--label-1-regular-letter-spacing)] leading-[var(--label-1-regular-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--label-1-regular-font-style)]">
+        <p className="w-fit label-1-regular font-[number:var(--label-1-regular-font-weight)] text-on-surface-subtle text-[length:var(--label-1-regular-font-size)] tracking-[var(--label-1-regular-letter-spacing)] leading-[var(--label-1-regular-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--label-1-regular-font-style)]">
           {shop.description}
         </p>
       </div>
@@ -128,7 +128,7 @@ export const RecommendationSection = () => {
     <section className="flex flex-col items-start gap-10 px-4 py-6 relative self-stretch w-full bg-white">
       {/* 인기있는 드레스샵 */}
       <div className="flex flex-col items-start gap-4 w-full">
-        <h2 className="w-fit mt-[-1.00px] font-title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
+        <h2 className="w-fit mt-[-1.00px] title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
           지금 인기있는 드레스샵
         </h2>
         <HorizontalSlider gap={12} className="w-full px-0 py-1">
@@ -138,7 +138,7 @@ export const RecommendationSection = () => {
 
       {/* 서울시 소재 드레스샵 */}
       <div className="flex flex-col items-start gap-4 w-full">
-        <h2 className="w-fit mt-[-1.00px] font-title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
+        <h2 className="w-fit mt-[-1.00px] title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
           서울시 소재 드레스샵
         </h2>
         <HorizontalSlider gap={12} className="w-full px-0 py-1">
@@ -148,7 +148,7 @@ export const RecommendationSection = () => {
 
       {/* 호텔 웨딩홀 */}
       <div className="flex flex-col items-start gap-3 w-full">
-        <h2 className="w-fit mt-[-1.00px] font-m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-black text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--m3-body-medium-emphasized-font-style)]">
+        <h2 className="w-fit mt-[-1.00px] m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-black text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--m3-body-medium-emphasized-font-style)]">
           호텔 웨딩홀
         </h2>
         <HorizontalSlider gap={12} className="w-full px-0 py-1">

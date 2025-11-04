@@ -47,7 +47,7 @@ export const NavigationTabs = React.forwardRef<HTMLElement, NavigationTabsProps>
             >
               {isActive ? (
                 <div className="inline-flex flex-col items-center gap-[9px] relative flex-[0_0_auto] mt-[-0.50px]">
-                  <span className="relative flex items-center justify-center w-fit mt-[-1.00px] font-m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-primary text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap [font-style:var(--m3-body-medium-emphasized-font-style)]">
+                  <span className="relative flex items-center justify-center w-fit mt-[-1.00px] m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-primary text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap [font-style:var(--m3-body-medium-emphasized-font-style)]">
                     {tab.label}
                   </span>
                   <div
@@ -56,7 +56,7 @@ export const NavigationTabs = React.forwardRef<HTMLElement, NavigationTabsProps>
                   />
                 </div>
               ) : (
-                <span className="w-fit font-m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-on-surface-subtle text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--m3-body-medium-emphasized-font-style)]">
+                <span className="w-fit m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-on-surface-subtle text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--m3-body-medium-emphasized-font-style)]">
                   {tab.label}
                 </span>
               )}

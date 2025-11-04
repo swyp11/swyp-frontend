@@ -9,7 +9,7 @@ export const Header = () => {
     <header className="flex items-center relative self-stretch w-full flex-[0_0_auto] bg-surface-1">
       <div className="flex items-center gap-2.5 p-4 relative flex-1 grow bg-white">
         <Link href="/">
-          <h1 className="relative flex items-center justify-center w-fit mt-[-1.00px] font-title-1 font-[number:var(--title-1-font-weight)] text-primary text-[length:var(--title-1-font-size)] tracking-[var(--title-1-letter-spacing)] leading-[var(--title-1-line-height)] whitespace-nowrap [font-style:var(--title-1-font-style)] cursor-pointer">
+          <h1 className="relative flex items-center justify-center w-fit mt-[-1.00px] title-1 font-[number:var(--title-1-font-weight)] text-primary text-[length:var(--title-1-font-size)] tracking-[var(--title-1-letter-spacing)] leading-[var(--title-1-line-height)] whitespace-nowrap [font-style:var(--title-1-font-style)] cursor-pointer">
             LOGO
           </h1>
         </Link>

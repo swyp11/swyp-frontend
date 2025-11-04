@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Roboto } from "next/font/google";
+import localFont from "next/font/local";
 import "../styles/globals.css";
 import { NavigationProvider } from "../contexts/NavigationContext";
 
@@ -11,6 +12,33 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
+const pretendard = localFont({
+  src: [
+    {
+      path: "../node_modules/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../node_modules/pretendard/dist/web/static/woff2/Pretendard-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../node_modules/pretendard/dist/web/static/woff2/Pretendard-SemiBold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-pretendard",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +54,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} ${pretendard.variable} antialiased`}
       >
         <NavigationProvider>
           {children}

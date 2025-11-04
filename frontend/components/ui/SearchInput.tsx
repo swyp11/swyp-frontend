@@ -34,7 +34,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="font-body-2 font-[number:var(--body-2-font-weight)] text-on-surface-subtlest text-[length:var(--body-2-font-size)] leading-[var(--body-2-line-height)] relative flex items-center justify-center w-full tracking-[var(--body-2-letter-spacing)] [font-style:var(--body-2-font-style)] placeholder:text-on-surface-subtlest bg-transparent border-none outline-none"
+          className="body-2 font-[number:var(--body-2-font-weight)] text-on-surface-subtlest text-[length:var(--body-2-font-size)] leading-[var(--body-2-line-height)] relative flex items-center justify-center w-full tracking-[var(--body-2-letter-spacing)] [font-style:var(--body-2-font-style)] placeholder:text-on-surface-subtlest bg-transparent border-none outline-none"
           aria-label={ariaLabel || placeholder}
         />
       </div>

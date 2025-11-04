@@ -57,7 +57,7 @@ export const OptionsSection = () => {
   return (
     <section className="flex flex-col items-start gap-8 px-4 py-8 relative self-stretch w-full flex-[0_0_auto] bg-white">
       <div className="flex flex-col items-start gap-12 relative self-stretch w-full flex-[0_0_auto]">
-        <h1 className="relative flex items-center justify-center self-stretch mt-[-1.00px] font-title-1 font-[number:var(--title-1-font-weight)] text-on-surface text-[length:var(--title-1-font-size)] tracking-[var(--title-1-letter-spacing)] leading-[var(--title-1-line-height)] [font-style:var(--title-1-font-style)]">
+        <h1 className="relative flex items-center justify-center self-stretch mt-[-1.00px] title-1 font-[number:var(--title-1-font-weight)] text-on-surface text-[length:var(--title-1-font-size)] tracking-[var(--title-1-letter-spacing)] leading-[var(--title-1-line-height)] [font-style:var(--title-1-font-style)]">
           드레스 추천을 위해 <br />
           아래 옵션을 선택해주세요!
         </h1>

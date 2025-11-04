@@ -64,9 +64,8 @@ export const BottomNavigation = () => {
           key={tab.id}
           href={tab.href}
           onClick={() => handleTabClick(tab.id)}
-          className={`flex flex-col items-center justify-center gap-0.5 py-2 px-2 relative flex-1 h-full bg-white transition-opacity duration-200 ${
-            tab.isActive ? "" : "opacity-40 hover:opacity-60"
-          }`}
+          className={`flex flex-col items-center justify-center gap-0.5 py-2 px-2 relative flex-1 h-full bg-white transition-opacity duration-200 ${tab.isActive ? "" : "opacity-40 hover:opacity-60"
+            }`}
           aria-label={tab.label}
           aria-current={tab.isActive ? "page" : undefined}
         >
@@ -79,9 +78,8 @@ export const BottomNavigation = () => {
           />
 
           <span
-            className={`w-fit font-label-2 font-[number:var(--label-2-font-weight)] ${
-              tab.isActive ? "text-primary" : "text-on-surface"
-            } text-[length:var(--label-2-font-size)] tracking-[var(--label-2-letter-spacing)] leading-[var(--label-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--label-2-font-style)] text-xs`}
+            className={`w-fit label-2 font-[number:var(--label-2-font-weight)] ${tab.isActive ? "text-primary" : "text-on-surface"
+              } text-[length:var(--label-2-font-size)] tracking-[var(--label-2-letter-spacing)] leading-[var(--label-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--label-2-font-style)] text-xs`}
           >
             {tab.label}
           </span>

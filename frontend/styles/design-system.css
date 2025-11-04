@@ -8,9 +8,7 @@
 
 :root {
   /* === Typography === */
-  /* Font Family */
-  --font-pretendard: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-roboto: 'Roboto', sans-serif;
+  /* Font Family - Next.js font variables will be injected */
 
   /* Font Sizes */
   --font-size-headline-1: 30px;
@@ -109,6 +107,26 @@
   --chip-height: 40px;
   --icon-size: 24px;
   --icon-size-sm: 16.667px;
+
+  /* m3 */
+  --Static-Body-Medium-Font: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --Static-Body-Medium-Size: 14px;
+  --Static-Body-Medium-Line-Height: 20px;
+  --Static-Body-Medium-Weight: 500;
+
+  --Static-Body-Medium-Tracking: 0.25px;
+  --Static-Body-Medium-Tracking-em: 0.017857142857142856em;
+
+  /* m3 body medium emphasized - component에서 사용하는 변수명 */
+  --m3-body-medium-emphasized-font-weight: 500;
+  --m3-body-medium-emphasized-font-size: 14px;
+  --m3-body-medium-emphasized-letter-spacing: 0.25px;
+  --m3-body-medium-emphasized-line-height: 20px;
+  --m3-body-medium-emphasized-font-style: normal;
+
+  /* color token */
+  --on-surface-subtle: #666666;
+
 }
 
 /* ========================================
@@ -116,73 +134,85 @@
    ======================================== */
 
 .headline-1 {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-headline-1);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-headline-1);
 }
 
 .headline-2 {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-headline-2);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-headline-2);
 }
 
 .title-1 {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-title-1);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-title-1);
 }
 
 .title-2 {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-title-2);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-title-2);
 }
 
 .body-1 {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-body-1);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body-1);
 }
 
 .body-2 {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-body-2);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body-2);
 }
 
 .body-2-medium {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-body-2);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-body-2);
 }
 
 .body-3 {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-body-3);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body-3);
 }
 
 .label-1 {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-label-1);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-label-1);
 }
 
 .label-2 {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-label-2);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-label-2);
+}
+
+/* m3 ver */
+
+.m3-body-medium-emphasized {
+  color: var(--on-surface-subtle, #666);
+  font-family: var(--font-roboto), 'Roboto', sans-serif;
+  font-size: var(--Static-Body-Medium-Size, 14px);
+  font-style: normal;
+  font-weight: var(--Static-Body-Medium-Weight, 500);
+  line-height: var(--Static-Body-Medium-Line-Height, 20px);
+  letter-spacing: var(--Static-Body-Medium-Tracking, 0.25px);
 }
 
 /* ========================================
@@ -190,51 +220,139 @@
    ======================================== */
 
 /* Background Colors */
-.bg-primary { background-color: var(--color-primary); }
-.bg-primary-container { background-color: var(--color-primary-container); }
-.bg-secondary { background-color: var(--color-secondary); }
-.bg-secondary-container { background-color: var(--color-secondary-container); }
-.bg-alert { background-color: var(--color-alert); }
-.bg-alert-container { background-color: var(--color-alert-container); }
-.bg-positive { background-color: var(--color-positive); }
-.bg-positive-container { background-color: var(--color-positive-container); }
-.bg-warning { background-color: var(--color-warning); }
-.bg-warning-container { background-color: var(--color-warning-container); }
-.bg-surface-1 { background-color: var(--color-surface-1); }
-.bg-surface-2 { background-color: var(--color-surface-2); }
-.bg-surface-3 { background-color: var(--color-surface-3); }
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-primary-container {
+  background-color: var(--color-primary-container);
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
+}
+
+.bg-secondary-container {
+  background-color: var(--color-secondary-container);
+}
+
+.bg-alert {
+  background-color: var(--color-alert);
+}
+
+.bg-alert-container {
+  background-color: var(--color-alert-container);
+}
+
+.bg-positive {
+  background-color: var(--color-positive);
+}
+
+.bg-positive-container {
+  background-color: var(--color-positive-container);
+}
+
+.bg-warning {
+  background-color: var(--color-warning);
+}
+
+.bg-warning-container {
+  background-color: var(--color-warning-container);
+}
+
+.bg-surface-1 {
+  background-color: var(--color-surface-1);
+}
+
+.bg-surface-2 {
+  background-color: var(--color-surface-2);
+}
+
+.bg-surface-3 {
+  background-color: var(--color-surface-3);
+}
 
 /* Text Colors */
-.text-primary { color: var(--color-primary); }
-.text-on-primary { color: var(--color-on-primary); }
-.text-secondary { color: var(--color-secondary); }
-.text-on-secondary { color: var(--color-on-secondary); }
-.text-alert { color: var(--color-alert); }
-.text-on-surface { color: var(--color-on-surface); }
-.text-on-surface-subtle { color: var(--color-on-surface-subtle); }
-.text-on-surface-subtlest { color: var(--color-on-surface-subtlest); }
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-on-primary {
+  color: var(--color-on-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.text-on-secondary {
+  color: var(--color-on-secondary);
+}
+
+.text-alert {
+  color: var(--color-alert);
+}
+
+.text-on-surface {
+  color: var(--color-on-surface);
+}
+
+.text-on-surface-subtle {
+  color: var(--color-on-surface-subtle);
+}
+
+.text-on-surface-subtlest {
+  color: var(--color-on-surface-subtlest);
+}
 
 /* Border Colors */
-.border-default { border-color: var(--color-border); }
-.border-subtle { border-color: var(--color-border-subtle); }
-.border-subtlest { border-color: var(--color-border-subtlest); }
-.border-primary { border-color: var(--color-primary); }
-.border-alert { border-color: var(--color-alert); }
+.border-default {
+  border-color: var(--color-border);
+}
+
+.border-subtle {
+  border-color: var(--color-border-subtle);
+}
+
+.border-subtlest {
+  border-color: var(--color-border-subtlest);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.border-alert {
+  border-color: var(--color-alert);
+}
 
 /* ========================================
    4. Shadow Utility Classes
    ======================================== */
 
-.shadow-1 { box-shadow: var(--shadow-1); }
-.shadow-2 { box-shadow: var(--shadow-2); }
+.shadow-1 {
+  box-shadow: var(--shadow-1);
+}
+
+.shadow-2 {
+  box-shadow: var(--shadow-2);
+}
 
 /* ========================================
    5. Border Radius Utility Classes
    ======================================== */
 
-.rounded-xs { border-radius: var(--radius-xs); }
-.rounded-sm { border-radius: var(--radius-sm); }
-.rounded-full { border-radius: var(--radius-full); }
+.rounded-xs {
+  border-radius: var(--radius-xs);
+}
+
+.rounded-sm {
+  border-radius: var(--radius-sm);
+}
+
+.rounded-full {
+  border-radius: var(--radius-full);
+}
 
 /* ========================================
    6. Component Base Styles
@@ -248,7 +366,7 @@
   height: var(--button-height);
   padding: var(--spacing-8) var(--spacing-20);
   border-radius: var(--radius-sm);
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-body-2);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-body-2);
@@ -339,7 +457,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background-color: var(--color-surface-1);
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-body-2);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body-2);
@@ -375,7 +493,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-4);
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-body-3);
   font-weight: var(--font-weight-medium);
   line-height: 20px;
@@ -383,7 +501,7 @@
 }
 
 .field-helptext {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-label-1);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-label-1);
@@ -403,7 +521,7 @@
   padding: var(--spacing-8) var(--spacing-16);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-body-3);
   font-weight: var(--font-weight-regular);
   line-height: 21px;
@@ -436,7 +554,7 @@
   color: var(--color-on-secondary);
   padding: var(--spacing-8) var(--spacing-16);
   border-radius: var(--radius-xs);
-  font-family: var(--font-roboto);
+  font-family: var(--font-roboto), 'Roboto', sans-serif;
   font-size: var(--font-size-body-3);
   font-weight: var(--font-weight-regular);
   line-height: 20px;
@@ -474,7 +592,7 @@
 }
 
 .tab-item-label {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-label-2);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-label-2);
@@ -497,7 +615,7 @@
 }
 
 .gnb-logo {
-  font-family: var(--font-pretendard);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: var(--font-size-title-1);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-title-1);
@@ -528,7 +646,7 @@
   padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--spacing-16);
   background-color: var(--color-surface-2);
   border-radius: var(--radius-sm);
-  font-family: var(--font-roboto);
+  font-family: var(--font-roboto), 'Roboto', sans-serif;
   font-size: var(--font-size-body-3);
   font-weight: var(--font-weight-medium);
   line-height: 20px;

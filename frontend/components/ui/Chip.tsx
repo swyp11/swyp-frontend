@@ -6,7 +6,7 @@ export interface ChipProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
   /** Chip label text */
   label: string;
   /** Whether chip is selected */
-  selected?: boolean;  
+  selected?: boolean;
   /** Click handler */
   onClick?: () => void;
   /** Additional className */
@@ -32,14 +32,14 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
   ) => {
     const getChipClass = () => {
       let baseClass = "inline-flex items-center justify-center transition-colors";
-      
+
       // Size classes
       if (size === "small") {
         baseClass += " gap-2.5 px-3 py-1.5";
       } else {
         baseClass += " gap-2.5 px-4 py-2";
       }
-      
+
       // Variant classes
       if (variant === "pill") {
         baseClass += " rounded-[999px] border border-solid";
@@ -59,17 +59,16 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
         // default variant - uses CSS classes
         baseClass = `chip ${selected ? "chip-selected" : ""}`;
       }
-      
+
       return baseClass;
     };
 
     const getTextClass = () => {
       if (variant === "pill") {
-        return `relative flex items-center justify-center w-fit font-body-3 font-[number:var(--body-3-font-weight)] ${
-          selected ? "text-on-primary" : "text-on-surface-subtle"
-        } text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]`;
+        return `relative flex items-center justify-center w-fit body-3 font-[number:var(--body-3-font-weight)] ${selected ? "text-on-primary" : "text-on-surface-subtle"
+          } text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]`;
       } else if (variant === "outlined") {
-        return `relative w-fit mt-[-1.00px] font-body-2 font-[number:var(--body-2-font-weight)] text-[length:var(--body-2-font-size)] tracking-[var(--body-2-letter-spacing)] leading-[var(--body-2-line-height)] whitespace-nowrap [font-style:var(--body-2-font-style)]`;
+        return `relative w-fit mt-[-1.00px] body-2 font-[number:var(--body-2-font-weight)] text-[length:var(--body-2-font-size)] tracking-[var(--body-2-letter-spacing)] leading-[var(--body-2-line-height)] whitespace-nowrap [font-style:var(--body-2-font-style)]`;
       }
       return "";
     };
