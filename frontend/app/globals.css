@@ -5,6 +5,8 @@
   --background: #ffffff;
   --foreground: #171717;
   --app-width: 390px;
+  --header-height: 64px;
+  --footer-height: 64px;
 }
 
 @theme inline {

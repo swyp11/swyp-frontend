@@ -24,7 +24,7 @@ export default function MainPage() {
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 w-full overflow-y-auto pt-[64px] pb-[80px]">
+      <div className="flex-1 w-full overflow-y-auto" style={{ paddingTop: "var(--header-height)", paddingBottom: "var(--footer-height)" }}>
         <NavigationTabSection />
         <FeaturedItemsSection />
         <MainContentSection />

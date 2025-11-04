@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useNavigation } from "../../context/NavigationContext";
 
 interface TabItem {
   id: string;
@@ -13,7 +14,7 @@ interface TabItem {
 }
 
 export const BottomNavigation = () => {
-  const [activeTab, setActiveTab] = useState<string>("home");
+  const { activeTab, setActiveTab } = useNavigation();
 
   const tabItems: TabItem[] = [
     {
@@ -26,7 +27,7 @@ export const BottomNavigation = () => {
     {
       id: "style",
       icon: "/img/face-retouching-natural.svg",
-      label: "스타일",
+      label: "추천",
       href: "/recommend",
       isActive: activeTab === "style",
     },
@@ -52,7 +53,8 @@ export const BottomNavigation = () => {
 
   return (
     <nav
-      className="flex items-start relative self-stretch w-full flex-[0_0_auto] bg-white border-t [border-top-style:solid] border-border-subtlest"
+      className="flex items-center relative self-stretch w-full bg-white border-t [border-top-style:solid] border-border-subtlest flex-shrink-0"
+      style={{ height: "var(--footer-height)", minHeight: "var(--footer-height)" }}
       role="navigation"
       aria-label="Main navigation"
     >
@@ -61,13 +63,14 @@ export const BottomNavigation = () => {
           key={tab.id}
           href={tab.href}
           onClick={() => handleTabClick(tab.id)}
-          className={`flex flex-col items-center justify-center gap-0.5 py-3 px-4 relative flex-1 self-stretch grow bg-white ${tab.isActive ? "" : "opacity-40"
-            }`}
+          className={`flex flex-col items-center justify-center gap-0.5 py-2 px-2 relative flex-1 h-full bg-white transition-opacity duration-200 ${
+            tab.isActive ? "" : "opacity-40 hover:opacity-60"
+          }`}
           aria-label={tab.label}
           aria-current={tab.isActive ? "page" : undefined}
         >
           <Image
-            className="relative w-5 h-5"
+            className="relative w-5 h-5 flex-shrink-0"
             alt=""
             src={tab.icon}
             width={20}
@@ -75,8 +78,9 @@ export const BottomNavigation = () => {
           />
 
           <span
-            className={`w-fit font-label-2 font-[number:var(--label-2-font-weight)] ${tab.isActive ? "text-primary" : "text-on-surface"
-              } text-[length:var(--label-2-font-size)] tracking-[var(--label-2-letter-spacing)] leading-[var(--label-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--label-2-font-style)]`}
+            className={`w-fit font-label-2 font-[number:var(--label-2-font-weight)] ${
+              tab.isActive ? "text-primary" : "text-on-surface"
+            } text-[length:var(--label-2-font-size)] tracking-[var(--label-2-letter-spacing)] leading-[var(--label-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--label-2-font-style)] text-xs`}
           >
             {tab.label}
           </span>
