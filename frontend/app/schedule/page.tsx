@@ -6,6 +6,18 @@ import { BottomNavigation } from "../../components/common/BottomNavigation";
 import { WeekCalendar } from "../../components/schedule/WeekCalendar";
 import { DayCalendar } from "../../components/schedule/DayCalendar";
 import { ViewSelector, CalendarView } from "../../components/schedule/ViewSelector";
+import { AddEventModal } from "../../components/schedule/AddEventModal";
+
+interface Event {
+  id: string;
+  title: string;
+  startDate: Date;
+  endDate: Date;
+  startTime: number;
+  endTime: number;
+  color: string;
+  description?: string;
+}
 
 export default function SchedulePage() {
   const router = useRouter();
@@ -13,6 +25,8 @@ export default function SchedulePage() {
   const [currentYear, setCurrentYear] = useState(2024);
   const [selectedDate, setSelectedDate] = useState(10);
   const [calendarView, setCalendarView] = useState<CalendarView>("weekly");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [events, setEvents] = useState<Event[]>([]);
 
   // 샘플 이벤트 데이터 (월별 뷰용)
   const sampleMonthlyEvents: { [key: number]: string[] } = {
@@ -130,9 +144,73 @@ export default function SchedulePage() {
     setSelectedDate(currentDate.getDate());
   };
 
+  // 일정 추가 핸들러
+  const handleAddEvent = (eventData: Omit<Event, "id">) => {
+    const newEvent: Event = {
+      ...eventData,
+      id: Date.now().toString(),
+    };
+    setEvents([...events, newEvent]);
+  };
+
+  // 월별 뷰용 이벤트 변환
+  const getMonthlyEvents = () => {
+    const monthlyEventsMap: { [key: number]: string[] } = {};
+
+    events.forEach((event) => {
+      const eventDate = event.startDate.getDate();
+      const eventMonth = event.startDate.getMonth() + 1;
+      const eventYear = event.startDate.getFullYear();
+
+      if (eventMonth === currentMonth && eventYear === currentYear) {
+        if (!monthlyEventsMap[eventDate]) {
+          monthlyEventsMap[eventDate] = [];
+        }
+        monthlyEventsMap[eventDate].push(event.title);
+      }
+    });
+
+    return monthlyEventsMap;
+  };
+
+  // 주별 뷰용 이벤트 변환
+  const getWeeklyEvents = () => {
+    return events.map((event) => ({
+      id: event.id,
+      title: event.title,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      dayOfWeek: event.startDate.getDay(),
+      color: event.color,
+    }));
+  };
+
+  // 일별 뷰용 이벤트 변환
+  const getDailyEvents = () => {
+    return events
+      .filter((event) => {
+        const eventDate = event.startDate.getDate();
+        const eventMonth = event.startDate.getMonth() + 1;
+        const eventYear = event.startDate.getFullYear();
+        return (
+          eventDate === selectedDate &&
+          eventMonth === currentMonth &&
+          eventYear === currentYear
+        );
+      })
+      .map((event) => ({
+        id: event.id,
+        title: event.title,
+        startTime: event.startTime,
+        duration: event.endTime - event.startTime,
+        color: event.color,
+      }));
+  };
+
   const renderCalendar = () => {
     const days = [];
     const totalCells = 35; // 5주
+    const monthlyEvents = getMonthlyEvents();
 
     // 빈 셀 추가 (월요일 시작 기준)
     const emptyDays = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
@@ -142,7 +220,7 @@ export default function SchedulePage() {
 
     // 날짜 셀 추가
     for (let day = 1; day <= daysInMonth; day++) {
-      const hasEvents = sampleMonthlyEvents[day];
+      const hasEvents = monthlyEvents[day];
 
       days.push(
         <div
@@ -368,7 +446,7 @@ export default function SchedulePage() {
           <div className="flex-1 overflow-hidden">
             <WeekCalendar
               currentDate={new Date(currentYear, currentMonth - 1, selectedDate)}
-              events={sampleWeekEvents}
+              events={getWeeklyEvents()}
             />
           </div>
         )}
@@ -378,14 +456,17 @@ export default function SchedulePage() {
           <div className="flex-1 overflow-hidden">
             <DayCalendar
               currentDate={new Date(currentYear, currentMonth - 1, selectedDate)}
-              events={sampleDayEvents}
+              events={getDailyEvents()}
             />
           </div>
         )}
       </div>
 
       {/* Floating Add Button */}
-      <button className="fixed bottom-24 right-4 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg z-10">
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-24 right-4 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg z-10"
+      >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path
             d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
@@ -393,6 +474,14 @@ export default function SchedulePage() {
           />
         </svg>
       </button>
+
+      {/* Add Event Modal */}
+      <AddEventModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddEvent={handleAddEvent}
+        selectedDate={new Date(currentYear, currentMonth - 1, selectedDate)}
+      />
 
       {/* Fixed Bottom Navigation */}
       <div
