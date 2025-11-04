@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "../styles/globals.css";
 import { NavigationProvider } from "../contexts/NavigationContext";
+import { Header } from "../components/common/Header";
+import { BottomNavigation } from "../components/common/BottomNavigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,7 +59,31 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} ${pretendard.variable} antialiased`}
       >
         <NavigationProvider>
-          {children}
+          <div
+            className="flex flex-col h-screen items-start relative bg-white mx-auto"
+            style={{ width: "var(--app-width)" }}
+          >
+            {/* Fixed Header */}
+            <div
+              className="fixed top-0 left-1/2 -translate-x-1/2 z-50"
+              style={{ width: "var(--app-width)" }}
+            >
+              <Header />
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 w-full overflow-y-auto" style={{ paddingTop: "var(--header-height)", paddingBottom: "var(--footer-height)" }}>
+              {children}
+            </div>
+
+            {/* Fixed Bottom Navigation */}
+            <div
+              className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50"
+              style={{ width: "var(--app-width)" }}
+            >
+              <BottomNavigation />
+            </div>
+          </div>
         </NavigationProvider>
       </body>
     </html>

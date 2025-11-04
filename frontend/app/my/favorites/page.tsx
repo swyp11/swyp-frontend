@@ -73,10 +73,7 @@ export default function FavoritesPage() {
   };
 
   return (
-    <div
-      className="flex flex-col h-screen bg-white mx-auto"
-      style={{ width: "var(--app-width)" }}
-    >
+    <>
       {/* Header */}
       <div className="flex items-center px-4 py-4 border-b border-[#f1f1f1]">
         <button
@@ -169,6 +166,6 @@ export default function FavoritesPage() {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { BottomNavigation } from "../../components/common/BottomNavigation";
+
 import { WeekCalendar } from "../../components/schedule/WeekCalendar";
 import { DayCalendar } from "../../components/schedule/DayCalendar";
 import { ViewSelector, CalendarView } from "../../components/schedule/ViewSelector";
@@ -257,29 +257,10 @@ export default function SchedulePage() {
   };
 
   return (
-    <div
-      className="flex flex-col h-screen items-start relative bg-white mx-auto"
-      style={{ width: "var(--app-width)", position: "relative" }}
-    >
-      {/* Content Container - No overflow */}
-      <div
-        className="flex-1 w-full flex flex-col overflow-hidden"
-        style={{ paddingBottom: "var(--footer-height)" }}
-      >
-        {/* Header - GNB */}
-        <div className="flex items-center justify-between px-4 py-4 bg-white">
-          <h1 className="title-1 text-primary">LOGO</h1>
-          <div className="relative">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"
-                fill="#1F1E1E"
-              />
-            </svg>
-            {/* Notification Badge */}
-            <div className="absolute top-0 right-0 w-2 h-2 bg-alert rounded-full" />
-          </div>
-        </div>
+    <div className="relative">
+      {/* Content Container */}
+      <div className="pb-16">
+
 
         {/* D-Day & View Selector */}
         <div className="px-2 pb-4">
@@ -454,7 +435,10 @@ export default function SchedulePage() {
       {/* Floating Add Button */}
       <button
         onClick={() => router.push("/schedule/add")}
-        className="absolute bottom-24 right-4 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg z-10"
+        className="fixed bottom-24 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg z-40"
+        style={{ 
+          right: "calc(50% - var(--app-width)/2 + 1rem)"
+        }}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path
@@ -463,14 +447,6 @@ export default function SchedulePage() {
           />
         </svg>
       </button>
-
-      {/* Fixed Bottom Navigation */}
-      <div
-        className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50"
-        style={{ width: "var(--app-width)" }}
-      >
-        <BottomNavigation />
-      </div>
     </div>
   );
 }

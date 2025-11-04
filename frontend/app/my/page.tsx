@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { BottomNavigation } from "../../components/common/BottomNavigation";
+
 
 export default function MyPage() {
   const router = useRouter();
@@ -40,55 +40,56 @@ export default function MyPage() {
   ];
 
   return (
-    <div
-      className="flex flex-col h-screen items-start relative bg-white mx-auto"
-      style={{ width: "var(--app-width)" }}
-    >
-      {/* Scrollable Content */}
-      <div
-        className="flex-1 w-full overflow-y-auto"
-        style={{ paddingBottom: "var(--footer-height)" }}
-      >
-        {/* Header - GNB */}
-        <div className="flex items-center justify-between px-4 py-4 bg-white">
-          <h1 className="title-1 text-primary">LOGO</h1>
-          <div className="relative">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"
-                fill="#1F1E1E"
-              />
-            </svg>
-            {/* Notification Badge */}
-            <div className="absolute top-0 right-0 w-2 h-2 bg-alert rounded-full" />
+    <>
+      {/* Profile Section */}
+      <div className="px-4 py-4">
+        <button
+          onClick={() => {
+            // TODO: 프로필 편집 페이지로 이동
+            console.log("프로필 편집");
+          }}
+          className="flex items-center gap-4 w-full"
+        >
+          {/* Profile Image */}
+          <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-[26px]">
+            {userName.charAt(0)}
           </div>
-        </div>
 
-        {/* Profile Section */}
-        <div className="px-4 py-4">
+          {/* Profile Info */}
+          <div className="flex-1 text-left">
+            <div className="body-1-medium text-on-surface font-bold">
+              {userName}
+            </div>
+            <div className="label-1 text-on-surface-subtle">
+              {userRole} ・ 결혼식까지 {daysUntilWedding}일
+            </div>
+          </div>
+
+          {/* Arrow */}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M9.29 6.71L10.7 5.3L17.4 12L10.7 18.7L9.29 17.29L14.58 12L9.29 6.71Z"
+              fill="#1F1E1E"
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* Divider */}
+      <div className="w-full h-2 bg-[#f6f6f6]" />
+
+      {/* Menu List */}
+      <div className="flex flex-col gap-6 px-4 py-6">
+        {menuItems.map((item, index) => (
           <button
-            onClick={() => {
-              // TODO: 프로필 편집 페이지로 이동
-              console.log("프로필 편집");
-            }}
-            className="flex items-center gap-4 w-full"
+            key={index}
+            onClick={item.onClick}
+            className="flex items-center gap-3 w-full"
           >
-            {/* Profile Image */}
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-[26px]">
-              {userName.charAt(0)}
-            </div>
-
-            {/* Profile Info */}
-            <div className="flex-1 text-left">
-              <div className="body-1-medium text-on-surface font-bold">
-                {userName}
-              </div>
-              <div className="label-1 text-on-surface-subtle">
-                {userRole} ・ 결혼식까지 {daysUntilWedding}일
-              </div>
-            </div>
-
-            {/* Arrow */}
+            <div className="w-6 h-6 shrink-0">{item.icon}</div>
+            <span className="flex-1 text-left body-2-medium text-on-surface">
+              {item.label}
+            </span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M9.29 6.71L10.7 5.3L17.4 12L10.7 18.7L9.29 17.29L14.58 12L9.29 6.71Z"
@@ -96,41 +97,8 @@ export default function MyPage() {
               />
             </svg>
           </button>
-        </div>
-
-        {/* Divider */}
-        <div className="w-full h-2 bg-[#f6f6f6]" />
-
-        {/* Menu List */}
-        <div className="flex flex-col gap-6 px-4 py-6">
-          {menuItems.map((item, index) => (
-            <button
-              key={index}
-              onClick={item.onClick}
-              className="flex items-center gap-3 w-full"
-            >
-              <div className="w-6 h-6 shrink-0">{item.icon}</div>
-              <span className="flex-1 text-left body-2-medium text-on-surface">
-                {item.label}
-              </span>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M9.29 6.71L10.7 5.3L17.4 12L10.7 18.7L9.29 17.29L14.58 12L9.29 6.71Z"
-                  fill="#1F1E1E"
-                />
-              </svg>
-            </button>
-          ))}
-        </div>
+        ))}
       </div>
-
-      {/* Fixed Bottom Navigation */}
-      <div
-        className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50"
-        style={{ width: "var(--app-width)" }}
-      >
-        <BottomNavigation />
-      </div>
-    </div>
+    </>
   );
 }

@@ -12,7 +12,7 @@ export const MainContentSection = () => {
             드레스 추천받기
           </h2>
 
-          <p className="self-stretch body-3 font-[number:var(--body-3-font-weight)] text-on-primary text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] relative flex items-center justify-center [font-style:var(--body-3-font-style)]">
+          <p className="self-stretch body-3 font-[number:var(--body-3-font-weight)] text-on-primary text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] relative flex items-center [font-style:var(--body-3-font-style)]">
             체형 데이터를 기반으로 가장 <br />
             잘 어울리는 드레스를 추천해드려요.
           </p>

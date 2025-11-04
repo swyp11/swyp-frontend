@@ -83,38 +83,34 @@ export default function SettingsPage() {
 
   return (
     <>
-      <div
-        className="flex flex-col h-screen bg-white mx-auto"
-        style={{ width: "var(--app-width)" }}
-      >
-        {/* Header */}
-        <div className="flex items-center px-4 py-4 border-b border-border-subtle">
-          <button
-            onClick={() => router.back()}
-            className="w-6 h-6 flex items-center justify-center"
-            aria-label="뒤로가기"
+      {/* Header */}
+      <div className="flex items-center px-4 py-4 border-b border-border-subtle">
+        <button
+          onClick={() => router.back()}
+          className="w-6 h-6 flex items-center justify-center"
+          aria-label="뒤로가기"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
-                fill="#1F1E1E"
-              />
-            </svg>
-          </button>
-          <h1 className="flex-1 text-center body-2-medium text-on-surface">
-            설정
-          </h1>
-          <div className="w-6" /> {/* Spacer for centering */}
-        </div>
+            <path
+              d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
+              fill="#1F1E1E"
+            />
+          </svg>
+        </button>
+        <h1 className="flex-1 text-center body-2-medium text-on-surface">
+          설정
+        </h1>
+        <div className="w-6" /> {/* Spacer for centering */}
+      </div>
 
-        {/* Settings List */}
-        <div className="flex-1 flex flex-col gap-6 px-4 py-6">
+      {/* Settings List */}
+      <div className="flex flex-col gap-6 px-4 py-6">
           {settingsItems.map((item, index) => (
             <button
               key={index}
@@ -140,7 +136,6 @@ export default function SettingsPage() {
             </button>
           ))}
         </div>
-      </div>
 
       {/* Logout Modal */}
       {showLogoutModal && (
