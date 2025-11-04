@@ -98,7 +98,9 @@ export const RecommendationSection = () => {
   const renderShopCard = (shop: ShopCard, index: number) => (
     <article
       key={index}
-      className="flex flex-col min-w-[140px] w-[140px] items-start gap-2 snap-start flex-shrink-0"
+      className="flex flex-col min-w-[140px] w-[140px] items-start gap-2 flex-shrink-0"
+      draggable={false}
+      onDragStart={(e) => e.preventDefault()}
     >
       <div className="relative self-stretch w-full rounded aspect-[1.5] overflow-hidden">
         <Image
@@ -107,6 +109,8 @@ export const RecommendationSection = () => {
           width={140}
           height={93}
           className="object-cover w-full h-full"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
         />
       </div>
       <div className="inline-flex flex-col items-start relative flex-[0_0_auto]">

@@ -22,6 +22,7 @@ export const HorizontalSlider = ({
   // 마우스 드래그 시작
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollRef.current) return;
+    e.preventDefault(); // 기본 드래그 동작 방지
     setIsDragging(true);
     setStartX(e.pageX - scrollRef.current.offsetLeft);
     setScrollLeft(scrollRef.current.scrollLeft);
@@ -103,13 +104,14 @@ export const HorizontalSlider = ({
   return (
     <div
       ref={scrollRef}
-      className={`flex overflow-x-auto scrollbar-hide snap-x snap-mandatory select-none ${className} ${
+      className={`flex overflow-x-auto scrollbar-hide select-none ${className} ${
         isDragging ? 'cursor-grabbing' : 'cursor-grab'
       }`}
       style={{
         gap: `${gap}px`,
         scrollBehavior: isDragging ? "auto" : "smooth",
         WebkitOverflowScrolling: "touch",
+        touchAction: "pan-x", // 수평 스크롤만 허용
       }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
@@ -119,8 +121,11 @@ export const HorizontalSlider = ({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
+      onDragStart={(e) => e.preventDefault()} // 이미지 드래그 방지
     >
-      {children}
+      <div className="flex" style={{ gap: `${gap}px` }}>
+        {children}
+      </div>
     </div>
   );
 };
