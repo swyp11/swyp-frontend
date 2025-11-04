@@ -28,6 +28,7 @@ export const CalendarSelect = React.forwardRef<HTMLDivElement, CalendarSelectPro
       <div
         ref={ref}
         className={`select ${isActive ? "select-active" : ""} ${className}`}
+        style={{ justifyContent: 'center' }}
         onClick={onClick}
         role="button"
         tabIndex={0}
@@ -39,9 +40,8 @@ export const CalendarSelect = React.forwardRef<HTMLDivElement, CalendarSelectPro
       >
         <span>{value}</span>
         <Image
-          className="select-icon"
-          alt=""
-          src="/img/keyboard-arrow-down.svg"
+          src="/keyboard_arrow_down.svg"
+          alt="펼치기"
           width={24}
           height={24}
         />

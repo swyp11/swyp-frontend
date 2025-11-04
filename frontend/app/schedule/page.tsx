@@ -6,8 +6,6 @@ import { BottomNavigation } from "../../components/common/BottomNavigation";
 import { WeekCalendar } from "../../components/schedule/WeekCalendar";
 import { DayCalendar } from "../../components/schedule/DayCalendar";
 import { ViewSelector, CalendarView } from "../../components/schedule/ViewSelector";
-import { AddEventModal } from "../../components/schedule/AddEventModal";
-
 interface Event {
   id: string;
   title: string;
@@ -25,7 +23,6 @@ export default function SchedulePage() {
   const [currentYear, setCurrentYear] = useState(2024);
   const [selectedDate, setSelectedDate] = useState(10);
   const [calendarView, setCalendarView] = useState<CalendarView>("weekly");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
 
   // 샘플 이벤트 데이터 (월별 뷰용)
@@ -144,14 +141,6 @@ export default function SchedulePage() {
     setSelectedDate(currentDate.getDate());
   };
 
-  // 일정 추가 핸들러
-  const handleAddEvent = (eventData: Omit<Event, "id">) => {
-    const newEvent: Event = {
-      ...eventData,
-      id: Date.now().toString(),
-    };
-    setEvents([...events, newEvent]);
-  };
 
   // 월별 뷰용 이벤트 변환
   const getMonthlyEvents = () => {
@@ -270,7 +259,7 @@ export default function SchedulePage() {
   return (
     <div
       className="flex flex-col h-screen items-start relative bg-white mx-auto"
-      style={{ width: "var(--app-width)" }}
+      style={{ width: "var(--app-width)", position: "relative" }}
     >
       {/* Content Container - No overflow */}
       <div
@@ -464,8 +453,8 @@ export default function SchedulePage() {
 
       {/* Floating Add Button */}
       <button
-        onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-24 right-4 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg z-10"
+        onClick={() => router.push("/schedule/add")}
+        className="absolute bottom-24 right-4 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg z-10"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path
@@ -474,14 +463,6 @@ export default function SchedulePage() {
           />
         </svg>
       </button>
-
-      {/* Add Event Modal */}
-      <AddEventModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAddEvent={handleAddEvent}
-        selectedDate={new Date(currentYear, currentMonth - 1, selectedDate)}
-      />
 
       {/* Fixed Bottom Navigation */}
       <div
