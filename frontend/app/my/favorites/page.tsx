@@ -78,7 +78,7 @@ export default function FavoritesPage() {
       style={{ width: "var(--app-width)" }}
     >
       {/* Header */}
-      <div className="flex items-center px-4 py-4 border-b border-border-subtle">
+      <div className="flex items-center px-4 py-4 border-b border-[#f1f1f1]">
         <button
           onClick={() => router.back()}
           className="w-6 h-6 flex items-center justify-center"
@@ -104,17 +104,21 @@ export default function FavoritesPage() {
       </div>
 
       {/* Tab Bar */}
-      <div className="flex border-b border-border-subtle">
+      <div className="flex border-b border-[#f1f1f1]">
         {(["웨딩홀", "드레스"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 py-3 body-2 transition-colors ${activeTab === tab
-              ? "text-primary border-b-2 border-primary font-medium"
-              : "text-on-surface-subtle"
-              }`}
+            className={`flex-1 py-3 body-2 transition-colors relative ${
+              activeTab === tab
+                ? "text-primary font-medium"
+                : "text-on-surface-subtle"
+            }`}
           >
             {tab}
+            {activeTab === tab && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-[2px]" />
+            )}
           </button>
         ))}
       </div>
@@ -124,19 +128,19 @@ export default function FavoritesPage() {
         {favorites.map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-3 px-4 py-3 border-b border-border-subtle"
+            className="flex items-center gap-4 px-4 py-4 border-b border-[#f1f1f1] bg-white"
           >
             {/* Image */}
-            <div className="w-20 h-20 bg-surface-2 rounded-lg overflow-hidden shrink-0">
+            <div className="w-16 h-16 bg-surface-2 rounded-lg overflow-hidden shrink-0">
               {/* TODO: 실제 이미지로 교체 */}
-              <div className="w-full h-full flex items-center justify-center text-on-surface-subtlest">
+              <div className="w-full h-full flex items-center justify-center text-on-surface-subtlest text-xs">
                 이미지
               </div>
             </div>
 
             {/* Info */}
-            <div className="flex-1 min-w-0">
-              <h3 className="body-2-medium text-on-surface truncate">
+            <div className="flex-1 min-w-0 flex flex-col gap-1">
+              <h3 className="body-1-medium text-on-surface truncate">
                 {item.title}
               </h3>
               <p className="label-1 text-on-surface-subtle">{item.category}</p>
@@ -145,7 +149,7 @@ export default function FavoritesPage() {
             {/* Favorite Button */}
             <button
               onClick={() => toggleFavorite(item.id)}
-              className="w-10 h-10 flex items-center justify-center shrink-0"
+              className="p-2 flex items-center justify-center shrink-0"
               aria-label={item.isFavorite ? "찜 해제" : "찜하기"}
             >
               <svg
