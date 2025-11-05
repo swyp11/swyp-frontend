@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -112,6 +113,27 @@ export default function SignupPage() {
       className="bg-white flex flex-col justify-between h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
+      {/* Header */}
+      <div className="flex items-center px-4 py-4 border-b border-border-subtle">
+        <button
+          onClick={() => router.back()}
+          className="w-6 h-6 flex items-center justify-center"
+          aria-label="뒤로가기"
+        >
+          <Image
+            className="relative w-6 h-6"
+            alt=""
+            src="/img/arrow_back.svg"
+            width={24}
+            height={24}
+          />
+        </button>
+        <h1 className="flex-1 text-center body-2-medium text-on-surface">
+          회원가입
+        </h1>
+        <div className="w-6" /> {/* Spacer for centering */}
+      </div>
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col px-4 py-8 overflow-y-auto">
         {/* Title */}
