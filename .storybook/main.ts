@@ -1,5 +1,4 @@
 import type { StorybookConfig } from "@storybook/nextjs-vite";
-import path from 'path';
 
 const config: StorybookConfig = {
   stories: [
@@ -15,17 +14,15 @@ const config: StorybookConfig = {
   ],
   framework: {
     name: "@storybook/nextjs-vite",
-    options: {
-      nextConfigPath: '../next.config.ts',
-    }
+    options: {}
   },
   staticDirs: ['../public'],
   viteFinal: async (config) => {
     const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
     
-    // GitHub Pages 배포를 위한 base path 설정
+    // GitHub Pages 배포를 위한 base path 설정 - 상대 경로 사용
     if (process.env.GITHUB_PAGES === 'true') {
-      config.base = '/swyp-frontend/';
+      config.base = './';
       console.log('🔧 Storybook build config: GitHub Pages mode');
       console.log('   - config.base:', config.base);
     }

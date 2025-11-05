@@ -37,7 +37,7 @@ jobs:
           GITHUB_PAGES: true
           NODE_ENV: production
           STORYBOOK_GITHUB_PAGES: true
-          NEXT_PUBLIC_BASE_PATH: /swyp-frontend
+          NEXT_PUBLIC_BASE_PATH: ""
         run: npx storybook build --output-dir storybook-static --quiet
 
       - name: Create .nojekyll file
