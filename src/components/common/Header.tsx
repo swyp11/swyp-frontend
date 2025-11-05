@@ -28,7 +28,7 @@ export const Header = () => {
           <Image
             className="relative w-6 h-6"
             alt=""
-            src="/img/notifications.svg"
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/img/notifications.svg`}
             width={24}
             height={24}
           />

@@ -48,7 +48,7 @@ export const GNB = React.forwardRef<HTMLElement, GNBProps>(
             <Image
               className="gnb-icon"
               alt=""
-              src="/img/notifications.svg"
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/img/notifications.svg`}
               width={24}
               height={24}
             />

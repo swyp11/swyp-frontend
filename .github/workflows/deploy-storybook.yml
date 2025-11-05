@@ -37,11 +37,17 @@ jobs:
           GITHUB_PAGES: true
           NODE_ENV: production
           STORYBOOK_GITHUB_PAGES: true
-          NEXT_PUBLIC_BASE_PATH: ""
+          NEXT_PUBLIC_BASE_PATH: "/swyp-frontend"
         run: npx storybook build --output-dir storybook-static --quiet
 
       - name: Create .nojekyll file
         run: echo "" > ./storybook-static/.nojekyll
+
+      - name: Copy static files to base path
+        run: |
+          mkdir -p ./storybook-static/swyp-frontend
+          cp -r ./storybook-static/img ./storybook-static/swyp-frontend/
+          echo "✅ Static files copied to /swyp-frontend/ path"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
