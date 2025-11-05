@@ -1,4 +1,5 @@
 import type { StorybookConfig } from "@storybook/nextjs-vite";
+import path from 'path';
 
 const config: StorybookConfig = {
   stories: [
@@ -37,6 +38,13 @@ const config: StorybookConfig = {
       config.define = {};
     }
     config.define['process.env.NEXT_PUBLIC_BASE_PATH'] = JSON.stringify(basePath);
+    config.define['process.env.__NEXT_ROUTER_BASEPATH'] = JSON.stringify(basePath);
+    config.define['process.env.__NEXT_IMAGE_OPTS'] = JSON.stringify({
+      deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+      imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+      path: basePath + '/_next/image',
+      loader: 'default',
+    });
     
     console.log('🔧 Environment variables:');
     console.log('   - GITHUB_PAGES:', process.env.GITHUB_PAGES);

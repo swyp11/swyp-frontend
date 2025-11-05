@@ -4,6 +4,20 @@ import { Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "../src/styles/globals.css";
 import { NavigationProvider } from "../src/contexts/NavigationContext";
+import NextImage from "next/image";
+
+// Next.js Image에 basePath 적용
+const OriginalNextImage = NextImage;
+Object.defineProperty(NextImage, 'default', {
+  configurable: true,
+  value: (props: any) => {
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+    const src = typeof props.src === 'string' && props.src.startsWith('/')
+      ? `${basePath}${props.src}`
+      : props.src;
+    return <OriginalNextImage {...props} src={src} />;
+  },
+});
 
 // 폰트 설정 (layout.tsx와 동일)
 const roboto = Roboto({
