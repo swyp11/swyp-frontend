@@ -65,7 +65,7 @@ const preview: Preview = {
                 query: {},
             },
             router: {
-                basePath: process.env.STORYBOOK_GITHUB_PAGES === 'true' ? '/swyp-frontend' : '',
+                basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
             },
         },
 
