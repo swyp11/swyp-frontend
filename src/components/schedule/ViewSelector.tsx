@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 export type CalendarView = "monthly" | "weekly" | "daily";
 
@@ -56,7 +57,7 @@ export const ViewSelector: React.FC<ViewSelectorProps> = ({
         </span>
         <Image
           alt=""
-          src="/img/keyboard-arrow-down.svg"
+          src={getAssetPath("/img/keyboard-arrow-down.svg")}
           width={24}
           height={24}
         />

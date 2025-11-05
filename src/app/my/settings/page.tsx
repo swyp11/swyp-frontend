@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { BackHeader } from "@/components/common/BackHeader";
+import { getAssetPath } from "@/utils/assetPath";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function SettingsPage() {
         <Image
           className="relative w-6 h-6"
           alt=""
-          src="/img/feed.svg"
+          src={getAssetPath("/img/feed.svg")}
           width={24}
           height={24}
         />
@@ -32,7 +33,7 @@ export default function SettingsPage() {
         <Image
           className="relative w-6 h-6"
           alt=""
-          src="/img/policy.svg"
+          src={getAssetPath("/img/policy.svg")}
           width={24}
           height={24}
         />
@@ -48,7 +49,7 @@ export default function SettingsPage() {
         <Image
           className="relative w-6 h-6"
           alt=""
-          src="/img/sentiment-dissatisfied.svg"
+          src={getAssetPath("/img/sentiment-dissatisfied.svg")}
           width={24}
           height={24}
         />
@@ -61,7 +62,7 @@ export default function SettingsPage() {
         <Image
           className="relative w-6 h-6"
           alt=""
-          src="/img/logout.svg"
+          src={getAssetPath("/img/logout.svg")}
           width={24}
           height={24}
         />

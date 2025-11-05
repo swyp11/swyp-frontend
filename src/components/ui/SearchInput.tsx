@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 export interface SearchInputProps {
   /** Current search value */
@@ -23,7 +24,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         <Image
           className="relative w-6 h-6"
           alt="Search"
-          src="/img/search.svg"
+          src={getAssetPath("/img/search.svg")}
           width={24}
           height={24}
         />

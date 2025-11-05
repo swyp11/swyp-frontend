@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 export interface CalendarSelectProps {
   /** Selected menu text */
@@ -40,7 +41,7 @@ export const CalendarSelect = React.forwardRef<HTMLDivElement, CalendarSelectPro
       >
         <span>{value}</span>
         <Image
-          src="/img/keyboard-arrow-down.svg"
+          src={getAssetPath("/img/keyboard-arrow-down.svg")}
           alt="펼치기"
           width={24}
           height={24}

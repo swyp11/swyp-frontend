@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { BackHeader } from "@/components/common/BackHeader";
+import { getAssetPath } from "@/utils/assetPath";
 
 interface FavoriteItem {
   id: number;
@@ -129,7 +130,7 @@ export default function FavoritesPage() {
               <Image
                 className="relative w-6 h-6"
                 alt=""
-                src="/img/favorite_color.svg"
+                src={getAssetPath("/img/favorite_color.svg")}
                 width={24}
                 height={24}
               />

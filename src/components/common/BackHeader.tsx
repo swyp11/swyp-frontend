@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { getAssetPath } from "@/utils/assetPath";
 
 interface BackHeaderProps {
   title: string;
@@ -35,7 +36,7 @@ export const BackHeader = ({
         <Image
           className="relative w-6 h-6"
           alt=""
-          src="/img/arrow_back.svg"
+          src={getAssetPath("/img/arrow_back.svg")}
           width={24}
           height={24}
         />

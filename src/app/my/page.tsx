@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 export default function MyPage() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function MyPage() {
         <Image
           className="relative w-6 h-6"
           alt=""
-          src="/img/settings.svg"
+          src={getAssetPath("/img/settings.svg")}
           width={24}
           height={24}
         />
@@ -31,7 +32,7 @@ export default function MyPage() {
         <Image
           className="relative w-6 h-6"
           alt=""
-          src="/img/favorite_border.svg"
+          src={getAssetPath("/img/favorite_border.svg")}
           width={24}
           height={24}
         />
@@ -70,7 +71,7 @@ export default function MyPage() {
           <Image
             className="relative w-6 h-6 rotate-180"
             alt=""
-            src="/img/chevron_backward.svg"
+            src={getAssetPath("/img/chevron_backward.svg")}
             width={24}
             height={24}
           />
@@ -95,7 +96,7 @@ export default function MyPage() {
             <Image
               className="relative w-6 h-6 rotate-180"
               alt=""
-              src="/img/chevron_backward.svg"
+              src={getAssetPath("/img/chevron_backward.svg")}
               width={24}
               height={24}
             />

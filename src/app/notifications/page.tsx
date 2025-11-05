@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 interface Notification {
   id: number;
@@ -43,7 +44,7 @@ export default function NotificationsPage() {
             <Image
               className="relative w-6 h-6"
               alt=""
-              src="/img/arrow_back.svg"
+              src={getAssetPath("/img/arrow_back.svg")}
               width={24}
               height={24}
             />
@@ -55,7 +56,7 @@ export default function NotificationsPage() {
             <Image
               className="relative w-6 h-6"
               alt=""
-              src="/img/arrow_back.svg"
+              src={getAssetPath("/img/arrow_back.svg")}
               width={24}
               height={24}
             />

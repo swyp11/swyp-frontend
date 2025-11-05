@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 export const MainContentSection = () => {
   return (
@@ -22,7 +23,7 @@ export const MainContentSection = () => {
           <Image
             className="relative w-[50px] h-[50px] mix-blend-multiply object-cover"
             alt="드레스 추천 아이콘"
-            src="/img/rectangle-9.png"
+            src={getAssetPath("/img/rectangle-9.png")}
             width={50}
             height={50}
           />

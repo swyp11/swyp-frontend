@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 export default function ReviewsPage() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function ReviewsPage() {
           <Image
             className="relative w-6 h-6"
             alt=""
-            src="/img/arrow_back.svg"
+            src={getAssetPath("/img/arrow_back.svg")}
             width={24}
             height={24}
           />
