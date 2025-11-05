@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarSelect } from "../../../components/ui/CalendarSelect";
+import Image from "next/image";
 
 export default function AddSchedulePage() {
   const router = useRouter();

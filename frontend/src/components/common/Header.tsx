@@ -3,8 +3,11 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const Header = () => {
+  const router = useRouter();
+
   return (
     <header className="flex items-center relative self-stretch w-full flex-[0_0_auto] bg-surface-1">
       <div className="flex items-center gap-2.5 p-4 relative flex-1 grow bg-white">
@@ -20,6 +23,7 @@ export const Header = () => {
           type="button"
           aria-label="Notifications"
           className="relative w-6 h-6"
+          onClick={() => router.push("/notifications")}
         >
           <Image
             className="relative w-6 h-6"
