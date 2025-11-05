@@ -4,33 +4,35 @@ import { Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "../src/styles/globals.css";
 import { NavigationProvider } from "../src/contexts/NavigationContext";
+import { Header } from "../src/components/common/Header";
+import { BottomNavigation } from "../src/components/common/BottomNavigation";
 
 // 폰트 설정 (layout.tsx와 동일)
 const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
+    variable: "--font-roboto",
+    subsets: ["latin"],
+    weight: ["400", "500", "700"],
 });
 
 const pretendard = localFont({
-  src: [
-    {
-      path: "../node_modules/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../node_modules/pretendard/dist/web/static/woff2/Pretendard-Medium.woff2",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "../node_modules/pretendard/dist/web/static/woff2/Pretendard-SemiBold.woff2",
-      weight: "600",
-      style: "normal",
-    },
-  ],
-  variable: "--font-pretendard",
+    src: [
+        {
+            path: "../node_modules/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2",
+            weight: "400",
+            style: "normal",
+        },
+        {
+            path: "../node_modules/pretendard/dist/web/static/woff2/Pretendard-Medium.woff2",
+            weight: "500",
+            style: "normal",
+        },
+        {
+            path: "../node_modules/pretendard/dist/web/static/woff2/Pretendard-SemiBold.woff2",
+            weight: "600",
+            style: "normal",
+        },
+    ],
+    variable: "--font-pretendard",
 });
 
 // Next.js navigation 모킹
@@ -179,9 +181,32 @@ const preview: Preview = {
     decorators: [
         (Story, context) => {
             const appWidth = context.globals.appWidth || '390px';
+            const storyTitle = context.title || '';
+
+            // Header와 Bottom Navigation을 숨길 페이지 목록 (context.title 기반)
+            const hideNavigationPages = [
+                'Pages/Auth/LoginPage',
+                'Pages/Auth/SignupPage',
+                'Pages/Auth/SignupStep2Page',
+                'Pages/Auth/SignupCompletePage',
+                'Pages/Schedule/AddSchedulePage',
+            ];
+
+            // Header만 숨길 페이지 목록 (BackHeader를 사용하는 페이지)
+            const hideHeaderOnlyPages = [
+                'Pages/SettingsPage',
+                'Pages/FavoritesPage',
+                'Pages/ReviewsPage',
+            ];
+
+            const shouldHideHeader = hideNavigationPages.includes(storyTitle) || hideHeaderOnlyPages.includes(storyTitle);
+            const shouldHideBottomNav = hideNavigationPages.includes(storyTitle);
+
+            // 페이지 스토리인지 확인
+            const isPageStory = storyTitle.startsWith('Pages/');
 
             return (
-                <div 
+                <div
                     className={`${roboto.variable} ${pretendard.variable} antialiased`}
                     style={{
                         '--app-width': appWidth,
@@ -194,9 +219,41 @@ const preview: Preview = {
                         backgroundColor: '#f5f5f5',
                     } as React.CSSProperties}
                 >
-                    <div style={{ width: appWidth, maxWidth: '100%' }}>
+                    <div
+                        className="relative flex flex-col h-screen"
+                        style={{ width: appWidth, maxWidth: '100%' }}
+                    >
                         <NavigationProvider>
-                            <Story />
+                            {/* Fixed Header - Pages 스토리에서만 조건부 렌더링 */}
+                            {isPageStory && !shouldHideHeader && (
+                                <div
+                                    className="fixed top-0 left-1/2 -translate-x-1/2 z-50"
+                                    style={{ width: appWidth }}
+                                >
+                                    <Header />
+                                </div>
+                            )}
+
+                            {/* Scrollable Content */}
+                            <div
+                                className="flex-1 w-full overflow-y-auto"
+                                style={{
+                                    paddingTop: isPageStory && !shouldHideHeader ? '64px' : '0',
+                                    paddingBottom: isPageStory && !shouldHideBottomNav ? '64px' : '0'
+                                }}
+                            >
+                                <Story />
+                            </div>
+
+                            {/* Fixed Bottom Navigation - Pages 스토리에서만 조건부 렌더링 */}
+                            {isPageStory && !shouldHideBottomNav && (
+                                <div
+                                    className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50"
+                                    style={{ width: appWidth }}
+                                >
+                                    <BottomNavigation />
+                                </div>
+                            )}
                         </NavigationProvider>
                     </div>
                 </div>
