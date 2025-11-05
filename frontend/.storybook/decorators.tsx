@@ -9,23 +9,22 @@ import { BottomNavigation } from "../src/components/common/BottomNavigation";
 export const withAppLayout = (Story: React.ComponentType) => {
   return (
     <div
-      className="flex flex-col h-screen items-start relative bg-white mx-auto"
-      style={{ width: "var(--app-width)" }}
+      className="flex flex-col h-screen items-start relative bg-white"
+      style={{ width: "var(--app-width)", margin: "0 auto" }}
     >
       {/* Fixed Header */}
       <div
-        className="fixed top-0 left-1/2 -translate-x-1/2 z-50"
-        style={{ width: "var(--app-width)" }}
+        className="absolute top-0 left-0 right-0 z-50"
       >
         <Header />
       </div>
 
       {/* Scrollable Content */}
-      <div 
-        className="flex-1 w-full overflow-y-auto" 
-        style={{ 
-          paddingTop: "var(--header-height)", 
-          paddingBottom: "var(--footer-height)" 
+      <div
+        className="flex-1 w-full overflow-y-auto"
+        style={{
+          paddingTop: "var(--header-height)",
+          paddingBottom: "var(--footer-height)"
         }}
       >
         <Story />
@@ -33,8 +32,7 @@ export const withAppLayout = (Story: React.ComponentType) => {
 
       {/* Fixed Bottom Navigation */}
       <div
-        className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50"
-        style={{ width: "var(--app-width)" }}
+        className="absolute bottom-0 left-0 right-0 z-50"
       >
         <BottomNavigation />
       </div>
