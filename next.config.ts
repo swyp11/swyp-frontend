@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const isGithubPages = process.env.GITHUB_PAGES === 'true';
-const basePath = isGithubPages ? '/swyp-frontend' : '';
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || (isGithubPages ? '/swyp-frontend' : '');
+
+console.log('🔧 next.config.ts - basePath:', basePath);
+console.log('🔧 next.config.ts - NEXT_PUBLIC_BASE_PATH:', process.env.NEXT_PUBLIC_BASE_PATH);
+console.log('🔧 next.config.ts - GITHUB_PAGES:', process.env.GITHUB_PAGES);
 
 const nextConfig: NextConfig = {
   basePath: basePath,
