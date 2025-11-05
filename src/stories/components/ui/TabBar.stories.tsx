@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { TabBar } from '@/components/ui/TabBar';
 import { useState } from 'react';
+import { getAssetPath } from '@/utils/assetPath';
 
 const meta = {
   title: 'Components/UI/TabBar',
@@ -15,10 +16,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const sampleTabs = [
-  { id: 'home', icon: '/img/home.svg', label: '홈', href: '/main' },
-  { id: 'style', icon: '/img/face-retouching-natural.svg', label: '스타일', href: '/recommend' },
-  { id: 'calendar', icon: '/img/calendar-month.svg', label: '캘린더', href: '/schedule' },
-  { id: 'my', icon: '/img/person.svg', label: '마이', href: '/my' },
+  { id: 'home', icon: getAssetPath('/img/home.svg'), label: '홈', href: '/main' },
+  { id: 'style', icon: getAssetPath('/img/face-retouching-natural.svg'), label: '스타일', href: '/recommend' },
+  { id: 'calendar', icon: getAssetPath('/img/calendar-month.svg'), label: '캘린더', href: '/schedule' },
+  { id: 'my', icon: getAssetPath('/img/person.svg'), label: '마이', href: '/my' },
 ];
 
 export const Default: Story = {
