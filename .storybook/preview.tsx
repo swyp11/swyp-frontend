@@ -68,7 +68,7 @@ const preview: Preview = {
                 query: {},
             },
             router: {
-                basePath: '',
+                basePath: process.env.STORYBOOK_GITHUB_PAGES === 'true' ? '/swyp-frontend' : '',
             },
             image: {
                 unoptimized: true,
