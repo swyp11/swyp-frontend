@@ -18,38 +18,21 @@ const config: StorybookConfig = {
   },
   staticDirs: ['../public'],
   viteFinal: async (config) => {
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+    // GitHub Pages 상대 경로 배포 설정
+    config.base = './';
     
-    // GitHub Pages 배포를 위한 base path 설정 - 상대 경로 사용
-    if (process.env.GITHUB_PAGES === 'true') {
-      config.base = './';
-      console.log('🔧 Storybook build config: GitHub Pages mode');
-      console.log('   - config.base:', config.base);
-    }
-    
-    // public 폴더의 정적 파일 처리
     if (!config.publicDir) {
       config.publicDir = '../public';
     }
     
-    // 환경 변수를 빌드된 번들에 주입
     if (!config.define) {
       config.define = {};
     }
-    config.define['process.env.NEXT_PUBLIC_BASE_PATH'] = JSON.stringify(basePath);
-    config.define['process.env.__NEXT_ROUTER_BASEPATH'] = JSON.stringify(basePath);
-    config.define['process.env.__NEXT_IMAGE_OPTS'] = JSON.stringify({
-      deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-      imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-      path: basePath + '/_next/image',
-      loader: 'default',
-    });
+    config.define['process.env.NEXT_PUBLIC_BASE_PATH'] = JSON.stringify('');
     
-    console.log('🔧 Environment variables:');
-    console.log('   - GITHUB_PAGES:', process.env.GITHUB_PAGES);
-    console.log('   - NEXT_PUBLIC_BASE_PATH:', basePath);
+    console.log('🔧 Storybook build config:');
+    console.log('   - config.base:', config.base);
     console.log('   - config.publicDir:', config.publicDir);
-    console.log('   - Injected to bundle:', JSON.stringify(basePath));
     
     return config;
   }

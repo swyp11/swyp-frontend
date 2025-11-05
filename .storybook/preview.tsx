@@ -50,7 +50,7 @@ const mockRouter = {
 };
 
 // 환경 변수 확인용 로그
-console.log('🔧 Storybook Preview - NEXT_PUBLIC_BASE_PATH:', process.env.NEXT_PUBLIC_BASE_PATH);
+console.log('🔧 Storybook Preview - NEXT_PUBLIC_BASE_PATH:', '');
 
 const preview: Preview = {
     parameters: {
@@ -68,7 +68,7 @@ const preview: Preview = {
                 query: {},
             },
             router: {
-                basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+                basePath: '',
             },
             image: {
                 unoptimized: true,
