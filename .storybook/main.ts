@@ -20,8 +20,14 @@ const config: StorybookConfig = {
   viteFinal: async (config) => {
     // GitHub Pages 배포를 위한 base path 설정
     if (process.env.GITHUB_PAGES === 'true') {
-      config.base = './';
+      config.base = '/swyp-frontend/';
     }
+    
+    // public 폴더의 정적 파일 처리
+    if (!config.publicDir) {
+      config.publicDir = '../public';
+    }
+    
     return config;
   }
 };
