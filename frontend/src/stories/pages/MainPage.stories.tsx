@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import MainPage from '@/app/main/page';
+import { withAppLayout } from '@storybook/decorators';
 
 const meta = {
   title: 'Pages/MainPage',
   component: MainPage,
+  decorators: [withAppLayout],
   parameters: {
     layout: 'fullscreen',
     nextjs: {

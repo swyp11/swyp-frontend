@@ -14,7 +14,7 @@ export const FeaturedItemsSection = () => {
         value={searchQuery}
         onChange={setSearchQuery}
         placeholder="검색어를 입력해보세요."
-        className="w-[343px]"
+        className="w-full max-w-[343px] md:max-w-full"
       />
 
       <div className="inline-flex items-start gap-2 relative flex-[0_0_auto]">

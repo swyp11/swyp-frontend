@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import NotificationsPage from '@/app/notifications/page';
+import { withAppLayout } from '@storybook/decorators';
 
 const meta = {
   title: 'Pages/NotificationsPage',
   component: NotificationsPage,
+  decorators: [withAppLayout],
   parameters: {
     layout: 'fullscreen',
     nextjs: {

@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import RecommendPage from '@/app/recommend/page';
+import { withAppLayout } from '@storybook/decorators';
 
 const meta = {
   title: 'Pages/RecommendPage',
   component: RecommendPage,
+  decorators: [withAppLayout],
   parameters: {
     layout: 'fullscreen',
     nextjs: {

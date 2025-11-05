@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import SignupStep2Page from '@/app/signup/step2/page';
+import { withAppLayout } from '@storybook/decorators';
 
 const meta = {
   title: 'Pages/Auth/SignupStep2Page',
   component: SignupStep2Page,
+  decorators: [withAppLayout],
   parameters: {
     layout: 'fullscreen',
     nextjs: {

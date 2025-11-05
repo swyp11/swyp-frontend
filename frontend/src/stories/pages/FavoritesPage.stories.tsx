@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import FavoritesPage from '@/app/my/favorites/page';
+import { withAppLayout } from '@storybook/decorators';
 
 const meta = {
   title: 'Pages/FavoritesPage',
   component: FavoritesPage,
+  decorators: [withAppLayout],
   parameters: {
     layout: 'fullscreen',
     nextjs: {

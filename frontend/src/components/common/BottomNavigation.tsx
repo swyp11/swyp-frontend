@@ -24,11 +24,11 @@ export const BottomNavigation = () => {
       id: "home",
       icon: (
         <Image
-          className="relative w-6 h-6"
+          className="relative w-full h-full"
           alt=""
           src={activeTab === "home" ? "/img/home-active.svg" : "/img/home.svg"}
-          width={24}
-          height={24}
+          width={28}
+          height={28}
         />
       ),
       label: "홈",
@@ -39,11 +39,11 @@ export const BottomNavigation = () => {
       id: "style",
       icon: (
         <Image
-          className="relative w-6 h-6"
+          className="relative w-full h-full"
           alt=""
           src={activeTab === "style" ? "/img/face-retouching-natural-active.svg" : "/img/face-retouching-natural.svg"}
-          width={24}
-          height={24}
+          width={28}
+          height={28}
         />
       ),
       label: "스타일",
@@ -54,11 +54,11 @@ export const BottomNavigation = () => {
       id: "schedule",
       icon: (
         <Image
-          className="relative w-6 h-6"
+          className="relative w-full h-full"
           alt=""
           src={activeTab === "schedule" ? "/img/calendar-month-active.svg" : "/img/calendar-month.svg"}
-          width={24}
-          height={24}
+          width={28}
+          height={28}
         />
       ),
       label: "일정",
@@ -69,11 +69,11 @@ export const BottomNavigation = () => {
       id: "my",
       icon: (
         <Image
-          className="relative w-6 h-6"
+          className="relative w-full h-full"
           alt=""
           src={activeTab === "my" ? "/img/person-active.svg" : "/img/person.svg"}
-          width={24}
-          height={24}
+          width={28}
+          height={28}
         />
       ),
       label: "마이",
@@ -102,13 +102,13 @@ export const BottomNavigation = () => {
           aria-label={tab.label}
           aria-current={tab.isActive ? "page" : undefined}
         >
-          <div className="relative w-5 h-5 flex-shrink-0">
+          <div className="relative w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 flex-shrink-0">
             {tab.icon}
           </div>
 
           <span
             className={`w-fit label-2 font-[number:var(--label-2-font-weight)] ${tab.isActive ? "text-primary" : "text-on-surface"
-              } text-[length:var(--label-2-font-size)] tracking-[var(--label-2-letter-spacing)] leading-[var(--label-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--label-2-font-style)] text-xs`}
+              } text-[length:var(--label-2-font-size)] md:text-sm lg:text-base tracking-[var(--label-2-letter-spacing)] leading-[var(--label-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--label-2-font-style)]`}
           >
             {tab.label}
           </span>

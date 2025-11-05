@@ -98,7 +98,7 @@ export const RecommendationSection = () => {
   const renderShopCard = (shop: ShopCard, index: number) => (
     <article
       key={index}
-      className="flex flex-col min-w-[140px] w-[140px] items-start gap-2 flex-shrink-0"
+      className="flex flex-col min-w-[140px] w-[140px] md:min-w-[180px] md:w-[180px] lg:min-w-[220px] lg:w-[220px] items-start gap-2 flex-shrink-0"
       draggable={false}
       onDragStart={(e) => e.preventDefault()}
     >
@@ -106,8 +106,8 @@ export const RecommendationSection = () => {
         <Image
           src={shop.image}
           alt={shop.title}
-          width={140}
-          height={93}
+          width={220}
+          height={147}
           className="object-cover w-full h-full"
           draggable={false}
           onDragStart={(e) => e.preventDefault()}

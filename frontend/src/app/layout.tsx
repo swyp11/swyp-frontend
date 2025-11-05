@@ -51,9 +51,9 @@ export default function RootLayout({
         className={`${GeistSans.variable} ${GeistMono.variable} ${roboto.variable} ${pretendard.variable} antialiased`}
       >
         <NavigationProvider>
-          <div
+            <div
             className="flex flex-col h-screen items-start relative bg-white mx-auto"
-            style={{ width: "var(--app-width)" }}
+            style={{ width: "var(--app-width)", maxWidth: "100vw" }}
           >
             {/* Fixed Header */}
             <div

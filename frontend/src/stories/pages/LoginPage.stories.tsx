@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import LoginPage from '@/app/login/page';
+import { withAppLayout } from '@storybook/decorators';
 
 const meta = {
   title: 'Pages/Auth/LoginPage',
   component: LoginPage,
+  decorators: [withAppLayout],
   parameters: {
     layout: 'fullscreen',
     nextjs: {

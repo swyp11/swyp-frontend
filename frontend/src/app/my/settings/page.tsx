@@ -140,7 +140,7 @@ export default function SettingsPage() {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div
             className="bg-white rounded-lg p-6 mx-4"
-            style={{ maxWidth: "320px", width: "100%" }}
+            style={{ maxWidth: "min(320px, 90vw)", width: "100%" }}
           >
             <p className="body-2 text-on-surface text-center mb-6">
               정말 로그아웃 하시겠습니까?
@@ -168,7 +168,7 @@ export default function SettingsPage() {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div
             className="bg-white rounded-lg p-6 mx-4"
-            style={{ maxWidth: "320px", width: "100%" }}
+            style={{ maxWidth: "min(320px, 90vw)", width: "100%" }}
           >
             <p className="body-2 text-on-surface text-center mb-6">
               정말 회원탈퇴 하시겠습니까?

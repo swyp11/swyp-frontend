@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import AddSchedulePage from '@/app/schedule/add/page';
+import { withAppLayout } from '@storybook/decorators';
 
 const meta = {
   title: 'Pages/Schedule/AddSchedulePage',
   component: AddSchedulePage,
+  decorators: [withAppLayout],
   parameters: {
     layout: 'fullscreen',
     nextjs: {
