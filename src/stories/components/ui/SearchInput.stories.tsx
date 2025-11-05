@@ -15,15 +15,16 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    value: '',
     placeholder: '검색어를 입력하세요',
-    onSearch: (value) => console.log('Search:', value),
+    onChange: (value) => console.log('Search:', value),
   },
 };
 
 export const WithValue: Story = {
   args: {
-    placeholder: '검색어를 입력하세요',
     value: '드레스',
-    onSearch: (value) => console.log('Search:', value),
+    placeholder: '검색어를 입력하세요',
+    onChange: (value) => console.log('Search:', value),
   },
 };

@@ -53,6 +53,11 @@ export const LongText: Story = {
 };
 
 export const AllPositions: Story = {
+  args: {
+    text: '툴팁 텍스트',
+    position: 'top',
+    showArrow: true,
+  },
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '100px', padding: '100px' }}>
       <Tooltip text="Top" position="top" />
