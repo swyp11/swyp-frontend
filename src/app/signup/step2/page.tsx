@@ -55,14 +55,14 @@ export default function SignupStep2Page() {
       <BackHeader title="회원가입" onBack={handleBack} />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col px-4 py-8 gap-6 overflow-y-auto">
+      <div className="flex-1 flex flex-col px-4 pt-6 overflow-y-auto">
         {/* Title */}
-        <div>
+        <div className="mb-6">
           <h1 className="title-1 text-on-surface">추가정보를 입력해주세요</h1>
         </div>
 
         {/* Form Fields */}
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
           {/* Nickname Field (Required) */}
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-1">
@@ -173,7 +173,7 @@ export default function SignupStep2Page() {
       </div>
 
       {/* Complete Button */}
-      <div className="px-4 pb-8">
+      <div className="px-4 py-4 border-t border-[#f1f1f1]">
         <button
           onClick={handleComplete}
           disabled={!isFormValid}

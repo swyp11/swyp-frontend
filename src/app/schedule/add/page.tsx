@@ -38,14 +38,11 @@ export default function AddSchedulePage() {
 
   return (
     <div
-      className="flex flex-col h-screen bg-white"
+      className="flex flex-col h-full bg-white"
       style={{ width: "var(--app-width)", maxWidth: "var(--app-width)", margin: "0 auto" }}
     >
-      {/* System Bar */}
-      <div className="h-[44px] shrink-0 bg-white" />
-
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-[13px] border-b border-[#f1f1f1]">
+      <div className="flex items-center justify-between px-4 py-[13px] border-b border-[#f1f1f1] shrink-0">
         <button
           onClick={() => router.back()}
           className="w-10 h-10 flex items-center justify-center"
@@ -63,7 +60,7 @@ export default function AddSchedulePage() {
       </div>
 
       {/* Form Content */}
-      <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
+      <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
         <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
           {/* 날짜 섹션 */}
           <div className="space-y-1">
@@ -139,7 +136,7 @@ export default function AddSchedulePage() {
         </div>
 
         {/* 완료 버튼 */}
-        <div className="p-4 border-t border-[#f1f1f1]">
+        <div className="p-4 border-t border-[#f1f1f1] shrink-0">
           <button
             type="submit"
             className="w-full h-11 bg-primary rounded-sm flex items-center justify-center"

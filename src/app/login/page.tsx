@@ -19,18 +19,18 @@ export default function LoginPage() {
 
   return (
     <div
-      className="bg-white flex flex-col justify-between h-screen mx-auto"
+      className="bg-white flex flex-col h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Logo */}
-        <div className="flex items-center justify-center py-6">
+        <div className="flex items-center justify-center mb-8">
           <h1 className="headline-1 text-primary">LOGO</h1>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleLogin} className="flex flex-col gap-2 w-full">
+        <form onSubmit={handleLogin} className="flex flex-col gap-2 w-full mb-4">
           {/* Username Field */}
           <input
             type="text"
@@ -93,7 +93,7 @@ export default function LoginPage() {
       </div>
 
       {/* Footer Links */}
-      <div className="flex items-center justify-center gap-1 px-4 py-8 label-1 text-on-surface-subtle">
+      <div className="flex items-center justify-center gap-1 px-4 py-4 label-1 text-on-surface-subtle">
         <a href="/forgot-password" className="underline">
           비밀번호 찾기
         </a>

@@ -25,7 +25,7 @@ export default function SignupCompletePage() {
       style={{ width: "var(--app-width)" }}
     >
       {/* Main Content - Centered */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-6 min-h-0">
         {/* Logo */}
         <div className="headline-1 text-primary">LOGO</div>
 
@@ -36,7 +36,7 @@ export default function SignupCompletePage() {
       </div>
 
       {/* Bottom Buttons */}
-      <div className="flex flex-col gap-2 px-4 pb-8">
+      <div className="flex flex-col gap-2 px-4 pb-8 border-t border-[#f1f1f1] pt-4 shrink-0">
         {/* Home Button */}
         <button onClick={handleGoHome} className="btn btn-primary w-full">
           홈으로 이동하기

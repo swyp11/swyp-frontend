@@ -110,15 +110,15 @@ export default function SignupPage() {
 
   return (
     <div
-      className="bg-white flex flex-col justify-between h-screen mx-auto"
+      className="bg-white flex flex-col h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
       <BackHeader title="회원가입" />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col px-4 py-8 overflow-y-auto">
+      <div className="flex-1 flex flex-col px-4 pt-6 overflow-y-auto">
         {/* Title */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="title-1 text-on-surface">
             회원가입을 위해
             <br />
@@ -127,7 +127,7 @@ export default function SignupPage() {
         </div>
 
         {/* Form */}
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
           {/* Username Field with Check Button */}
           <div className="flex flex-col gap-1.5">
             <label className="body-3 font-medium text-secondary">아이디</label>
@@ -215,7 +215,7 @@ export default function SignupPage() {
       </div>
 
       {/* Next Button */}
-      <div className="px-4 pb-8">
+      <div className="px-4 py-4 border-t border-[#f1f1f1]">
         <button
           onClick={handleNext}
           disabled={!isFormValid}
