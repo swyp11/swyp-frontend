@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { BackHeader } from "@/components/common/BackHeader";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -86,26 +87,7 @@ export default function SettingsPage() {
 
   return (
     <>
-      {/* Header */}
-      <div className="flex items-center px-4 py-4 border-b border-border-subtle">
-        <button
-          onClick={() => router.back()}
-          className="w-6 h-6 flex items-center justify-center"
-          aria-label="뒤로가기"
-        >
-          <Image
-            className="relative w-6 h-6"
-            alt=""
-            src="/img/arrow_back.svg"
-            width={24}
-            height={24}
-          />
-        </button>
-        <h1 className="flex-1 text-center body-2-medium text-on-surface">
-          설정
-        </h1>
-        <div className="w-6" /> {/* Spacer for centering */}
-      </div>
+      <BackHeader title="설정" />
 
       {/* Settings List */}
       <div className="flex flex-col gap-6 px-4 py-6">

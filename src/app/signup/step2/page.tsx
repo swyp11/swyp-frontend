@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { BackHeader } from "@/components/common/BackHeader";
 
 type Gender = "groom" | "bride" | null;
 
@@ -51,23 +52,10 @@ export default function SignupStep2Page() {
       className="bg-white flex flex-col h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
+      <BackHeader title="회원가입" onBack={handleBack} />
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col px-4 py-8 gap-6 overflow-y-auto">
-        {/* Back Button */}
-        <button
-          onClick={handleBack}
-          className="w-6 h-6 flex items-center justify-center shrink-0"
-          aria-label="뒤로가기"
-        >
-          <Image
-            className="relative w-6 h-6"
-            alt=""
-            src="/img/arrow_back.svg"
-            width={24}
-            height={24}
-          />
-        </button>
-
         {/* Title */}
         <div>
           <h1 className="title-1 text-on-surface">추가정보를 입력해주세요</h1>
