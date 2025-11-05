@@ -21,12 +21,19 @@ const config: StorybookConfig = {
     // GitHub Pages 배포를 위한 base path 설정
     if (process.env.GITHUB_PAGES === 'true') {
       config.base = '/swyp-frontend/';
+      console.log('🔧 Storybook build config: GitHub Pages mode');
+      console.log('   - config.base:', config.base);
     }
     
     // public 폴더의 정적 파일 처리
     if (!config.publicDir) {
       config.publicDir = '../public';
     }
+    
+    console.log('🔧 Environment variables:');
+    console.log('   - GITHUB_PAGES:', process.env.GITHUB_PAGES);
+    console.log('   - NEXT_PUBLIC_BASE_PATH:', process.env.NEXT_PUBLIC_BASE_PATH);
+    console.log('   - config.publicDir:', config.publicDir);
     
     return config;
   }
