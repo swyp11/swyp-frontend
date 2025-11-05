@@ -46,7 +46,14 @@ jobs:
       - name: Copy static files to base path
         run: |
           mkdir -p ./storybook-static/swyp-frontend
-          cp -r ./storybook-static/img ./storybook-static/swyp-frontend/
+          # 모든 정적 파일들을 /swyp-frontend 경로에도 복사
+          if [ -d "./storybook-static/img" ]; then
+            cp -r ./storybook-static/img ./storybook-static/swyp-frontend/
+          fi
+          # 기타 정적 파일들도 복사 (필요한 경우)
+          for file in ./storybook-static/*.svg ./storybook-static/*.png; do
+            [ -f "$file" ] && cp "$file" ./storybook-static/swyp-frontend/
+          done
           echo "✅ Static files copied to /swyp-frontend/ path"
 
       - name: Deploy to GitHub Pages
