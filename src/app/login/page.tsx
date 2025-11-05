@@ -1,10 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useGoogleLogin } from "@/hooks/useGoogleLogin";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { login: googleLogin } = useGoogleLogin();
+
+  // 로그인 화면 진입 시 모든 쿠키 삭제
+  useEffect(() => {
+    // 모든 쿠키 삭제
+    document.cookie.split(";").forEach((cookie) => {
+      const name = cookie.split("=")[0].trim();
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+
+    // localStorage와 sessionStorage도 초기화
+    localStorage.removeItem('userToken');
+    sessionStorage.clear();
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -13,8 +28,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    // TODO: Google 로그인 로직 구현
-    console.log("Google login");
+    googleLogin();
   };
 
   return (
