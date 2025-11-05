@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useNavigation } from "../../contexts/NavigationContext";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 interface TabItem {
   id: string;
@@ -26,7 +27,7 @@ export const BottomNavigation = () => {
         <Image
           className="relative w-full h-full"
           alt=""
-          src={activeTab === "home" ? "/img/home-active.svg" : "/img/home.svg"}
+          src={activeTab === "home" ? getAssetPath("/img/home-active.svg") : getAssetPath("/img/home.svg")}
           width={28}
           height={28}
         />
@@ -41,7 +42,7 @@ export const BottomNavigation = () => {
         <Image
           className="relative w-full h-full"
           alt=""
-          src={activeTab === "style" ? "/img/face-retouching-natural-active.svg" : "/img/face-retouching-natural.svg"}
+          src={activeTab === "style" ? getAssetPath("/img/face-retouching-natural-active.svg") : getAssetPath("/img/face-retouching-natural.svg")}
           width={28}
           height={28}
         />
@@ -56,7 +57,7 @@ export const BottomNavigation = () => {
         <Image
           className="relative w-full h-full"
           alt=""
-          src={activeTab === "schedule" ? "/img/calendar-month-active.svg" : "/img/calendar-month.svg"}
+          src={activeTab === "schedule" ? getAssetPath("/img/calendar-month-active.svg") : getAssetPath("/img/calendar-month.svg")}
           width={28}
           height={28}
         />
@@ -71,7 +72,7 @@ export const BottomNavigation = () => {
         <Image
           className="relative w-full h-full"
           alt=""
-          src={activeTab === "my" ? "/img/person-active.svg" : "/img/person.svg"}
+          src={activeTab === "my" ? getAssetPath("/img/person-active.svg") : getAssetPath("/img/person.svg")}
           width={28}
           height={28}
         />
