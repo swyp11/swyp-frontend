@@ -18,6 +18,8 @@ const config: StorybookConfig = {
   },
   staticDirs: ['../public'],
   viteFinal: async (config) => {
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+    
     // GitHub Pages 배포를 위한 base path 설정
     if (process.env.GITHUB_PAGES === 'true') {
       config.base = '/swyp-frontend/';
@@ -30,10 +32,17 @@ const config: StorybookConfig = {
       config.publicDir = '../public';
     }
     
+    // 환경 변수를 빌드된 번들에 주입
+    if (!config.define) {
+      config.define = {};
+    }
+    config.define['process.env.NEXT_PUBLIC_BASE_PATH'] = JSON.stringify(basePath);
+    
     console.log('🔧 Environment variables:');
     console.log('   - GITHUB_PAGES:', process.env.GITHUB_PAGES);
-    console.log('   - NEXT_PUBLIC_BASE_PATH:', process.env.NEXT_PUBLIC_BASE_PATH);
+    console.log('   - NEXT_PUBLIC_BASE_PATH:', basePath);
     console.log('   - config.publicDir:', config.publicDir);
+    console.log('   - Injected to bundle:', JSON.stringify(basePath));
     
     return config;
   }
