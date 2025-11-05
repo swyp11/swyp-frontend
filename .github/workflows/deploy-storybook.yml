@@ -37,7 +37,15 @@ jobs:
           GITHUB_PAGES: true
           NODE_ENV: production
           STORYBOOK_GITHUB_PAGES: true
-        run: npx storybook build --output-dir storybook-static --quiet
+        run: |
+          # GitHub Pages 저장소 경로를 base path로 설정
+          npx storybook build --output-dir storybook-static --quiet
+
+          # index.html에서 절대 경로를 상대 경로로 변환
+          if [ -f ./storybook-static/index.html ]; then
+            sed -i 's|="/|="./|g' ./storybook-static/index.html
+            sed -i "s|='/|='./|g" ./storybook-static/index.html
+          fi
 
       - name: Create .nojekyll file
         run: echo "" > ./storybook-static/.nojekyll
