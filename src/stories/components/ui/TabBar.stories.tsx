@@ -44,6 +44,10 @@ export const CalendarActive: Story = {
 };
 
 export const Interactive: Story = {
+  args: {
+    items: sampleTabs,
+    activeTab: 'home',
+  },
   render: () => {
     const [activeTab, setActiveTab] = useState('home');
 

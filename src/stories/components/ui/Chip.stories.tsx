@@ -38,6 +38,11 @@ export const Pill: Story = {
 };
 
 export const AllVariants: Story = {
+  args: {
+    label: '기본 Chip',
+    variant: 'default',
+    selected: false,
+  },
   render: () => (
     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
       <Chip label="Default" variant="default" />

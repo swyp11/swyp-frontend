@@ -38,6 +38,11 @@ export const Filter: Story = {
 };
 
 export const AllVariants: Story = {
+  args: {
+    variant: 'primary',
+    colorType: 'accent',
+    children: 'Primary Button',
+  },
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <Button variant="primary" colorType="accent">Accent Primary</Button>
