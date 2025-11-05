@@ -70,6 +70,9 @@ const preview: Preview = {
             router: {
                 basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
             },
+            image: {
+                unoptimized: true,
+            },
         },
 
         a11y: {
