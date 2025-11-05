@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button variant style */
@@ -27,7 +28,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       colorType = "accent",
       withIcon = false,
       selected = false,
-      iconSrc = "/img/keyboard-arrow-down.svg",
+      iconSrc = getAssetPath("/img/keyboard-arrow-down.svg"),
       ariaLabel,
       className = "",
       children,

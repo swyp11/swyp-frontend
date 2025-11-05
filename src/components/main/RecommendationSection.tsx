@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { HorizontalSlider } from "../common/HorizontalSlider";
+import { getAssetPath } from "@/utils/assetPath";
 
 interface ShopCard {
   image: string;
@@ -13,27 +14,27 @@ interface ShopCard {
 export const RecommendationSection = () => {
   const popularShops: ShopCard[] = [
     {
-      image: "/img/frame-482543-1.png",
+      image: getAssetPath("/img/frame-482543-1.png"),
       title: "아펠가모 광화문점",
       description: "서울시 종로구",
     },
     {
-      image: "/img/frame-482543-1.png",
+      image: getAssetPath("/img/frame-482543-1.png"),
       title: "규수당 문래점",
       description: "서울시 영등포구",
     },
     {
-      image: "/img/frame-482543-2.png",
+      image: getAssetPath("/img/frame-482543-1.png"),
       title: "루벨 강동",
       description: "서울시 강동구",
     },
     {
-      image: "/img/frame-482543-2.png",
+      image: getAssetPath("/img/frame-482543-1.png"),
       title: "추가 샵 1",
       description: "서울시 강남구",
     },
     {
-      image: "/img/frame-482543-1.png",
+      image: getAssetPath("/img/frame-482543-1.png"),
       title: "추가 샵 2",
       description: "서울시 송파구",
     },
@@ -41,27 +42,27 @@ export const RecommendationSection = () => {
 
   const seoulShops: ShopCard[] = [
     {
-      image: "/img/frame-482543-4.png",
+      image: getAssetPath("/img/frame-482543-4.png"),
       title: "제목",
       description: "설명",
     },
     {
-      image: "/img/frame-482543-4.png",
+      image: getAssetPath("/img/frame-482543-4.png"),
       title: "제목",
       description: "설명",
     },
     {
-      image: "/img/frame-482543-5.png",
+      image: getAssetPath("/img/frame-482543-5.png"),
       title: "제목",
       description: "설명",
     },
     {
-      image: "/img/frame-482543-4.png",
+      image: getAssetPath("/img/frame-482543-4.png"),
       title: "제목 4",
       description: "설명 4",
     },
     {
-      image: "/img/frame-482543-5.png",
+      image: getAssetPath("/img/frame-482543-5.png"),
       title: "제목 5",
       description: "설명 5",
     },
@@ -69,27 +70,27 @@ export const RecommendationSection = () => {
 
   const hotelWeddingHalls: ShopCard[] = [
     {
-      image: "/img/frame-482543-8.png",
+      image: getAssetPath("/img/frame-482543-4.png"),
       title: "제목",
       description: "설명",
     },
     {
-      image: "/img/frame-482543-8.png",
+      image: getAssetPath("/img/frame-482543-4.png"),
       title: "제목",
       description: "설명",
     },
     {
-      image: "/img/frame-482543-8.png",
+      image: getAssetPath("/img/frame-482543-4.png"),
       title: "제목",
       description: "설명",
     },
     {
-      image: "/img/frame-482543-8.png",
+      image: getAssetPath("/img/frame-482543-4.png"),
       title: "제목 4",
       description: "설명 4",
     },
     {
-      image: "/img/frame-482543-8.png",
+      image: getAssetPath("/img/frame-482543-4.png"),
       title: "제목 5",
       description: "설명 5",
     },
