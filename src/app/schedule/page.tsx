@@ -8,6 +8,7 @@ import { DayCalendar } from "../../components/schedule/DayCalendar";
 import { ViewSelector, CalendarView } from "../../components/schedule/ViewSelector";
 import { NavigationHeader } from "../../components/schedule/NavigationHeader";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 interface Event {
   id: string;
@@ -273,7 +274,7 @@ export default function SchedulePage() {
               <span className="body-2-medium text-primary font-bold">D-99</span>
               <Image
                 alt=""
-                src="/img/edit.svg"
+                src={getAssetPath("/img/edit.svg")}
                 width={16}
                 height={16}
               />
@@ -368,7 +369,7 @@ export default function SchedulePage() {
       >
         <Image
           alt=""
-          src="/img/add.svg"
+          src={getAssetPath("/img/add.svg")}
           width={24}
           height={24}
         />

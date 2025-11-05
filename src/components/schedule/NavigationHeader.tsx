@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 interface NavigationHeaderProps {
     onPrev: () => void;
@@ -25,7 +26,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                 <Image
                     className="relative w-6 h-6"
                     alt=""
-                    src="/img/chevron_backward.svg"
+                    src={getAssetPath("/img/chevron_backward.svg")}
                     width={24}
                     height={24}
                 />
@@ -37,7 +38,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                     <Image
                         className="relative w-6 h-6"
                         alt=""
-                        src="/img/keyboard-arrow-down.svg"
+                        src={getAssetPath("/img/keyboard-arrow-down.svg")}
                         width={24}
                         height={24}
                     />
@@ -51,7 +52,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                 <Image
                     className="relative w-6 h-6 rotate-180"
                     alt=""
-                    src="/img/chevron_backward.svg"
+                    src={getAssetPath("/img/chevron_backward.svg")}
                     width={24}
                     height={24}
                 />

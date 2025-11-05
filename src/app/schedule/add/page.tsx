@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarSelect } from "../../../components/ui/CalendarSelect";
 import Image from "next/image";
+import { getAssetPath } from "@/utils/assetPath";
 
 export default function AddSchedulePage() {
   const router = useRouter();
@@ -50,7 +51,7 @@ export default function AddSchedulePage() {
           <Image
             className="relative w-6 h-6"
             alt=""
-            src="/img/arrow_back.svg"
+            src={getAssetPath("/img/arrow_back.svg")}
             width={24}
             height={24}
           />
