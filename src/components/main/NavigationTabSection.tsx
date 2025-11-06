@@ -1,21 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { NavigationTabs, type NavigationTab } from "../ui";
 
-export const NavigationTabSection = () => {
+interface NavigationTabSectionProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
+
+export const NavigationTabSection = ({ activeTab, onTabChange }: NavigationTabSectionProps) => {
   const tabs: NavigationTab[] = [
     { id: "wedding-hall", label: "웨딩홀" },
     { id: "dress", label: "드레스" },
+    { id: "makeup", label: "메이크업샵" },
   ];
-
-  const [activeTab, setActiveTab] = useState<string>("dress");
 
   return (
     <NavigationTabs
       tabs={tabs}
       activeTab={activeTab}
-      onTabChange={setActiveTab}
+      onTabChange={onTabChange}
     />
   );
 };

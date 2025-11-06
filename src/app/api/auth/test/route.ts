@@ -92,7 +92,6 @@ export async function POST(request: NextRequest) {
     const userInfo = await userInfoResponse.json();
     console.log('[Test Auth API] User info received:', userInfo.email);
 
-    debugger;
     // JSON 응답으로 토큰 반환
     return NextResponse.json(
       {
