@@ -4,8 +4,9 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
+import { withAuth } from "@/components/auth/withAuth";
 
-export default function MyPage() {
+function MyPage() {
   const router = useRouter();
 
   // TODO: 실제 사용자 정보를 가져와야 함
@@ -106,3 +107,5 @@ export default function MyPage() {
     </>
   );
 }
+
+export default withAuth(MyPage);

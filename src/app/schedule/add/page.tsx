@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { CalendarSelect } from "../../../components/ui/CalendarSelect";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
+import { withAuth } from "@/components/auth/withAuth";
 
-export default function AddSchedulePage() {
+function AddSchedulePage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -149,3 +150,5 @@ export default function AddSchedulePage() {
     </div>
   );
 }
+
+export default withAuth(AddSchedulePage);

@@ -6,6 +6,7 @@ import { GeistMono } from "geist/font/mono";
 import localFont from "next/font/local";
 import "../styles/globals.css";
 import { NavigationProvider } from "../contexts/NavigationContext";
+import { AuthProvider } from "../contexts/AuthContext";
 import { Header } from "../components/common/Header";
 import { BottomNavigation } from "../components/common/BottomNavigation";
 import { usePathname } from "next/navigation";
@@ -68,11 +69,12 @@ export default function RootLayout({
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} ${roboto.variable} ${pretendard.variable} antialiased`}
       >
-        <NavigationProvider>
+        <AuthProvider>
+          <NavigationProvider>
             <div
-            className="flex flex-col h-screen items-start relative bg-white mx-auto"
-            style={{ width: "var(--app-width)", maxWidth: "100vw" }}
-          >
+              className="flex flex-col h-screen items-start relative bg-white mx-auto"
+              style={{ width: "var(--app-width)", maxWidth: "100vw" }}
+            >
             {/* Fixed Header */}
             {!shouldHideHeader && (
               <div
@@ -103,8 +105,9 @@ export default function RootLayout({
                 <BottomNavigation />
               </div>
             )}
-          </div>
-        </NavigationProvider>
+            </div>
+          </NavigationProvider>
+        </AuthProvider>
       </body>
     </html>
   );
