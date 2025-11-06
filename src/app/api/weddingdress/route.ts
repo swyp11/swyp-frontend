@@ -1,7 +1,7 @@
 import { getAssetPath } from '@/utils/assetPath';
 import { NextRequest, NextResponse } from 'next/server';
 
-// 백엔드 응답 타입
+// 백엔드 응답 타입 (드레스 상품)
 interface BackendDress {
   id: number;
   name: string;

@@ -32,11 +32,11 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
             case 'wedding-hall':
               return '/api/weddinghole';
             case 'dress':
-              return '/api/weddingdress';
+              return '/api/dressshop';
             case 'makeup':
               return '/api/makeupshop';
             default:
-              return '/api/weddingdress';
+              return '/api/dressshop';
           }
         };
 
