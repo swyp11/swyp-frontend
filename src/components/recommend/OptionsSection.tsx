@@ -17,11 +17,11 @@ export const OptionsSection = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const optionGroups: OptionGroupData[] = [
-    // {
-    //   id: "bodyType",
-    //   label: "체형",
-    //   options: ["마른", "보통", "통통한"],
-    // },
+    {
+      id: "bodyType",
+      label: "체형",
+      options: ["마른", "보통", "통통한"],
+    },
     {
       id: "armLength",
       label: "팔길이",
@@ -62,6 +62,8 @@ export const OptionsSection = () => {
   // Map Korean options to English API values
   const mapToApiValue = (value: string): string => {
     const mapping: Record<string, string> = {
+      "마른": "thin",
+      "통통한": "heavy",
       "짧은": "short",
       "보통": "medium",
       "긴": "long",
@@ -78,6 +80,7 @@ export const OptionsSection = () => {
     setIsLoading(true);
     try {
       const requestData: RecommendRequest = {
+        ...(selectedOptions.bodyType && { body_type: mapToApiValue(selectedOptions.bodyType) as any }),
         arm_length: mapToApiValue(selectedOptions.armLength) as any,
         face_shape: mapToApiValue(selectedOptions.faceShape) as any,
         leg_length: mapToApiValue(selectedOptions.legLength) as any,

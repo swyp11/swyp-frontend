@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Request types
 export interface RecommendRequest {
+  body_type?: 'thin' | 'medium' | 'heavy';
   arm_length: 'short' | 'medium' | 'long';
   face_shape: 'oval' | 'round' | 'square' | 'heart' | 'oblong';
   leg_length: 'short' | 'medium' | 'long';
@@ -19,6 +20,7 @@ export interface StyleRecommendation {
 
 export interface RecommendResponse {
   request_params: {
+    body_type?: string;
     arm_length: string;
     face_shape: string;
     leg_length: string;
