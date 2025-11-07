@@ -123,7 +123,7 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
   }
 
   return (
-    <section className="flex flex-col items-start gap-10 px-4 py-6 relative self-stretch w-full bg-white">
+    <section className="flex flex-col items-start gap-10 px-4 py-6 relative self-stretch w-full bg-white flex-1">
       {/* 인기있는 샵 */}
       <div className="flex flex-col items-start gap-4 w-full">
         <h2 className="w-fit mt-[-1.00px] title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
