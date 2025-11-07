@@ -57,7 +57,7 @@ export const useGoogleLogin = (): GoogleLoginHookReturn => {
       setError('');
       setIsProcessing(true);
 
-      const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_TEST_URL;
 
       const response = await fetch(
         `${BACKEND_URL}?code=${code}`,
