@@ -57,7 +57,7 @@ function AddSchedulePage() {
             height={24}
           />
         </button>
-        <h1 className="body-3 font-semibold text-on-surface">드레스샵 찾기</h1>
+        <h1 className="body-3 font-semibold text-on-surface">일정 생성</h1>
         <div className="w-10 h-10 opacity-0" />
       </div>
 

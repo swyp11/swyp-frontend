@@ -55,6 +55,19 @@ export default function RootLayout({
     '/search',
     '/forgot-password',
   ];
+
+  // 동적 경로를 체크하는 함수
+  const isDynamicPathHidden = (path: string) => {
+    // /detail/[id] 형태의 경로 체크
+    if (path.startsWith('/detail/')) {
+      return true;
+    }
+    // /forgot-password/[step] 형태의 경로 체크
+    if (path.startsWith('/forgot-password/')) {
+      return true;
+    }
+    return false;
+  };
   
   // Header만 숨길 페이지 목록 (BackHeader를 사용하는 페이지)
   const hideHeaderOnlyPaths = [
@@ -63,8 +76,8 @@ export default function RootLayout({
     '/my/reviews'
   ];
   
-  const shouldHideHeader = hideNavigationPaths.includes(pathname) || hideHeaderOnlyPaths.includes(pathname);
-  const shouldHideBottomNav = hideNavigationPaths.includes(pathname);
+  const shouldHideHeader = hideNavigationPaths.includes(pathname) || hideHeaderOnlyPaths.includes(pathname) || isDynamicPathHidden(pathname);
+  const shouldHideBottomNav = hideNavigationPaths.includes(pathname) || isDynamicPathHidden(pathname);
   
   return (
     <html lang="en">

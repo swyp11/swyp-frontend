@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { HorizontalSlider } from "../common/HorizontalSlider";
 import { getAssetPath } from "@/utils/assetPath";
 
@@ -18,6 +19,7 @@ interface RecommendationSectionProps {
 }
 
 export const RecommendationSection = ({ activeTab }: RecommendationSectionProps) => {
+  const router = useRouter();
   const [popularShops, setPopularShops] = useState<ShopCard[]>([]);
   const [newShops, setNewShops] = useState<ShopCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,10 +69,15 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
     fetchShops();
   }, [activeTab]);
 
+  const handleShopClick = (shopId: string) => {
+    router.push(`/detail/${shopId}?tab=${activeTab}`);
+  };
+
   const renderShopCard = (shop: ShopCard, index: number) => (
     <article
       key={index}
-      className="flex flex-col min-w-[140px] w-[140px] md:min-w-[180px] md:w-[180px] lg:min-w-[220px] lg:w-[220px] items-start gap-2 flex-shrink-0"
+      onClick={() => handleShopClick(shop.id)}
+      className="flex flex-col min-w-[140px] w-[140px] md:min-w-[180px] md:w-[180px] lg:min-w-[220px] lg:w-[220px] items-start gap-2 flex-shrink-0 cursor-pointer"
       draggable={false}
       onDragStart={(e) => e.preventDefault()}
     >
