@@ -52,6 +52,8 @@ export default function RootLayout({
     '/signup/step2',
     '/signup/complete',
     '/schedule/add',
+    '/search',
+    '/forgot-password',
   ];
   
   // Header만 숨길 페이지 목록 (BackHeader를 사용하는 페이지)
