@@ -25,7 +25,8 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: '상세보기 페이지 - 웨딩홀/드레스샵/메이크업샵의 상세 정보를 표시합니다.',
+        // story: '상세보기 페이지 - 웨딩홀/드레스샵/메이크업샵의 상세 정보를 표시합니다.',
+        story: '상세보기 페이지 - 웨딩홀/드레스샵의 상세 정보를 표시합니다.',
       },
     },
   },
