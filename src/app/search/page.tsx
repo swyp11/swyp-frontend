@@ -44,8 +44,8 @@ function SearchResultsContent() {
           if (query) params.append('shopName', query);
           break;
         case 'dress':
-          apiEndpoint = '/api/weddingdress';
-          if (query) params.append('dressName', query);
+          apiEndpoint = '/api/dressshop';
+          if (query) params.append('shopName', query);
           break;
         default:
           apiEndpoint = '/api/weddinghole';
@@ -57,7 +57,7 @@ function SearchResultsContent() {
       if (data.success) {
         const formattedResults = data.data.map((item: any) => {
           // Use image from API response (proxy API handles fallback images)
-          const image = item.image || item.imageUrl || item.thumbnail || '/img/frame-482543-1.png';
+          const image = item.image || item.imageUrl || item.thumbnail || '/img/placeholder.jpg';
 
           return {
             id: item.id,
@@ -86,7 +86,7 @@ function SearchResultsContent() {
 
   const handleTabChange = (newTab: string) => {
     setActiveTab(newTab);
-    router.push(`/search?q=${encodeURIComponent(searchQuery)}&tab=${newTab}`);
+    router.push(`/search?q=${encodeURIComponent(searchQuery)}&tab=${newTab}`, { scroll: false });
   };
 
   const handleResultClick = (id: number) => {

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { BackHeader } from "@/components/common/BackHeader";
 import { getAssetPath } from "@/utils/assetPath";
@@ -14,8 +14,9 @@ interface FavoriteItem {
   isFavorite: boolean;
 }
 
-export default function FavoritesPage() {
+function FavoritesPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // TODO: 실제 데이터는 API에서 가져와야 함
   const [favorites, setFavorites] = useState<FavoriteItem[]>([
@@ -63,9 +64,20 @@ export default function FavoritesPage() {
     },
   ]);
 
-  const [activeTab, setActiveTab] = useState<"웨딩홀" | "드레스">(
-    "웨딩홀"
-  );
+  const [activeTab, setActiveTab] = useState<"웨딩홀" | "드레스">("웨딩홀");
+
+  // URL에서 탭 정보 읽어오기
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab');
+    if (tabFromUrl === "웨딩홀" || tabFromUrl === "드레스") {
+      setActiveTab(tabFromUrl);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (tab: "웨딩홀" | "드레스") => {
+    setActiveTab(tab);
+    router.push(`/my/favorites?tab=${tab}`, { scroll: false });
+  };
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) =>
@@ -84,7 +96,7 @@ export default function FavoritesPage() {
         {(["웨딩홀", "드레스"] as const).map((tab) => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => handleTabChange(tab)}
             className={`flex-1 py-3 body-2 transition-colors relative ${activeTab === tab
               ? "text-primary font-medium"
               : "text-on-surface-subtle"
@@ -139,5 +151,13 @@ export default function FavoritesPage() {
         ))}
       </div>
     </>
+  );
+}
+
+export default function FavoritesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FavoritesPageContent />
+    </Suspense>
   );
 }

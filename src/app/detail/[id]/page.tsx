@@ -36,7 +36,7 @@ export default function DetailPage() {
           apiEndpoint = `/api/makeupshop/${id}`;
           break;
         case 'dress':
-          apiEndpoint = `/api/weddingdress/${id}`;
+          apiEndpoint = `/api/dressshop/${id}`;
           break;
         default:
           apiEndpoint = `/api/weddinghole/${id}`;

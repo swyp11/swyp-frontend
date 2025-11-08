@@ -55,7 +55,7 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
         if (popularData.success) {
           const formattedPopular = popularData.data.map((item: any) => ({
             id: item.id,
-            image: item.imageUrl || item.image || item.thumbnail || '/img/frame-482543-1.png',
+            image: item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
             title: item.shopName || item.hallName || item.dressName || '업체명',
             description: item.address || item.description || '주소 정보 없음',
             category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
@@ -66,7 +66,7 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
         if (newData.success) {
           const formattedNew = newData.data.map((item: any) => ({
             id: item.id,
-            image: item.imageUrl || item.image || item.thumbnail || '/img/frame-482543-1.png',
+            image: item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
             title: item.shopName || item.hallName || item.dressName || '업체명',
             description: item.address || item.description || '주소 정보 없음',
             category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
