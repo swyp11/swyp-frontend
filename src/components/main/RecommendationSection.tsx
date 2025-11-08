@@ -143,6 +143,12 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
     );
   }
 
+  const renderEmptyState = (message: string) => (
+    <div className="flex items-center justify-center w-full min-h-[180px]">
+      <p className="body-2 text-on-surface-subtle">{message}</p>
+    </div>
+  );
+
   return (
     <section className="flex flex-col items-start gap-10 px-4 py-6 relative self-stretch w-full bg-white flex-1">
       {/* 인기있는 샵 */}
@@ -150,9 +156,13 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
         <h2 className="w-fit mt-[-1.00px] title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
           지금 인기있는 {categoryLabel}
         </h2>
-        <HorizontalSlider gap={12} className="w-full px-0 py-1">
-          {popularShops.map((shop, index) => renderShopCard(shop, index))}
-        </HorizontalSlider>
+        {popularShops.length > 0 ? (
+          <HorizontalSlider gap={12} className="w-full px-0 py-1">
+            {popularShops.map((shop, index) => renderShopCard(shop, index))}
+          </HorizontalSlider>
+        ) : (
+          renderEmptyState('인기 있는 업체가 없습니다')
+        )}
       </div>
 
       {/* 신규 샵 */}
@@ -160,9 +170,13 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
         <h2 className="w-fit mt-[-1.00px] title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
           신규 {categoryLabel}
         </h2>
-        <HorizontalSlider gap={12} className="w-full px-0 py-1">
-          {newShops.map((shop, index) => renderShopCard(shop, index))}
-        </HorizontalSlider>
+        {newShops.length > 0 ? (
+          <HorizontalSlider gap={12} className="w-full px-0 py-1">
+            {newShops.map((shop, index) => renderShopCard(shop, index))}
+          </HorizontalSlider>
+        ) : (
+          renderEmptyState('신규 업체가 없습니다')
+        )}
       </div>
     </section>
   );
