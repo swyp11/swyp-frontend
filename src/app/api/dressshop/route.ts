@@ -1,114 +1,85 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export interface DressShop {
-  id: string;
-  image: string;
-  title: string;
+  id: number;
+  shopName: string;
   description: string;
-  category: 'dress';
+  address: string;
+  phone: string;
+  snsUrl: string;
+  specialty: string;
+  features: string;
+  regDt: string;
+  updateDt: string;
 }
 
-// Mock 데이터 - 드레스샵 (업체)
-const mockDressShops: DressShop[] = [
-  // 인기
-  {
-    id: 'dr-pop-1',
-    image: '/img/frame-482543-1.png',
-    title: '아펠가모 광화문점',
-    description: '서울시 종로구',
-    category: 'dress',
-  },
-  {
-    id: 'dr-pop-2',
-    image: '/img/frame-482543-1.png',
-    title: '규수당 문래점',
-    description: '서울시 영등포구',
-    category: 'dress',
-  },
-  {
-    id: 'dr-pop-3',
-    image: '/img/frame-482543-1.png',
-    title: '루벨 강동',
-    description: '서울시 강동구',
-    category: 'dress',
-  },
-  {
-    id: 'dr-pop-4',
-    image: '/img/frame-482543-1.png',
-    title: '라비앙로즈 명동점',
-    description: '서울시 중구',
-    category: 'dress',
-  },
-  {
-    id: 'dr-pop-5',
-    image: '/img/frame-482543-1.png',
-    title: '샤랄라 강남점',
-    description: '서울시 강남구',
-    category: 'dress',
-  },
-
-  // 신규
-  {
-    id: 'dr-new-1',
-    image: '/img/frame-482543-4.png',
-    title: '엘레강스 서초점',
-    description: '서울시 서초구',
-    category: 'dress',
-  },
-  {
-    id: 'dr-new-2',
-    image: '/img/frame-482543-4.png',
-    title: '프린세스 드레스 송파점',
-    description: '서울시 송파구',
-    category: 'dress',
-  },
-  {
-    id: 'dr-new-3',
-    image: '/img/frame-482543-5.png',
-    title: '로맨틱웨딩 마포점',
-    description: '서울시 마포구',
-    category: 'dress',
-  },
-  {
-    id: 'dr-new-4',
-    image: '/img/frame-482543-4.png',
-    title: '드림드레스 강서점',
-    description: '서울시 강서구',
-    category: 'dress',
-  },
-  {
-    id: 'dr-new-5',
-    image: '/img/frame-482543-5.png',
-    title: '베네치아 웨딩 노원점',
-    description: '서울시 노원구',
-    category: 'dress',
-  },
-];
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:8080/api';
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const type = searchParams.get('type') as 'popular' | 'new' | null;
+  try {
+    const searchParams = request.nextUrl.searchParams;
 
-  // 타입이 없으면 전체 데이터 반환
-  if (!type) {
+    // Build query parameters for backend API
+    const params = new URLSearchParams();
+
+    if (searchParams.get('shopName')) {
+      params.append('shopName', searchParams.get('shopName')!);
+    }
+    if (searchParams.get('address')) {
+      params.append('address', searchParams.get('address')!);
+    }
+    if (searchParams.get('specialty')) {
+      params.append('specialty', searchParams.get('specialty')!);
+    }
+    if (searchParams.get('sort')) {
+      params.append('sort', searchParams.get('sort')!);
+    }
+
+    const apiUrl = `${API_BASE_URL}/dress-shop${params.toString() ? `?${params.toString()}` : ''}`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+
+    const data: DressShop[] = await response.json();
+
+    // Add fallback images for items without imageUrl
+    const dataWithImages = data.map((item, index) => {
+      // If item already has an image_url, keep it
+      if ((item as any).imageUrl || (item as any).image || (item as any).thumbnail) {
+        return item;
+      }
+
+      // Otherwise, add a fallback image from public/dress_shop/
+      const imageIndex = (index % 3) + 1; // Cycles through 1, 2, 3
+      // Note: dress_shop_3 has double dots in filename (dress_shop_3..jpg)
+      const imageName = imageIndex === 3 ? 'dress_shop_3..jpg' : `dress_shop_${imageIndex}.jpg`;
+      return {
+        ...item,
+        imageUrl: `/dress_shop/${imageName}`,
+      };
+    });
+
     return NextResponse.json({
       success: true,
-      data: mockDressShops,
+      data: dataWithImages,
     });
+  } catch (error) {
+    console.error('Error fetching dress shops:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to fetch dress shops',
+      },
+      { status: 500 }
+    );
   }
-
-  // 타입으로 필터링
-  const typePrefix = type === 'popular' ? 'pop' : 'new';
-  const filteredData = mockDressShops.filter(item =>
-    item.id.startsWith(`dr-${typePrefix}`)
-  );
-
-  return NextResponse.json({
-    success: true,
-    data: filteredData,
-    meta: {
-      type,
-      count: filteredData.length,
-    },
-  });
 }

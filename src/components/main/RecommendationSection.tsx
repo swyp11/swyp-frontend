@@ -53,11 +53,25 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
         const newData = await newResponse.json();
 
         if (popularData.success) {
-          setPopularShops(popularData.data);
+          const formattedPopular = popularData.data.map((item: any) => ({
+            id: item.id,
+            image: item.imageUrl || item.image || item.thumbnail || '/img/frame-482543-1.png',
+            title: item.shopName || item.hallName || item.dressName || '업체명',
+            description: item.address || item.description || '주소 정보 없음',
+            category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
+          }));
+          setPopularShops(formattedPopular);
         }
 
         if (newData.success) {
-          setNewShops(newData.data);
+          const formattedNew = newData.data.map((item: any) => ({
+            id: item.id,
+            image: item.imageUrl || item.image || item.thumbnail || '/img/frame-482543-1.png',
+            title: item.shopName || item.hallName || item.dressName || '업체명',
+            description: item.address || item.description || '주소 정보 없음',
+            category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
+          }));
+          setNewShops(formattedNew);
         }
       } catch (error) {
         console.error('Failed to fetch shops:', error);
@@ -83,7 +97,7 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
     >
       <div className="relative self-stretch w-full rounded aspect-[1.5] overflow-hidden">
         <Image
-          src={shop.image}
+          src={getAssetPath(shop.image)}
           alt={shop.title}
           width={220}
           height={147}

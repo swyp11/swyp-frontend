@@ -21,11 +21,62 @@ function SearchResultsContent() {
   useEffect(() => {
     setSearchQuery(query);
     setActiveTab(tab);
-    // TODO: Fetch search results from API
-    // For now, showing empty results
-    setIsLoading(false);
-    setResults([]);
+    fetchSearchResults();
   }, [query, tab]);
+
+  const fetchSearchResults = async () => {
+    setIsLoading(true);
+    try {
+      let apiEndpoint = '';
+      const params = new URLSearchParams();
+
+      switch (activeTab) {
+        case 'wedding-hall':
+          apiEndpoint = '/api/weddinghole';
+          if (query) params.append('hallName', query);
+          break;
+        case 'dress-shop':
+          apiEndpoint = '/api/dressshop';
+          if (query) params.append('shopName', query);
+          break;
+        case 'makeup-shop':
+          apiEndpoint = '/api/makeupshop';
+          if (query) params.append('shopName', query);
+          break;
+        case 'dress':
+          apiEndpoint = '/api/weddingdress';
+          if (query) params.append('dressName', query);
+          break;
+        default:
+          apiEndpoint = '/api/weddinghole';
+      }
+
+      const response = await fetch(`${apiEndpoint}?${params.toString()}`);
+      const data = await response.json();
+
+      if (data.success) {
+        const formattedResults = data.data.map((item: any) => {
+          // Use image from API response (proxy API handles fallback images)
+          const image = item.image || item.imageUrl || item.thumbnail || '/img/frame-482543-1.png';
+
+          return {
+            id: item.id,
+            title: item.shopName || item.hallName || item.dressName || item.title,
+            description: item.address || item.description,
+            image,
+          };
+        });
+        setResults(formattedResults);
+      } else {
+        setResults([]);
+      }
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+      setResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
