@@ -1,103 +1,83 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export interface WeddingHole {
-  id: string;
-  image: string;
-  title: string;
+  id: number;
+  hallName: string;
   description: string;
+  address: string;
+  phone: string;
+  snsUrl: string;
+  specialty: string;
+  features: string;
+  regDt: string;
+  updateDt: string;
 }
 
-// Mock 데이터 - 웨딩홀
-const mockWeddingHoles: WeddingHole[] = [
-  // 인기
-  {
-    id: 'wh-pop-1',
-    image: '/img/frame-482543-1.png',
-    title: '그랜드 하얏트 서울',
-    description: '서울시 용산구',
-  },
-  {
-    id: 'wh-pop-2',
-    image: '/img/frame-482543-1.png',
-    title: '더 플라자',
-    description: '서울시 중구',
-  },
-  {
-    id: 'wh-pop-3',
-    image: '/img/frame-482543-1.png',
-    title: '신라호텔',
-    description: '서울시 중구',
-  },
-  {
-    id: 'wh-pop-4',
-    image: '/img/frame-482543-1.png',
-    title: '롯데호텔 서울',
-    description: '서울시 중구',
-  },
-  {
-    id: 'wh-pop-5',
-    image: '/img/frame-482543-1.png',
-    title: 'JW 메리어트 동대문',
-    description: '서울시 중구',
-  },
-
-  // 신규
-  {
-    id: 'wh-new-1',
-    image: '/img/frame-482543-4.png',
-    title: '페어몬트 앰배서더',
-    description: '서울시 강남구',
-  },
-  {
-    id: 'wh-new-2',
-    image: '/img/frame-482543-4.png',
-    title: '파르나스타워',
-    description: '서울시 서초구',
-  },
-  {
-    id: 'wh-new-3',
-    image: '/img/frame-482543-5.png',
-    title: '반얀트리 클럽앤스파',
-    description: '서울시 송파구',
-  },
-  {
-    id: 'wh-new-4',
-    image: '/img/frame-482543-4.png',
-    title: '콘래드 서울',
-    description: '서울시 마포구',
-  },
-  {
-    id: 'wh-new-5',
-    image: '/img/frame-482543-5.png',
-    title: '임피리얼 팰리스',
-    description: '서울시 영등포구',
-  },
-];
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:8080/api';
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const type = searchParams.get('type') as 'popular' | 'new' | null;
+  try {
+    const searchParams = request.nextUrl.searchParams;
 
-  // 타입이 없으면 전체 데이터 반환
-  if (!type) {
+    // Build query parameters for backend API
+    const params = new URLSearchParams();
+
+    if (searchParams.get('hallName')) {
+      params.append('hallName', searchParams.get('hallName')!);
+    }
+    if (searchParams.get('address')) {
+      params.append('address', searchParams.get('address')!);
+    }
+    if (searchParams.get('specialty')) {
+      params.append('specialty', searchParams.get('specialty')!);
+    }
+    if (searchParams.get('sort')) {
+      params.append('sort', searchParams.get('sort')!);
+    }
+
+    const apiUrl = `${API_BASE_URL}/wedding${params.toString() ? `?${params.toString()}` : ''}`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+
+    const data: WeddingHole[] = await response.json();
+
+    // Add fallback images for items without imageUrl
+    const dataWithImages = data.map((item, index) => {
+      // If item already has an image_url, keep it
+      if ((item as any).imageUrl || (item as any).image || (item as any).thumbnail) {
+        return item;
+      }
+
+      // Otherwise, add a fallback image
+      const imageIndex = (index % 5) + 1; // Cycles through 1-5
+      return {
+        ...item,
+        imageUrl: `/img/frame-482543-${imageIndex}.png`,
+      };
+    });
+
     return NextResponse.json({
       success: true,
-      data: mockWeddingHoles,
+      data: dataWithImages,
     });
+  } catch (error) {
+    console.error('Error fetching wedding halls:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to fetch wedding halls',
+      },
+      { status: 500 }
+    );
   }
-
-  // 타입으로 필터링
-  const typePrefix = type === 'popular' ? 'pop' : 'new';
-  const filteredData = mockWeddingHoles.filter(item =>
-    item.id.startsWith(`wh-${typePrefix}`)
-  );
-
-  return NextResponse.json({
-    success: true,
-    data: filteredData,
-    meta: {
-      type,
-      count: filteredData.length,
-    },
-  });
 }
