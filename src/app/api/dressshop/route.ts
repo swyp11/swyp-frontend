@@ -11,6 +11,7 @@ export interface DressShop {
   features: string;
   regDt: string;
   updateDt: string;
+  imageUrl?: string;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:8080/api';
@@ -51,22 +52,11 @@ export async function GET(request: NextRequest) {
 
     const data: DressShop[] = await response.json();
 
-    // Add fallback images for items without imageUrl
-    const dataWithImages = data.map((item, index) => {
-      // If item already has an image_url, keep it
-      if ((item as any).imageUrl || (item as any).image || (item as any).thumbnail) {
-        return item;
-      }
-
-      // Otherwise, add a fallback image from public/dress_shop/
-      const imageIndex = (index % 3) + 1; // Cycles through 1, 2, 3
-      // Note: dress_shop_3 has double dots in filename (dress_shop_3..jpg)
-      const imageName = imageIndex === 3 ? 'dress_shop_3..jpg' : `dress_shop_${imageIndex}.jpg`;
-      return {
-        ...item,
-        imageUrl: `/dress_shop/${imageName}`,
-      };
-    });
+    // Add default image for items without imageUrl
+    const dataWithImages = data.map((item) => ({
+      ...item,
+      imageUrl: item.imageUrl || '/img/default.png',
+    }));
 
     return NextResponse.json({
       success: true,

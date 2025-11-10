@@ -35,23 +35,15 @@ export async function GET(
 
     const data: WeddingHole = await response.json();
 
-    // Add fallback images if not present
-    let dataWithImages = { ...data } as any;
-
-    // Check if images/imageUrl exists, if not add fallback images
-    if (!dataWithImages.imageUrl && !dataWithImages.image && !dataWithImages.thumbnail && !dataWithImages.images) {
-      const imageIndex = ((Number(id) % 5) + 1); // Cycles through 1-5 based on id
-
-      dataWithImages.images = [
-        `/img/frame-482543-${imageIndex}.png`,
-        `/img/frame-482543-${((imageIndex % 5) + 1)}.png`,
-        `/img/frame-482543-${(((imageIndex + 1) % 5) + 1)}.png`,
-      ];
-    }
+    // Add imageUrl if not present, use default.png as fallback
+    const dataWithImage = {
+      ...data,
+      imageUrl: data.imageUrl || '/img/default.png',
+    };
 
     return NextResponse.json({
       success: true,
-      data: dataWithImages,
+      data: dataWithImage,
     });
   } catch (error) {
     console.error('Error fetching wedding hall details:', error);

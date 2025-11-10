@@ -104,9 +104,15 @@ export async function GET(
       );
     }
 
+    // Add imageUrl field, use image field if available, otherwise default.png
+    const makeupWithImageUrl = {
+      ...makeup,
+      imageUrl: makeup.image || '/img/default.png',
+    };
+
     return NextResponse.json({
       success: true,
-      data: makeup,
+      data: makeupWithImageUrl,
     });
   } catch (error) {
     console.error('Error fetching makeup shop details:', error);

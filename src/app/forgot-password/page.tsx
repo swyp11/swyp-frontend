@@ -13,7 +13,7 @@ export default function ForgotPasswordPage() {
     phoneNumber: "",
   });
 
-  const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
       [field]: e.target.value,

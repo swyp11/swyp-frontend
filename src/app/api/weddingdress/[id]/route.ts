@@ -55,9 +55,15 @@ export async function GET(
 
     const data: BackendDress = await response.json();
 
+    // Add imageUrl if not present, use default.png as fallback
+    const dataWithImage = {
+      ...data,
+      imageUrl: data.imageUrl || '/img/default.png',
+    };
+
     return NextResponse.json({
       success: true,
-      data,
+      data: dataWithImage,
     });
   } catch (error) {
     console.error('Error fetching wedding dress details:', error);

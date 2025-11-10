@@ -13,4 +13,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    searchQuery: '',
+    onSearchChange: (value: string) => console.log('Search changed:', value),
+    onSearch: () => console.log('Search submitted'),
+  },
+};

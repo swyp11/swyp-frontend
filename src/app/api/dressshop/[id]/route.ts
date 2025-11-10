@@ -35,29 +35,15 @@ export async function GET(
 
     const data: DressShop = await response.json();
 
-    // Add fallback images if not present
-    let dataWithImages = { ...data } as any;
-
-    // Check if images/imageUrl exists, if not add fallback images
-    if (!dataWithImages.imageUrl && !dataWithImages.image && !dataWithImages.thumbnail && !dataWithImages.images) {
-      const imageIndex = ((Number(id) % 3) + 1); // Cycles through 1, 2, 3 based on id
-
-      // Helper function to get correct image filename (dress_shop_3 has double dots)
-      const getImageName = (idx: number) => {
-        const normalizedIdx = ((idx - 1) % 3) + 1; // Ensure it's always 1, 2, or 3
-        return normalizedIdx === 3 ? 'dress_shop_3..jpg' : `dress_shop_${normalizedIdx}.jpg`;
-      };
-
-      dataWithImages.images = [
-        `/dress_shop/${getImageName(imageIndex)}`,
-        `/dress_shop/${getImageName(imageIndex + 1)}`,
-        `/dress_shop/${getImageName(imageIndex + 2)}`,
-      ];
-    }
+    // Add imageUrl if not present, use default.png as fallback
+    const dataWithImage = {
+      ...data,
+      imageUrl: data.imageUrl || '/img/default.png',
+    };
 
     return NextResponse.json({
       success: true,
-      data: dataWithImages,
+      data: dataWithImage,
     });
   } catch (error) {
     console.error('Error fetching dress shop details:', error);
