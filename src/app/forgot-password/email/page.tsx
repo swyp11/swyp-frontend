@@ -8,50 +8,71 @@ import { Button } from "@/components/ui/Button";
 export default function ForgotPasswordEmailPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isResending, setIsResending] = useState(false);
 
   useEffect(() => {
     // Check if user came from step 1
-    const recoveryData = sessionStorage.getItem("passwordRecoveryData");
-    if (!recoveryData) {
+    const storedEmail = sessionStorage.getItem("verificationEmail");
+    if (!storedEmail) {
       router.push("/forgot-password");
+    } else {
+      setEmail(storedEmail);
     }
   }, [router]);
 
-  const isEmailValid = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isCodeValid = verificationCode.length === 6;
+
+  const handleResendCode = async () => {
+    if (isResending) return;
+
+    setIsResending(true);
+    try {
+      const response = await fetch("/api/auth/request-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error("재전송에 실패했습니다.");
+      }
+
+      alert("인증번호가 재전송되었습니다.");
+    } catch (error) {
+      console.error("Resend error:", error);
+      alert("재전송 중 오류가 발생했습니다.");
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isEmailValid) {
-      try {
-        // Get stored data from step 1
-        const recoveryData = sessionStorage.getItem("passwordRecoveryData");
-        if (!recoveryData) {
-          throw new Error("Recovery data not found");
-        }
+    if (!isCodeValid) return;
 
-        const data = JSON.parse(recoveryData);
+    try {
+      // Call API to verify code and send temporary password
+      const response = await fetch("/api/auth/verify-and-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, verificationCode }),
+      });
 
-        // Call API to send temporary password
-        const response = await fetch('/api/auth/forgot-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...data, email }),
-        });
-
+      if (!response.ok) {
         const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || '임시 비밀번호 발급에 실패했습니다.');
-        }
-
-        // Success - proceed to success page
-        sessionStorage.setItem("recoveryEmail", email);
-        sessionStorage.removeItem("passwordRecoveryData");
-        router.push("/forgot-password/success");
-      } catch (error) {
-        console.error("Password recovery error:", error);
-        alert("임시 비밀번호 발급 중 오류가 발생했습니다.");
+        throw new Error(result.error || "인증에 실패했습니다.");
       }
+
+      // Success - proceed to success page
+      sessionStorage.removeItem("verificationEmail");
+      sessionStorage.setItem("recoveryEmail", email);
+      router.push("/forgot-password/success");
+    } catch (error) {
+      console.error("Verification error:", error);
+      alert(
+        error instanceof Error ? error.message : "인증 중 오류가 발생했습니다."
+      );
     }
   };
 
@@ -64,10 +85,10 @@ export default function ForgotPasswordEmailPage() {
       <div className="h-11 bg-surface-1" />
 
       {/* Header */}
-      <div className="h-[50px] flex items-center px-4 border-b border-outline-subtle">
+      <div className="h-[50px] flex items-center justify-center px-4 border-b border-outline-subtle relative">
         <button
           onClick={() => router.back()}
-          className="w-6 h-6"
+          className="absolute left-4 w-6 h-6"
           aria-label="뒤로 가기"
         >
           <svg viewBox="0 0 24 24" className="w-full h-full">
@@ -77,41 +98,86 @@ export default function ForgotPasswordEmailPage() {
             />
           </svg>
         </button>
+        <h2 className="body-3-bold text-on-surface">임시 비밀번호 발급</h2>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 px-4 py-8 overflow-y-auto">
-        <h1 className="headline-3 text-on-surface mb-8">
-          임시 비밀번호를 발급 받을
-          <br />
-          이메일을 입력해주세요.
-        </h1>
+      <div className="flex-1 px-4 py-8 overflow-y-auto flex flex-col justify-between">
+        <div className="flex flex-col gap-8">
+          <h1 className="title-1 text-on-surface">
+            임시 비밀번호 발급을 위해
+            <br />
+            계정인증을 진행해주세요.
+          </h1>
 
-        <form onSubmit={handleSubmit}>
-          <FieldLabel
-            label="이메일"
-            required
-            placeholder="example@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            fieldProps={{
-              type: "email",
-              autoComplete: "email",
-            }}
-          />
-        </form>
-      </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+            {/* Email Field with Resend Button */}
+            <div className="flex gap-2 items-end">
+              <div className="flex-1">
+                <FieldLabel
+                  label="이메일"
+                  required
+                  value={email}
+                  fieldProps={{
+                    type: "email",
+                    readOnly: true,
+                    disabled: true,
+                  }}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleResendCode}
+                disabled={isResending}
+                className="btn btn-secondary h-12 px-5 whitespace-nowrap"
+              >
+                {isResending ? "전송 중..." : "재전송"}
+              </button>
+            </div>
 
-      {/* Bottom Button */}
-      <div className="px-4 py-4">
+            {/* Verification Code Field */}
+            <div className="flex flex-col gap-2">
+              <FieldLabel
+                label="인증번호 입력"
+                required
+                placeholder="인증번호 6자리를 입력해주세요"
+                value={verificationCode}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "").slice(0, 6);
+                  setVerificationCode(value);
+                }}
+                fieldProps={{
+                  type: "text",
+                  maxLength: 6,
+                  inputMode: "numeric",
+                  pattern: "[0-9]*",
+                }}
+              />
+
+              {/* Help Text */}
+              <div className="flex flex-col gap-1 text-on-surface-subtle label-1">
+                <div className="flex items-start gap-1">
+                  <span>•</span>
+                  <span>메일 도착까지 최대 1~2분 걸릴 수 있어요.</span>
+                </div>
+                <div className="flex items-start gap-1">
+                  <span>•</span>
+                  <span>스팸함 · 프로모션함을 확인해보세요.</span>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        {/* Bottom Button */}
         <Button
           variant="primary"
           colorType="accent"
-          className="w-full"
+          className={`w-full ${!isCodeValid ? "opacity-40" : ""}`}
           onClick={handleSubmit}
-          disabled={!isEmailValid}
+          disabled={!isCodeValid}
         >
-          임시 비밀번호 발급
+          다음
         </Button>
       </div>
     </div>

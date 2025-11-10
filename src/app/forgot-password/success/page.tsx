@@ -29,77 +29,73 @@ export default function ForgotPasswordSuccessPage() {
       <div className="h-11 bg-surface-1" />
 
       {/* Header */}
-      <div className="h-[50px] flex items-center px-4 border-b border-outline-subtle">
+      <div className="h-[50px] flex items-center justify-center px-4 border-b border-outline-subtle relative">
         <button
-          onClick={handleGoToLogin}
-          className="w-6 h-6"
-          aria-label="닫기"
+          onClick={() => router.back()}
+          className="absolute left-4 w-6 h-6"
+          aria-label="뒤로 가기"
         >
           <svg viewBox="0 0 24 24" className="w-full h-full">
             <path
               fill="currentColor"
-              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"
             />
           </svg>
         </button>
+        <h2 className="body-3-bold text-on-surface">임시 비밀번호 발급</h2>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 px-4 py-8 flex flex-col items-center">
-        {/* Email Icon */}
-        <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mb-6">
-          <svg viewBox="0 0 24 24" className="w-7 h-7 text-primary">
-            <path
+      <div className="flex-1 px-4 py-8 overflow-y-auto flex flex-col justify-between">
+        <div className="flex flex-col gap-6">
+          {/* Email Icon */}
+          <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center">
+            <svg
+              viewBox="0 0 28 28"
+              className="w-7 h-7 text-primary"
               fill="currentColor"
-              d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
-            />
-          </svg>
-        </div>
+            >
+              <path d="M23.3333 4.66675H4.66667C3.38333 4.66675 2.34833 5.71341 2.34833 7.00008L2.33333 21.0001C2.33333 22.2867 3.38333 23.3334 4.66667 23.3334H23.3333C24.6167 23.3334 25.6667 22.2867 25.6667 21.0001V7.00008C25.6667 5.71341 24.6167 4.66675 23.3333 4.66675ZM23.3333 21.0001H4.66667V9.33341L14 15.1667L23.3333 9.33341V21.0001ZM14 12.8334L4.66667 7.00008H23.3333L14 12.8334Z" />
+            </svg>
+          </div>
 
-        {/* Success Message */}
-        <div className="text-center mb-8">
-          <h1 className="headline-3 text-on-surface mb-3">
-            임시 비밀번호가 전송되었습니다.
-          </h1>
-          <p className="body-2 text-on-surface-subtle">
-            등록하신 이메일로 임시 비밀번호를 전송했습니다.
-            <br />
-            확인 후 로그인해 주세요.
-          </p>
-        </div>
-
-        {/* Notice Box */}
-        <div className="w-full bg-surface-2 rounded-lg p-4 space-y-2">
-          <div className="flex items-start gap-1">
-            <span className="text-primary text-sm">•</span>
-            <p className="body-2 text-on-surface-subtle flex-1">
-              메일 도착까지 최대 1~2분 걸릴 수 있어요.
+          {/* Success Message */}
+          <div className="flex flex-col gap-2">
+            <h1 className="title-1 text-on-surface">
+              임시 비밀번호가 전송되었습니다.
+            </h1>
+            <p className="body-1 text-on-surface">
+              이메일로 임시 비밀번호를 전송했습니다.
+              <br />
+              확인 후 로그인해 주세요.
             </p>
           </div>
-          <div className="flex items-start gap-1">
-            <span className="text-primary text-sm">•</span>
-            <p className="body-2 text-on-surface-subtle flex-1">
-              스팸함·프로모션함으로 이동될 수 있어요.
-            </p>
-          </div>
-          <div className="flex items-start gap-1">
-            <span className="text-primary text-sm">•</span>
-            <p className="body-2 text-on-surface-subtle flex-1">
-              로그인 후 비밀번호를 바로 변경하는 게 안전해요.
-            </p>
+
+          {/* Notice Box */}
+          <div className="w-full bg-surface-2 rounded-lg p-3 flex flex-col gap-1">
+            <div className="flex items-start gap-1 text-on-surface-subtle label-1">
+              <span>•</span>
+              <span>메일 도착까지 최대 1~2분 걸릴 수 있어요.</span>
+            </div>
+            <div className="flex items-start gap-1 text-on-surface-subtle label-1">
+              <span>•</span>
+              <span>스팸함 · 프로모션함을 확인해보세요.</span>
+            </div>
+            <div className="flex items-start gap-1 text-on-surface-subtle label-1">
+              <span>•</span>
+              <span>로그인 후 비밀번호를 바로 변경하는 게 안전해요.</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Bottom Button */}
-      <div className="px-4 py-4">
+        {/* Bottom Button */}
         <Button
           variant="primary"
           colorType="accent"
           className="w-full"
           onClick={handleGoToLogin}
         >
-          로그인하러 가기
+          로그인 하러가기
         </Button>
       </div>
     </div>
