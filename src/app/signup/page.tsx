@@ -6,106 +6,90 @@ import { BackHeader } from "@/components/common/BackHeader";
 
 export default function SignupPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    passwordConfirm: "",
-  });
-  const [isUsernameChecked, setIsUsernameChecked] = useState(false);
-  const [errors, setErrors] = useState({
-    username: "",
-    password: "",
-    passwordConfirm: "",
-  });
+  const [email, setEmail] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isVerificationSent, setIsVerificationSent] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [codeError, setCodeError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  // 비밀번호 유효성 검사 (영문, 숫자 포함 8자리 이상)
-  const validatePassword = (password: string): boolean => {
-    const hasLetter = /[a-zA-Z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const isLongEnough = password.length >= 8;
-    return hasLetter && hasNumber && isLongEnough;
+  // 이메일 유효성 검사
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
-  // 입력 필드 변경 핸들러
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // 아이디 변경 시 중복체크 초기화
-    if (name === "username") {
-      setIsUsernameChecked(false);
-      setErrors((prev) => ({ ...prev, username: "" }));
-    }
-
-    // 비밀번호 실시간 검증
-    if (name === "password") {
-      if (value && !validatePassword(value)) {
-        setErrors((prev) => ({
-          ...prev,
-          password: "영문, 숫자 포함 8자리 이상 입력해주세요.",
-        }));
-      } else {
-        setErrors((prev) => ({ ...prev, password: "" }));
-      }
-    }
-
-    // 비밀번호 확인 실시간 검증
-    if (name === "passwordConfirm") {
-      if (value && value !== formData.password) {
-        setErrors((prev) => ({
-          ...prev,
-          passwordConfirm: "비밀번호가 일치하지 않습니다.",
-        }));
-      } else {
-        setErrors((prev) => ({ ...prev, passwordConfirm: "" }));
-      }
-    }
+  // 이메일 입력 필드 변경 핸들러
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    setEmailError("");
   };
 
-  // 중복체크 핸들러
-  const handleCheckUsername = async () => {
-    if (!formData.username) {
-      setErrors((prev) => ({
-        ...prev,
-        username: "아이디를 입력해주세요.",
-      }));
+  // 인증번호 입력 필드 변경 핸들러
+  const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setVerificationCode(value);
+    setCodeError("");
+  };
+
+  // 인증요청/재전송 핸들러
+  const handleVerificationRequest = async () => {
+    if (!email) {
+      setEmailError("이메일을 입력해주세요.");
       return;
     }
 
-    // TODO: 실제 API 호출로 중복 체크
-    // 임시로 시뮬레이션
+    if (!validateEmail(email)) {
+      setEmailError("올바른 이메일 형식이 아닙니다.");
+      return;
+    }
+
+    setIsLoading(true);
+    setEmailError("");
+
     try {
-      // const response = await fetch('/api/check-username', { ... })
-      setIsUsernameChecked(true);
-      setErrors((prev) => ({ ...prev, username: "" }));
-      alert("사용 가능한 아이디입니다.");
-    } catch (error) {
-      setErrors((prev) => ({
-        ...prev,
-        username: "이미 사용 중인 아이디입니다.",
-      }));
+      const response = await fetch("/api/auth/verify-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsVerificationSent(true);
+        setEmailError("");
+      } else {
+        setEmailError(data.error || "인증요청에 실패했습니다.");
+      }
+    } catch (err) {
+      console.error("Verification request error:", err);
+      setEmailError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // 다음 버튼 활성화 조건
   const isFormValid =
-    formData.username &&
-    isUsernameChecked &&
-    formData.password &&
-    validatePassword(formData.password) &&
-    formData.passwordConfirm &&
-    formData.password === formData.passwordConfirm &&
-    !errors.username &&
-    !errors.password &&
-    !errors.passwordConfirm;
+    email &&
+    validateEmail(email) &&
+    isVerificationSent &&
+    verificationCode.trim() !== "" &&
+    !emailError &&
+    !codeError;
 
   // 다음 버튼 핸들러
   const handleNext = () => {
     if (!isFormValid) return;
 
-    // TODO: 회원가입 1단계 데이터 저장 (예: localStorage, 전역 상태 등)
-    console.log("Sign up step 1 data:", formData);
-    router.push("/signup/step2"); // 2단계로 이동
+    // 회원가입 1단계 데이터 저장 (localStorage에 임시 저장)
+    localStorage.setItem("signupData", JSON.stringify({ email, verificationCode }));
+    console.log("Sign up step 1 data:", { email, verificationCode });
+    router.push("/signup/step2");
   };
 
   return (
@@ -120,97 +104,89 @@ export default function SignupPage() {
         {/* Title */}
         <div className="mb-6">
           <h1 className="title-1 text-on-surface">
-            회원가입을 위해
-            <br />
-            아래 정보를 입력해주세요.
+            {isVerificationSent ? (
+              <>
+                입력하신 이메일 주소로
+                <br />
+                인증번호가 발송되었습니다.
+              </>
+            ) : (
+              <>
+                계정 생성을 위해
+                <br />
+                이메일을 입력해주세요.
+              </>
+            )}
           </h1>
         </div>
 
         {/* Form */}
         <div className="flex flex-col gap-6">
-          {/* Username Field with Check Button */}
+          {/* Email Field with Verification Button */}
           <div className="flex flex-col gap-1.5">
-            <label className="body-3 font-medium text-secondary">아이디</label>
+            <label className="body-3 font-medium text-secondary">이메일</label>
             <div className="flex gap-2 items-end">
               <div className="flex-1 flex flex-col gap-1.5">
                 <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  placeholder="아이디를 입력해주세요."
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  placeholder="이메일을 입력해주세요."
                   className={`field h-12 w-full ${
-                    errors.username ? "border-alert" : ""
+                    emailError ? "field-error" : ""
                   }`}
+                  disabled={isLoading || isVerificationSent}
                 />
               </div>
               <button
-                onClick={handleCheckUsername}
-                disabled={!formData.username || isUsernameChecked}
+                onClick={handleVerificationRequest}
+                disabled={!email || isLoading}
                 className={`btn h-12 px-5 shrink-0 ${
-                  !formData.username || isUsernameChecked
+                  !email || isLoading
                     ? "btn-tertiary opacity-40"
                     : "btn-tertiary"
                 }`}
               >
-                중복체크
+                {isLoading ? "전송 중..." : isVerificationSent ? "재전송" : "인증요청"}
               </button>
             </div>
-            {errors.username && (
-              <p className="label-1 text-alert">{errors.username}</p>
-            )}
-            {isUsernameChecked && !errors.username && (
-              <p className="label-1 text-positive">사용 가능한 아이디입니다.</p>
+            {emailError && (
+              <p className="field-error-text">{emailError}</p>
             )}
           </div>
 
-          {/* Password Field */}
-          <div className="flex flex-col gap-1.5">
-            <label className="body-3 font-medium text-secondary">
-              비밀번호
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="비밀번호를 입력해주세요."
-              className={`field h-12 w-full ${
-                errors.password ? "border-alert" : ""
-              }`}
-            />
-            <p
-              className={`label-1 ${
-                errors.password ? "text-alert" : "text-on-surface-subtle"
-              }`}
-            >
-              {errors.password || "영문, 숫자 포함 8자리 이상"}
-            </p>
-          </div>
-
-          {/* Password Confirm Field */}
-          <div className="flex flex-col gap-1.5">
-            <label className="body-3 font-medium text-secondary">
-              비밀번호 확인
-            </label>
-            <input
-              type="password"
-              name="passwordConfirm"
-              value={formData.passwordConfirm}
-              onChange={handleChange}
-              placeholder="비밀번호를 한 번 더 입력해주세요."
-              className={`field h-12 w-full ${
-                errors.passwordConfirm ? "border-alert" : ""
-              }`}
-            />
-            <p
-              className={`label-1 ${
-                errors.passwordConfirm ? "text-alert" : "text-on-surface-subtle"
-              }`}
-            >
-              {errors.passwordConfirm || "영문, 숫자 포함 8자리 이상"}
-            </p>
-          </div>
+          {/* Verification Code Field (shown after email sent) */}
+          {isVerificationSent && (
+            <div className="flex flex-col gap-1.5">
+              <label className="body-3 font-medium text-secondary">
+                인증번호 입력
+              </label>
+              <input
+                type="text"
+                name="verificationCode"
+                value={verificationCode}
+                onChange={handleCodeChange}
+                placeholder="인증번호 6자리를 입력해주세요."
+                maxLength={6}
+                className={`field h-12 w-full ${
+                  codeError ? "field-error" : ""
+                }`}
+              />
+              {codeError && (
+                <p className="field-error-text">{codeError}</p>
+              )}
+              {/* Info Text */}
+              <div className="flex flex-col gap-1">
+                <p className="label-1 text-on-surface-subtle">
+                  • 메일 도착까지 최대 1~2분 걸릴 수 있어요.
+                </p>
+                <p className="label-1 text-on-surface-subtle">
+                  • 스팸함・프로모션함을 확인해보세요.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

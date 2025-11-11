@@ -27,7 +27,7 @@ export const BackHeader = ({
   };
 
   return (
-    <div className="flex items-center px-4 py-4">
+    <div className="flex items-center px-4 py-4 shadow-2">
       <button
         onClick={handleBack}
         className="w-6 h-6 flex items-center justify-center"

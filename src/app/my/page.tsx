@@ -4,8 +4,9 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
+import { withAuth } from "@/components/auth/withAuth";
 
-export default function MyPage() {
+function MyPage() {
   const router = useRouter();
 
   // TODO: 실제 사용자 정보를 가져와야 함
@@ -47,10 +48,7 @@ export default function MyPage() {
       {/* Profile Section */}
       <div className="px-4 py-4">
         <button
-          onClick={() => {
-            // TODO: 프로필 편집 페이지로 이동
-            console.log("프로필 편집");
-          }}
+          onClick={() => router.push("/my/profile")}
           className="flex items-center gap-4 w-full"
         >
           {/* Profile Image */}
@@ -106,3 +104,5 @@ export default function MyPage() {
     </>
   );
 }
+
+export default withAuth(MyPage);

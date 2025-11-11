@@ -382,8 +382,13 @@
   color: var(--color-on-primary);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   opacity: 0.9;
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
@@ -391,8 +396,13 @@
   color: var(--color-primary);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   opacity: 0.9;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .btn-tertiary {
@@ -470,6 +480,14 @@
   border-color: var(--color-primary);
 }
 
+.field.field-error {
+  border-color: var(--color-alert);
+}
+
+.field.field-error:focus {
+  border-color: var(--color-alert);
+}
+
 .field::placeholder {
   color: var(--color-on-surface-subtlest);
 }
@@ -510,6 +528,15 @@
 
 .field-required {
   color: var(--color-alert);
+}
+
+.field-error-text {
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: var(--font-size-body-2);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-2);
+  color: var(--color-alert);
+  margin-top: var(--spacing-4);
 }
 
 /* Chip Base */

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
+import { withAuth } from "@/components/auth/withAuth";
 
 interface Notification {
   id: number;
@@ -12,7 +13,7 @@ interface Notification {
   timestamp: string;
 }
 
-export default function NotificationsPage() {
+function NotificationsPage() {
   const router = useRouter();
 
   // TODO: 실제 데이터는 API에서 가져와야 함
@@ -84,3 +85,5 @@ export default function NotificationsPage() {
     </>
   );
 }
+
+export default withAuth(NotificationsPage);

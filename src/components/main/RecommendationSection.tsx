@@ -1,111 +1,103 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { HorizontalSlider } from "../common/HorizontalSlider";
 import { getAssetPath } from "@/utils/assetPath";
 
 interface ShopCard {
+  id: string;
   image: string;
   title: string;
   description: string;
+  category: 'wedding-hall' | 'dress' | 'makeup';
 }
 
-export const RecommendationSection = () => {
-  const popularShops: ShopCard[] = [
-    {
-      image: getAssetPath("/img/frame-482543-1.png"),
-      title: "아펠가모 광화문점",
-      description: "서울시 종로구",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-1.png"),
-      title: "규수당 문래점",
-      description: "서울시 영등포구",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-1.png"),
-      title: "루벨 강동",
-      description: "서울시 강동구",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-1.png"),
-      title: "추가 샵 1",
-      description: "서울시 강남구",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-1.png"),
-      title: "추가 샵 2",
-      description: "서울시 송파구",
-    },
-  ];
+interface RecommendationSectionProps {
+  activeTab: string;
+}
 
-  const seoulShops: ShopCard[] = [
-    {
-      image: getAssetPath("/img/frame-482543-4.png"),
-      title: "제목",
-      description: "설명",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-4.png"),
-      title: "제목",
-      description: "설명",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-5.png"),
-      title: "제목",
-      description: "설명",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-4.png"),
-      title: "제목 4",
-      description: "설명 4",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-5.png"),
-      title: "제목 5",
-      description: "설명 5",
-    },
-  ];
+export const RecommendationSection = ({ activeTab }: RecommendationSectionProps) => {
+  const router = useRouter();
+  const [popularShops, setPopularShops] = useState<ShopCard[]>([]);
+  const [newShops, setNewShops] = useState<ShopCard[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const hotelWeddingHalls: ShopCard[] = [
-    {
-      image: getAssetPath("/img/frame-482543-4.png"),
-      title: "제목",
-      description: "설명",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-4.png"),
-      title: "제목",
-      description: "설명",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-4.png"),
-      title: "제목",
-      description: "설명",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-4.png"),
-      title: "제목 4",
-      description: "설명 4",
-    },
-    {
-      image: getAssetPath("/img/frame-482543-4.png"),
-      title: "제목 5",
-      description: "설명 5",
-    },
-  ];
+  useEffect(() => {
+    const fetchShops = async () => {
+      setIsLoading(true);
+      try {
+        // activeTab에 따라 다른 API 엔드포인트 선택
+        const getApiEndpoint = () => {
+          switch (activeTab) {
+            case 'wedding-hall':
+              return '/api/weddinghole';
+            case 'dress':
+              return '/api/dressshop';
+            case 'makeup':
+              return '/api/makeupshop';
+            default:
+              return '/api/dressshop';
+          }
+        };
+
+        const apiEndpoint = getApiEndpoint();
+
+        // 인기 상품 가져오기
+        const popularResponse = await fetch(`${apiEndpoint}?type=popular`);
+        const popularData = await popularResponse.json();
+
+        // 신규 상품 가져오기
+        const newResponse = await fetch(`${apiEndpoint}?type=new`);
+        const newData = await newResponse.json();
+
+        if (popularData.success) {
+          const formattedPopular = popularData.data.map((item: any) => ({
+            id: item.id,
+            image: item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
+            title: item.shopName || item.hallName || item.dressName || '업체명',
+            description: item.address || item.description || '주소 정보 없음',
+            category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
+          }));
+          setPopularShops(formattedPopular);
+        }
+
+        if (newData.success) {
+          const formattedNew = newData.data.map((item: any) => ({
+            id: item.id,
+            image: item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
+            title: item.shopName || item.hallName || item.dressName || '업체명',
+            description: item.address || item.description || '주소 정보 없음',
+            category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
+          }));
+          setNewShops(formattedNew);
+        }
+      } catch (error) {
+        console.error('Failed to fetch shops:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchShops();
+  }, [activeTab]);
+
+  const handleShopClick = (shopId: string) => {
+    router.push(`/detail/${shopId}?tab=${activeTab}`);
+  };
 
   const renderShopCard = (shop: ShopCard, index: number) => (
     <article
       key={index}
-      className="flex flex-col min-w-[140px] w-[140px] md:min-w-[180px] md:w-[180px] lg:min-w-[220px] lg:w-[220px] items-start gap-2 flex-shrink-0"
+      onClick={() => handleShopClick(shop.id)}
+      className="flex flex-col min-w-[140px] w-[140px] md:min-w-[180px] md:w-[180px] lg:min-w-[220px] lg:w-[220px] items-start gap-2 flex-shrink-0 cursor-pointer"
       draggable={false}
       onDragStart={(e) => e.preventDefault()}
     >
       <div className="relative self-stretch w-full rounded aspect-[1.5] overflow-hidden">
         <Image
-          src={shop.image}
+          src={getAssetPath(shop.image)}
           alt={shop.title}
           width={220}
           height={147}
@@ -125,36 +117,66 @@ export const RecommendationSection = () => {
     </article>
   );
 
+  // 카테고리별 제목 매핑
+  const getCategoryLabel = () => {
+    switch (activeTab) {
+      case 'wedding-hall':
+        return '웨딩홀';
+      case 'dress':
+        return '드레스샵';
+      case 'makeup':
+        return '메이크업샵';
+      default:
+        return '샵';
+    }
+  };
+
+  const categoryLabel = getCategoryLabel();
+
+  if (isLoading) {
+    return (
+      <section className="flex flex-col items-start gap-10 px-4 py-6 relative self-stretch w-full bg-white">
+        <div className="flex items-center justify-center w-full py-10">
+          <p className="text-on-surface-subtle">로딩 중...</p>
+        </div>
+      </section>
+    );
+  }
+
+  const renderEmptyState = (message: string) => (
+    <div className="flex items-center justify-center w-full min-h-[180px]">
+      <p className="body-2 text-on-surface-subtle">{message}</p>
+    </div>
+  );
+
   return (
-    <section className="flex flex-col items-start gap-10 px-4 py-6 relative self-stretch w-full bg-white">
-      {/* 인기있는 드레스샵 */}
+    <section className="flex flex-col items-start gap-10 px-4 py-6 relative self-stretch w-full bg-white flex-1">
+      {/* 인기있는 샵 */}
       <div className="flex flex-col items-start gap-4 w-full">
         <h2 className="w-fit mt-[-1.00px] title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
-          지금 인기있는 드레스샵
+          지금 인기있는 {categoryLabel}
         </h2>
-        <HorizontalSlider gap={12} className="w-full px-0 py-1">
-          {popularShops.map((shop, index) => renderShopCard(shop, index))}
-        </HorizontalSlider>
+        {popularShops.length > 0 ? (
+          <HorizontalSlider gap={12} className="w-full px-0 py-1">
+            {popularShops.map((shop, index) => renderShopCard(shop, index))}
+          </HorizontalSlider>
+        ) : (
+          renderEmptyState('인기 있는 업체가 없습니다')
+        )}
       </div>
 
-      {/* 서울시 소재 드레스샵 */}
+      {/* 신규 샵 */}
       <div className="flex flex-col items-start gap-4 w-full">
         <h2 className="w-fit mt-[-1.00px] title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
-          서울시 소재 드레스샵
+          신규 {categoryLabel}
         </h2>
-        <HorizontalSlider gap={12} className="w-full px-0 py-1">
-          {seoulShops.map((shop, index) => renderShopCard(shop, index))}
-        </HorizontalSlider>
-      </div>
-
-      {/* 호텔 웨딩홀 */}
-      <div className="flex flex-col items-start gap-3 w-full">
-        <h2 className="w-fit mt-[-1.00px] m3-body-medium-emphasized font-[number:var(--m3-body-medium-emphasized-font-weight)] text-black text-[length:var(--m3-body-medium-emphasized-font-size)] tracking-[var(--m3-body-medium-emphasized-letter-spacing)] leading-[var(--m3-body-medium-emphasized-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--m3-body-medium-emphasized-font-style)]">
-          호텔 웨딩홀
-        </h2>
-        <HorizontalSlider gap={12} className="w-full px-0 py-1">
-          {hotelWeddingHalls.map((shop, index) => renderShopCard(shop, index))}
-        </HorizontalSlider>
+        {newShops.length > 0 ? (
+          <HorizontalSlider gap={12} className="w-full px-0 py-1">
+            {newShops.map((shop, index) => renderShopCard(shop, index))}
+          </HorizontalSlider>
+        ) : (
+          renderEmptyState('신규 업체가 없습니다')
+        )}
       </div>
     </section>
   );

@@ -1,21 +1,81 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useGoogleLogin } from "@/hooks/useGoogleLogin";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login: googleLogin } = useGoogleLogin();
 
-  const handleLogin = (e: React.FormEvent) => {
+  // 로그인 화면 진입 시 모든 쿠키 삭제
+  useEffect(() => {
+    // 모든 쿠키 삭제
+    document.cookie.split(";").forEach((cookie) => {
+      const name = cookie.split("=")[0].trim();
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+
+    // localStorage와 sessionStorage도 초기화
+    localStorage.removeItem("userToken");
+    sessionStorage.clear();
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 로그인 로직 구현
-    console.log("Login:", { username, password });
+
+    // 입력값 검증
+    if (!username || !password) {
+      setError("아이디와 비밀번호를 모두 입력해주세요.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // 로그인 성공
+        console.log("Login successful:", data);
+
+        // 토큰 저장
+        localStorage.setItem("userToken", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        // 메인 페이지로 이동
+        router.push("/main");
+      } else {
+        // 로그인 실패
+        setError(data.error || "로그인에 실패했습니다.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
-    // TODO: Google 로그인 로직 구현
-    console.log("Google login");
+    googleLogin();
   };
+
+  // 로그인 버튼 활성화 조건
+  const isFormValid = username.trim() !== "" && password.trim() !== "";
 
   return (
     <div
@@ -25,38 +85,51 @@ export default function LoginPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Logo */}
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-center py-6 mb-6">
           <h1 className="headline-1 text-primary">LOGO</h1>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleLogin} className="flex flex-col gap-2 w-full mb-4">
+        <form onSubmit={handleLogin} className="flex flex-col gap-2 w-full">
           {/* Username Field */}
           <input
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setError("");
+            }}
             placeholder="아이디"
-            className="field w-full h-11"
+            className={`field w-full h-11 ${error ? "field-error" : ""}`}
+            disabled={isLoading}
           />
 
           {/* Password Field */}
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError("");
+            }}
             placeholder="비밀번호"
-            className="field w-full h-11"
+            className={`field w-full h-11 ${error ? "field-error" : ""}`}
+            disabled={isLoading}
           />
+
+          {/* Error Message */}
+          {error && (
+            <p className="field-error-text">{error}</p>
+          )}
         </form>
 
         {/* Login Button */}
         <button
           onClick={handleLogin}
-          className="btn btn-primary w-full opacity-40 mt-6"
-          disabled
+          disabled={!isFormValid || isLoading}
+          className="btn btn-primary w-full mt-6"
         >
-          로그인
+          {isLoading ? "로그인 중..." : "로그인"}
         </button>
 
         {/* Divider */}
@@ -67,6 +140,7 @@ export default function LoginPage() {
           onClick={handleGoogleLogin}
           className="btn btn-default-tertiary w-full"
           style={{ paddingLeft: "12px", paddingRight: "16px" }}
+          disabled={isLoading}
         >
           <div className="w-6 h-6 shrink-0">
             <svg viewBox="0 0 24 24" className="w-full h-full">
@@ -93,7 +167,7 @@ export default function LoginPage() {
       </div>
 
       {/* Footer Links */}
-      <div className="flex items-center justify-center gap-1 px-4 py-4 label-1 text-on-surface-subtle">
+      <div className="flex items-center justify-center gap-1 px-4 py-8 label-1 text-on-surface-subtle">
         <a href="/forgot-password" className="underline">
           비밀번호 찾기
         </a>

@@ -6,6 +6,7 @@ import { GeistMono } from "geist/font/mono";
 import localFont from "next/font/local";
 import "../styles/globals.css";
 import { NavigationProvider } from "../contexts/NavigationContext";
+import { AuthProvider } from "../contexts/AuthContext";
 import { Header } from "../components/common/Header";
 import { BottomNavigation } from "../components/common/BottomNavigation";
 import { usePathname } from "next/navigation";
@@ -51,7 +52,24 @@ export default function RootLayout({
     '/signup/step2',
     '/signup/complete',
     '/schedule/add',
+    '/search',
+    '/forgot-password',
+    '/my/profile',
+    '/my/profile/edit',
   ];
+
+  // 동적 경로를 체크하는 함수
+  const isDynamicPathHidden = (path: string) => {
+    // /detail/[id] 형태의 경로 체크
+    if (path.startsWith('/detail/')) {
+      return true;
+    }
+    // /forgot-password/[step] 형태의 경로 체크
+    if (path.startsWith('/forgot-password/')) {
+      return true;
+    }
+    return false;
+  };
   
   // Header만 숨길 페이지 목록 (BackHeader를 사용하는 페이지)
   const hideHeaderOnlyPaths = [
@@ -60,19 +78,20 @@ export default function RootLayout({
     '/my/reviews'
   ];
   
-  const shouldHideHeader = hideNavigationPaths.includes(pathname) || hideHeaderOnlyPaths.includes(pathname);
-  const shouldHideBottomNav = hideNavigationPaths.includes(pathname);
+  const shouldHideHeader = hideNavigationPaths.includes(pathname) || hideHeaderOnlyPaths.includes(pathname) || isDynamicPathHidden(pathname);
+  const shouldHideBottomNav = hideNavigationPaths.includes(pathname) || isDynamicPathHidden(pathname);
   
   return (
     <html lang="en">
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} ${roboto.variable} ${pretendard.variable} antialiased`}
       >
-        <NavigationProvider>
+        <AuthProvider>
+          <NavigationProvider>
             <div
-            className="flex flex-col h-screen items-start relative bg-white mx-auto"
-            style={{ width: "var(--app-width)", maxWidth: "100vw" }}
-          >
+              className="flex flex-col h-screen items-start relative bg-white mx-auto"
+              style={{ width: "var(--app-width)", maxWidth: "100vw" }}
+            >
             {/* Fixed Header */}
             {!shouldHideHeader && (
               <div
@@ -103,8 +122,9 @@ export default function RootLayout({
                 <BottomNavigation />
               </div>
             )}
-          </div>
-        </NavigationProvider>
+            </div>
+          </NavigationProvider>
+        </AuthProvider>
       </body>
     </html>
   );

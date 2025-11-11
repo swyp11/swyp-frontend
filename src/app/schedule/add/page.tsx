@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { CalendarSelect } from "../../../components/ui/CalendarSelect";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
+import { withAuth } from "@/components/auth/withAuth";
 
-export default function AddSchedulePage() {
+function AddSchedulePage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -56,7 +57,7 @@ export default function AddSchedulePage() {
             height={24}
           />
         </button>
-        <h1 className="body-3 font-semibold text-on-surface">드레스샵 찾기</h1>
+        <h1 className="body-3 font-semibold text-on-surface">일정 생성</h1>
         <div className="w-10 h-10 opacity-0" />
       </div>
 
@@ -149,3 +150,5 @@ export default function AddSchedulePage() {
     </div>
   );
 }
+
+export default withAuth(AddSchedulePage);

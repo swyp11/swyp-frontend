@@ -9,6 +9,8 @@ import { ViewSelector, CalendarView } from "../../components/schedule/ViewSelect
 import { NavigationHeader } from "../../components/schedule/NavigationHeader";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
+import { withAuth } from "@/components/auth/withAuth";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Event {
   id: string;
@@ -21,7 +23,8 @@ interface Event {
   description?: string;
 }
 
-export default function SchedulePage() {
+function SchedulePage() {
+  const { checkAuth } = useAuth();
   const router = useRouter();
   const [currentMonth, setCurrentMonth] = useState(10);
   const [currentYear, setCurrentYear] = useState(2024);
@@ -269,7 +272,15 @@ export default function SchedulePage() {
         {/* D-Day & View Selector */}
         <div className="px-2 pb-4">
           <div className="bg-surface-2 rounded-lg px-4 py-2.5 flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <button
+              className="flex items-center gap-2"
+              onClick={() => {
+                if (checkAuth()) {
+                  // TODO: D-day 수정 모달 열기
+                  console.log("D-day 수정");
+                }
+              }}
+            >
               <span className="body-2-medium text-[#787878]">결혼식까지</span>
               <span className="body-2-medium text-primary font-bold">D-99</span>
               <Image
@@ -278,7 +289,7 @@ export default function SchedulePage() {
                 width={16}
                 height={16}
               />
-            </div>
+            </button>
             <ViewSelector
               currentView={calendarView}
               onViewChange={setCalendarView}
@@ -377,3 +388,5 @@ export default function SchedulePage() {
     </div >
   );
 }
+
+export default withAuth(SchedulePage);

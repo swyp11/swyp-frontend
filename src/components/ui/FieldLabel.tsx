@@ -23,6 +23,8 @@ export interface FieldLabelProps {
   className?: string;
   /** Field props */
   fieldProps?: React.InputHTMLAttributes<HTMLInputElement> | React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+  /** Error message to display */
+  error?: string;
 }
 
 export const FieldLabel = React.forwardRef<HTMLDivElement, FieldLabelProps>(
@@ -38,9 +40,12 @@ export const FieldLabel = React.forwardRef<HTMLDivElement, FieldLabelProps>(
       onChange,
       className = "",
       fieldProps,
+      error,
     },
     ref
   ) => {
+    const hasError = !!error;
+
     return (
       <div ref={ref} className={`field-label ${className}`}>
         {/* Label */}
@@ -52,7 +57,7 @@ export const FieldLabel = React.forwardRef<HTMLDivElement, FieldLabelProps>(
         {/* Field */}
         {fieldType === "textarea" ? (
           <textarea
-            className="field field-textbox"
+            className={`field field-textbox ${hasError ? "field-error" : ""}`}
             placeholder={placeholder}
             value={value}
             onChange={onChange}
@@ -61,7 +66,7 @@ export const FieldLabel = React.forwardRef<HTMLDivElement, FieldLabelProps>(
         ) : (
           <input
             type="text"
-            className="field"
+            className={`field ${hasError ? "field-error" : ""}`}
             placeholder={placeholder}
             value={value}
             onChange={onChange}
@@ -69,8 +74,13 @@ export const FieldLabel = React.forwardRef<HTMLDivElement, FieldLabelProps>(
           />
         )}
 
+        {/* Error Message */}
+        {hasError && (
+          <div className="field-error-text">{error}</div>
+        )}
+
         {/* Helptext */}
-        {showHelptext && helptext && (
+        {showHelptext && helptext && !hasError && (
           <div className="field-helptext">{helptext}</div>
         )}
       </div>
