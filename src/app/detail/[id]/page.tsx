@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
+import { BackHeader } from "@/components/common/BackHeader";
 
 export default function DetailPage() {
   const router = useRouter();
@@ -120,30 +121,7 @@ export default function DetailPage() {
       className="bg-white flex flex-col min-h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-0 py-3 relative">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center justify-center gap-2.5 px-4 py-0"
-          aria-label="뒤로 가기"
-        >
-          <Image
-            src={getAssetPath("/img/arrow_back.svg")}
-            alt="뒤로 가기"
-            width={24}
-            height={24}
-          />
-        </button>
-        <h1 className="body-3-bold text-on-surface">{itemData.title}</h1>
-        <div className="flex items-center justify-center gap-2.5 px-4 py-0 opacity-0">
-          <Image
-            src={getAssetPath("/img/arrow_back.svg")}
-            alt=""
-            width={24}
-            height={24}
-          />
-        </div>
-      </div>
+      <BackHeader title={itemData.title} />
 
       {/* Content */}
       <div className="flex-1 bg-white flex flex-col gap-6 p-6 overflow-y-auto">

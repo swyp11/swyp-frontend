@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { BackHeader } from "@/components/common/BackHeader";
 import { useGoogleLogin } from "@/hooks/useGoogleLogin";
 
 export default function LoginPage() {
@@ -83,9 +82,6 @@ export default function LoginPage() {
       className="bg-white flex flex-col h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
-      {/* Header */}
-      <BackHeader title="로그인" />
-
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Logo */}

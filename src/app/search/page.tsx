@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
+import { BackHeader } from "@/components/common/BackHeader";
 import { SearchInput } from "@/components/ui";
 import { NavigationTabSection } from "@/components/main/NavigationTabSection";
 
@@ -98,30 +99,7 @@ function SearchResultsContent() {
       className="bg-white flex flex-col min-h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-0 py-3 relative">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center justify-center gap-2.5 px-4 py-0"
-          aria-label="뒤로 가기"
-        >
-          <Image
-            src={getAssetPath("/img/arrow_back.svg")}
-            alt="뒤로 가기"
-            width={24}
-            height={24}
-          />
-        </button>
-        <h1 className="body-3-bold text-on-surface">업체찾기</h1>
-        <div className="flex items-center justify-center gap-2.5 px-4 py-0 opacity-0">
-          <Image
-            src={getAssetPath("/img/arrow_back.svg")}
-            alt=""
-            width={24}
-            height={24}
-          />
-        </div>
-      </div>
+      <BackHeader title="업체찾기" />
 
       {/* Search Bar */}
       <div className="flex flex-col items-end gap-2.5 p-4">

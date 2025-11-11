@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { BackHeader } from "@/components/common/BackHeader";
 import { FieldLabel } from "@/components/ui/FieldLabel";
 import { Button } from "@/components/ui/Button";
 
@@ -94,25 +95,7 @@ export default function ForgotPasswordEmailPage() {
       className="bg-white flex flex-col h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
-      {/* System Bar */}
-      <div className="h-11 bg-surface-1" />
-
-      {/* Header */}
-      <div className="h-[50px] flex items-center justify-center px-4 border-b border-outline-subtle relative">
-        <button
-          onClick={() => router.back()}
-          className="absolute left-4 w-6 h-6"
-          aria-label="뒤로 가기"
-        >
-          <svg viewBox="0 0 24 24" className="w-full h-full">
-            <path
-              fill="currentColor"
-              d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"
-            />
-          </svg>
-        </button>
-        <h2 className="body-3-bold text-on-surface">임시 비밀번호 발급</h2>
-      </div>
+      <BackHeader title="임시 비밀번호 발급" />
 
       {/* Main Content */}
       <div className="flex-1 px-4 py-8 overflow-y-auto flex flex-col justify-between">
