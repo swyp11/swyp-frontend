@@ -2,49 +2,75 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { BackHeader } from "@/components/common/BackHeader";
-
-type Gender = "groom" | "bride" | null;
 
 export default function SignupStep2Page() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    nickname: "",
-    birthdate: "",
-    gender: null as Gender,
-    email: "",
-    weddingDate: "",
-  });
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmError, setConfirmError] = useState("");
 
-  // 입력 필드 변경 핸들러
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // 비밀번호 유효성 검사 (영문, 숫자 포함 8자리 이상)
+  const validatePassword = (password: string): boolean => {
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const isLongEnough = password.length >= 8;
+    return hasLetter && hasNumber && isLongEnough;
   };
 
-  // 신랑/신부 선택 핸들러
-  const handleGenderSelect = (gender: Gender) => {
-    setFormData((prev) => ({ ...prev, gender }));
+  // 비밀번호 입력 필드 변경 핸들러
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassword(value);
+
+    // 실시간 유효성 검사
+    if (value && !validatePassword(value)) {
+      setPasswordError("영문, 숫자 포함 8자리 이상");
+    } else {
+      setPasswordError("");
+    }
+
+    // 비밀번호 확인 필드가 이미 입력되어 있으면 일치 여부 확인
+    if (passwordConfirm && value !== passwordConfirm) {
+      setConfirmError("비밀번호가 일치하지 않습니다.");
+    } else if (passwordConfirm) {
+      setConfirmError("");
+    }
   };
 
-  // 완료 버튼 활성화 조건 (닉네임만 필수)
-  const isFormValid = formData.nickname.trim() !== "";
+  // 비밀번호 확인 입력 필드 변경 핸들러
+  const handleConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPasswordConfirm(value);
 
-  // 완료 버튼 핸들러
-  const handleComplete = () => {
+    // 실시간 일치 여부 확인
+    if (value && value !== password) {
+      setConfirmError("비밀번호가 일치하지 않습니다.");
+    } else {
+      setConfirmError("");
+    }
+  };
+
+  // 다음 버튼 활성화 조건
+  const isFormValid =
+    password &&
+    passwordConfirm &&
+    validatePassword(password) &&
+    password === passwordConfirm &&
+    !passwordError &&
+    !confirmError;
+
+  // 다음 버튼 핸들러
+  const handleNext = () => {
     if (!isFormValid) return;
 
-    // TODO: 회원가입 완료 로직 구현 (API 호출 등)
-    console.log("Complete sign up:", formData);
-
-    // 회원가입 완료 페이지로 이동
-    router.push("/signup/complete");
-  };
-
-  // 뒤로가기 핸들러
-  const handleBack = () => {
-    router.back();
+    // 비밀번호 데이터 저장 (localStorage 업데이트)
+    const signupData = JSON.parse(localStorage.getItem("signupData") || "{}");
+    signupData.password = password;
+    localStorage.setItem("signupData", JSON.stringify(signupData));
+    console.log("Sign up step 2 data:", { password });
+    router.push("/signup/step3");
   };
 
   return (
@@ -52,134 +78,75 @@ export default function SignupStep2Page() {
       className="bg-white flex flex-col h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
-      <BackHeader title="회원가입" onBack={handleBack} />
+      <BackHeader title="회원가입" />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col px-4 pt-6 overflow-y-auto">
         {/* Title */}
         <div className="mb-6">
-          <h1 className="title-1 text-on-surface">추가정보를 입력해주세요</h1>
+          <h1 className="title-1 text-on-surface">비밀번호를 생성해주세요.</h1>
         </div>
 
-        {/* Form Fields */}
+        {/* Form */}
         <div className="flex flex-col gap-6">
-          {/* Nickname Field (Required) */}
+          {/* Password Field */}
           <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-1">
-              <label className="body-3 font-medium text-secondary">
-                닉네임
-              </label>
-              <span className="text-alert text-xs font-medium">*</span>
-            </div>
+            <label className="body-3 font-medium text-secondary">
+              비밀번호
+            </label>
             <input
-              type="text"
-              name="nickname"
-              value={formData.nickname}
-              onChange={handleChange}
-              placeholder="닉네임을 입력해주세요."
-              className="field h-12 w-full"
+              type="password"
+              name="password"
+              value={password}
+              onChange={handlePasswordChange}
+              placeholder="비밀번호를 입력해주세요."
+              className={`field h-12 w-full ${
+                passwordError ? "field-error" : ""
+              }`}
             />
+            <p
+              className={`label-1 ${
+                passwordError ? "text-alert" : "text-on-surface-subtle"
+              }`}
+            >
+              영문, 숫자 포함 8자리 이상
+            </p>
           </div>
 
-          {/* Birthdate Field (Optional) */}
+          {/* Password Confirm Field */}
           <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-1">
-              <label className="body-3 font-medium text-secondary">
-                생년월일(6자리)
-              </label>
-              <span className="text-on-surface-subtle text-xs font-medium">
-                (선택)
-              </span>
-            </div>
+            <label className="body-3 font-medium text-secondary">
+              비밀번호 확인
+            </label>
             <input
-              type="text"
-              name="birthdate"
-              value={formData.birthdate}
-              onChange={handleChange}
-              placeholder="생년월일을 입력해주세요."
-              maxLength={6}
-              className="field h-12 w-full"
+              type="password"
+              name="passwordConfirm"
+              value={passwordConfirm}
+              onChange={handleConfirmChange}
+              placeholder="비밀번호를 한 번 더 입력해주세요."
+              className={`field h-12 w-full ${
+                confirmError ? "field-error" : ""
+              }`}
             />
-          </div>
-
-          {/* Gender Selection (Optional) */}
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-1">
-              <label className="body-2-medium text-secondary">신랑/신부</label>
-              <span className="text-on-surface-subtle text-xs font-medium">
-                (선택)
-              </span>
-            </div>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => handleGenderSelect("groom")}
-                className={`chip flex-1 h-10 ${formData.gender === "groom" ? "chip-selected" : ""
-                  }`}
-              >
-                신랑
-              </button>
-              <button
-                type="button"
-                onClick={() => handleGenderSelect("bride")}
-                className={`chip flex-1 h-10 ${formData.gender === "bride" ? "chip-selected" : ""
-                  }`}
-              >
-                신부
-              </button>
-            </div>
-          </div>
-
-          {/* Email Field (Optional) */}
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-1">
-              <label className="body-3 font-medium text-secondary">
-                이메일
-              </label>
-              <span className="text-on-surface-subtle text-xs font-medium">
-                (선택)
-              </span>
-            </div>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="이메일을 입력해주세요."
-              className="field h-12 w-full"
-            />
-          </div>
-
-          {/* Wedding Date Field (Optional) */}
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-1">
-              <label className="body-3 font-medium text-secondary">
-                결혼식 예정 날짜
-              </label>
-              <span className="text-on-surface-subtle text-xs font-medium">
-                (선택)
-              </span>
-            </div>
-            <input
-              type="text"
-              name="weddingDate"
-              value={formData.weddingDate}
-              onChange={handleChange}
-              placeholder="결혼식 예정 날짜를 입력해주세요."
-              className="field h-12 w-full"
-            />
+            <p
+              className={`label-1 ${
+                confirmError ? "text-alert" : "text-on-surface-subtle"
+              }`}
+            >
+              {confirmError || "영문, 숫자 포함 8자리 이상"}
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Complete Button */}
+      {/* Next Button */}
       <div className="px-4 py-4 border-t border-[#f1f1f1]">
         <button
-          onClick={handleComplete}
+          onClick={handleNext}
           disabled={!isFormValid}
           className={`btn btn-primary w-full ${!isFormValid ? "opacity-40" : ""}`}
         >
-          완료
+          다음
         </button>
       </div>
     </div>
