@@ -104,7 +104,7 @@ export default function LoginPage() {
               setError("");
             }}
             placeholder="아이디"
-            className="field w-full h-11"
+            className={`field w-full h-11 ${error ? "field-error" : ""}`}
             disabled={isLoading}
           />
 
@@ -117,13 +117,13 @@ export default function LoginPage() {
               setError("");
             }}
             placeholder="비밀번호"
-            className="field w-full h-11"
+            className={`field w-full h-11 ${error ? "field-error" : ""}`}
             disabled={isLoading}
           />
 
           {/* Error Message */}
           {error && (
-            <p className="label-1 text-alert mt-1">{error}</p>
+            <p className="field-error-text">{error}</p>
           )}
         </form>
 
@@ -131,9 +131,7 @@ export default function LoginPage() {
         <button
           onClick={handleLogin}
           disabled={!isFormValid || isLoading}
-          className={`btn btn-primary w-full mt-6 ${
-            !isFormValid || isLoading ? "opacity-40" : ""
-          }`}
+          className="btn btn-primary w-full mt-6"
         >
           {isLoading ? "로그인 중..." : "로그인"}
         </button>

@@ -10,6 +10,8 @@ export default function ForgotPasswordEmailPage() {
   const [email, setEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [isResending, setIsResending] = useState(false);
+  const [error, setError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
     // Check if user came from step 1
@@ -49,7 +51,11 @@ export default function ForgotPasswordEmailPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isCodeValid) return;
+    if (!isCodeValid || isVerifying) return;
+
+    console.log("🔍 인증 시도:", { email, verificationCode });
+    setError("");
+    setIsVerifying(true);
 
     try {
       // Call API to verify code and send temporary password
@@ -59,20 +65,27 @@ export default function ForgotPasswordEmailPage() {
         body: JSON.stringify({ email, verificationCode }),
       });
 
+      console.log("📡 API 응답 상태:", response.status);
+
       if (!response.ok) {
         const result = await response.json();
-        throw new Error(result.error || "인증에 실패했습니다.");
+        console.log("❌ 인증 실패:", result);
+        setError(result.error || "인증에 실패했습니다.");
+        return;
       }
+
+      const result = await response.json();
+      console.log("✅ 인증 성공:", result);
 
       // Success - proceed to success page
       sessionStorage.removeItem("verificationEmail");
       sessionStorage.setItem("recoveryEmail", email);
       router.push("/forgot-password/success");
     } catch (error) {
-      console.error("Verification error:", error);
-      alert(
-        error instanceof Error ? error.message : "인증 중 오류가 발생했습니다."
-      );
+      console.error("💥 Verification error:", error);
+      setError("인증 중 오류가 발생했습니다.");
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -145,6 +158,7 @@ export default function ForgotPasswordEmailPage() {
                 onChange={(e) => {
                   const value = e.target.value.replace(/\D/g, "").slice(0, 6);
                   setVerificationCode(value);
+                  setError(""); // Clear error when typing
                 }}
                 fieldProps={{
                   type: "text",
@@ -152,19 +166,22 @@ export default function ForgotPasswordEmailPage() {
                   inputMode: "numeric",
                   pattern: "[0-9]*",
                 }}
+                error={error}
               />
 
-              {/* Help Text */}
-              <div className="flex flex-col gap-1 text-on-surface-subtle label-1">
-                <div className="flex items-start gap-1">
-                  <span>•</span>
-                  <span>메일 도착까지 최대 1~2분 걸릴 수 있어요.</span>
+              {/* Help Text - Only show when no error */}
+              {!error && (
+                <div className="flex flex-col gap-1 text-on-surface-subtle label-1">
+                  <div className="flex items-start gap-1">
+                    <span>•</span>
+                    <span>메일 도착까지 최대 1~2분 걸릴 수 있어요.</span>
+                  </div>
+                  <div className="flex items-start gap-1">
+                    <span>•</span>
+                    <span>스팸함 · 프로모션함을 확인해보세요.</span>
+                  </div>
                 </div>
-                <div className="flex items-start gap-1">
-                  <span>•</span>
-                  <span>스팸함 · 프로모션함을 확인해보세요.</span>
-                </div>
-              </div>
+              )}
             </div>
           </form>
         </div>
@@ -173,11 +190,11 @@ export default function ForgotPasswordEmailPage() {
         <Button
           variant="primary"
           colorType="accent"
-          className={`w-full ${!isCodeValid ? "opacity-40" : ""}`}
+          className="w-full"
           onClick={handleSubmit}
-          disabled={!isCodeValid}
+          disabled={!isCodeValid || isVerifying}
         >
-          다음
+          {isVerifying ? "확인 중..." : "다음"}
         </Button>
       </div>
     </div>
