@@ -124,8 +124,8 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
         return '웨딩홀';
       case 'dress':
         return '드레스샵';
-      // case 'makeup':
-      //   return '메이크업샵';
+      case 'makeup':
+        return '메이크업샵';
       default:
         return '샵';
     }
