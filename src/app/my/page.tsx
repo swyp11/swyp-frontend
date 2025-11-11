@@ -48,10 +48,7 @@ function MyPage() {
       {/* Profile Section */}
       <div className="px-4 py-4">
         <button
-          onClick={() => {
-            // TODO: 프로필 편집 페이지로 이동
-            console.log("프로필 편집");
-          }}
+          onClick={() => router.push("/my/profile")}
           className="flex items-center gap-4 w-full"
         >
           {/* Profile Image */}

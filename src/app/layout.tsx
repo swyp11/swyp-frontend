@@ -54,6 +54,8 @@ export default function RootLayout({
     '/schedule/add',
     '/search',
     '/forgot-password',
+    '/my/profile',
+    '/my/profile/edit',
   ];
 
   // 동적 경로를 체크하는 함수

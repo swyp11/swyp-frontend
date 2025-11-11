@@ -9,7 +9,7 @@ import { getAssetPath } from "@/utils/assetPath";
 export default function SettingsPage() {
   const router = useRouter();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  // const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
   const settingsItems = [
     {
@@ -44,19 +44,19 @@ export default function SettingsPage() {
         console.log("개인정보 처리방침");
       },
     },
-    {
-      icon: (
-        <Image
-          className="relative w-6 h-6"
-          alt=""
-          src={getAssetPath("/img/sentiment-dissatisfied.svg")}
-          width={24}
-          height={24}
-        />
-      ),
-      label: "회원탈퇴",
-      onClick: () => setShowWithdrawModal(true),
-    },
+    // {
+    //   icon: (
+    //     <Image
+    //       className="relative w-6 h-6"
+    //       alt=""
+    //       src={getAssetPath("/img/sentiment-dissatisfied.svg")}
+    //       width={24}
+    //       height={24}
+    //     />
+    //   ),
+    //   label: "회원탈퇴",
+    //   onClick: () => setShowWithdrawModal(true),
+    // },
     {
       icon: (
         <Image
@@ -79,12 +79,12 @@ export default function SettingsPage() {
     router.push("/login");
   };
 
-  const handleWithdraw = () => {
-    // TODO: 실제 회원탈퇴 로직 구현
-    console.log("회원탈퇴");
-    setShowWithdrawModal(false);
-    router.push("/login");
-  };
+  // const handleWithdraw = () => {
+  //   // TODO: 실제 회원탈퇴 로직 구현
+  //   console.log("회원탈퇴");
+  //   setShowWithdrawModal(false);
+  //   router.push("/login");
+  // };
 
   return (
     <>
@@ -120,10 +120,15 @@ export default function SettingsPage() {
 
       {/* Logout Modal */}
       {showLogoutModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+        <div
+          className="fixed inset-0 flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 9999 }}
+          onClick={() => setShowLogoutModal(false)}
+        >
           <div
             className="bg-white rounded-lg p-6 mx-4"
-            style={{ maxWidth: "min(320px, 90vw)", width: "100%" }}
+            style={{ maxWidth: "320px", width: "90%" }}
+            onClick={(e) => e.stopPropagation()}
           >
             <p className="body-2 text-on-surface text-center mb-6">
               정말 로그아웃 하시겠습니까?
@@ -131,13 +136,13 @@ export default function SettingsPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className="flex-1 btn h-12 border border-border bg-white text-on-surface"
+                className="flex-1 h-12 border border-border rounded-lg bg-white text-on-surface body-2-medium"
               >
                 취소
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 btn btn-primary h-12"
+                className="flex-1 h-12 bg-primary rounded-lg text-white body-2-medium"
               >
                 로그아웃
               </button>
@@ -146,12 +151,17 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Withdraw Modal */}
-      {showWithdrawModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+      {/* Withdraw Modal - 주석 처리 */}
+      {/* {showWithdrawModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+          onClick={() => setShowWithdrawModal(false)}
+        >
           <div
             className="bg-white rounded-lg p-6 mx-4"
-            style={{ maxWidth: "min(320px, 90vw)", width: "100%" }}
+            style={{ maxWidth: "320px", width: "90%" }}
+            onClick={(e) => e.stopPropagation()}
           >
             <p className="body-2 text-on-surface text-center mb-6">
               정말 회원탈퇴 하시겠습니까?
@@ -159,20 +169,20 @@ export default function SettingsPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowWithdrawModal(false)}
-                className="flex-1 btn h-12 border border-border bg-white text-on-surface"
+                className="flex-1 h-12 border border-border rounded-lg bg-white text-on-surface body-2-medium"
               >
                 취소
               </button>
               <button
                 onClick={handleWithdraw}
-                className="flex-1 btn btn-primary h-12"
+                className="flex-1 h-12 bg-primary rounded-lg text-white body-2-medium"
               >
                 탈퇴하기
               </button>
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </>
   );
 }
