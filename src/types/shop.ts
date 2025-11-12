@@ -5,9 +5,11 @@
 // 드레스샵 응답
 export interface DressShopResponse {
   id: number;
-  shopName: string;
+  name: string;
+  shopName?: string; // 하위 호환성
   address?: string;
   phone?: string;
+  email?: string;
   description?: string;
   imageUrl?: string;
   images?: string[];
@@ -35,9 +37,11 @@ export interface DressShopRequest {
 // 메이크업샵 응답
 export interface MakeupShopResponse {
   id: number;
-  shopName: string;
+  name: string;
+  shopName?: string; // 하위 호환성
   address?: string;
   phone?: string;
+  email?: string;
   description?: string;
   imageUrl?: string;
   images?: string[];

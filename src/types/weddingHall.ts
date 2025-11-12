@@ -5,9 +5,12 @@
 // 웨딩홀 응답
 export interface WeddingHallResponse {
   id: number;
-  hallName: string;
+  name: string;
+  venueType?: string;
+  parking?: number;
   address?: string;
   phone?: string;
+  email?: string;
   description?: string;
   imageUrl?: string;
   images?: string[];

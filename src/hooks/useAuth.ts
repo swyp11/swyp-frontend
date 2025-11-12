@@ -67,3 +67,22 @@ export const useIsAuthenticated = () => {
     staleTime: Infinity,
   });
 };
+
+/**
+ * 이메일 인증 요청 훅
+ */
+export const useRequestEmailVerification = () => {
+  return useMutation({
+    mutationFn: (email: string) => authApi.requestEmailVerification(email),
+  });
+};
+
+/**
+ * 이메일 인증번호 확인 훅
+ */
+export const useVerifyEmail = () => {
+  return useMutation({
+    mutationFn: ({ email, code }: { email: string; code: string }) =>
+      authApi.verifyEmail(email, code),
+  });
+};
