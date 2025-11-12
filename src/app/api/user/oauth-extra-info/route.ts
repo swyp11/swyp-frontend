@@ -8,7 +8,7 @@ import { proxyToBackend } from '@/lib/apiProxy';
 
 export async function POST(request: NextRequest) {
   return proxyToBackend(request, {
-    path: '/join/oAuth/extra-info',
+    path: '/api/join/oAuth/extra-info',
     method: 'POST',
   });
 }

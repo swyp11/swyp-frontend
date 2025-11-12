@@ -16,48 +16,50 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 실제 백엔드 API로 요청 전달
+    // 개발 환경에서는 백엔드 호출 없이 바로 성공 응답
+    const isDevelopment = process.env.NODE_ENV === 'development';
+
+    if (isDevelopment) {
+      console.log('✅ [DEV] 이메일 인증 요청 - 개발 모드 bypass');
+      console.log('📧 [DEV] Email:', email);
+      console.log('🔢 [DEV] 인증 코드: 999999');
+      return NextResponse.json(
+        { success: true, message: '인증번호가 전송되었습니다. (개발 모드: 999999 사용)' },
+        { status: 200 }
+      );
+    }
+
+    // 프로덕션 환경에서만 백엔드 호출
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
     if (!BACKEND_URL) {
-      console.log('⚠️ Backend URL not configured, using mock response');
-      // 개발 환경에서 백엔드가 없을 경우 성공 응답 반환
       return NextResponse.json(
-        { success: true, message: '인증번호가 전송되었습니다. (개발 모드: 999999 사용)' },
-        { status: 200 }
+        { error: '백엔드 서버가 설정되지 않았습니다.' },
+        { status: 500 }
       );
     }
 
-    try {
-      const response = await fetch(`${BACKEND_URL}/auth/request-verification`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+    const response = await fetch(`${BACKEND_URL}/api/auth/request-verification`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        return NextResponse.json(
-          { error: data.message || '인증번호 전송에 실패했습니다.' },
-          { status: response.status }
-        );
-      }
-
+    if (!response.ok) {
       return NextResponse.json(
-        { success: true, message: '인증번호가 전송되었습니다.' },
-        { status: 200 }
-      );
-    } catch (backendError) {
-      console.error('Backend request failed:', backendError);
-      // 백엔드 연결 실패 시에도 개발 모드로 처리
-      return NextResponse.json(
-        { success: true, message: '인증번호가 전송되었습니다. (개발 모드: 999999 사용)' },
-        { status: 200 }
+        { error: data.message || '인증번호 전송에 실패했습니다.' },
+        { status: response.status }
       );
     }
+
+    return NextResponse.json(
+      { success: true, message: '인증번호가 전송되었습니다.' },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Request verification error:', error);
     return NextResponse.json(

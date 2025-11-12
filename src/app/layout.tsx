@@ -51,6 +51,7 @@ export default function RootLayout({
     '/login',
     '/signup',
     '/signup/step2',
+    '/signup/step3',
     '/signup/complete',
     '/schedule/add',
     '/search',

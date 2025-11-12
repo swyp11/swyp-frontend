@@ -18,80 +18,71 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 개발 환경 bypass 체크
-    const bypassCode = process.env.DEV_BYPASS_VERIFICATION_CODE;
     const isDevelopment = process.env.NODE_ENV === 'development';
 
-    if (isDevelopment && bypassCode && verificationCode === bypassCode) {
-      console.log('✅ 개발 모드: Bypass 인증 코드 사용');
-      return NextResponse.json(
-        {
-          success: true,
-          message: '인증이 완료되었습니다. (개발 모드)',
-          temporaryPassword: 'temp1234!',
-        },
-        { status: 200 }
-      );
+    // 개발 환경에서는 백엔드 호출 없이 bypass 체크만 수행
+    if (isDevelopment) {
+      const bypassCode = process.env.DEV_BYPASS_VERIFICATION_CODE;
+
+      if (bypassCode && verificationCode === bypassCode) {
+        console.log('✅ [DEV] 이메일 인증 확인 - Bypass 코드 사용');
+        console.log('📧 [DEV] Email:', email);
+        console.log('🔢 [DEV] Code:', verificationCode);
+        return NextResponse.json(
+          {
+            success: true,
+            message: '인증이 완료되었습니다. (개발 모드)',
+            temporaryPassword: 'temp1234!',
+          },
+          { status: 200 }
+        );
+      } else {
+        console.log('❌ [DEV] 잘못된 인증 코드');
+        console.log('📧 [DEV] Email:', email);
+        console.log('🔢 [DEV] Code:', verificationCode);
+        console.log('💡 [DEV] Bypass Code:', bypassCode);
+        return NextResponse.json(
+          { error: '인증번호가 일치하지 않습니다.' },
+          { status: 400 }
+        );
+      }
     }
 
-    // 실제 백엔드 API로 요청 전달
+    // 프로덕션 환경에서만 백엔드 호출
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
     if (!BACKEND_URL) {
-      console.log('⚠️ Backend URL not configured');
       return NextResponse.json(
         { error: '백엔드 서버가 설정되지 않았습니다.' },
         { status: 500 }
       );
     }
 
-    try {
-      const response = await fetch(`${BACKEND_URL}/auth/verify-and-reset`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, verificationCode }),
-      });
+    const response = await fetch(`${BACKEND_URL}/api/auth/verify-and-reset`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, verificationCode }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        return NextResponse.json(
-          { error: data.message || '인증에 실패했습니다.' },
-          { status: response.status }
-        );
-      }
-
+    if (!response.ok) {
       return NextResponse.json(
-        {
-          success: true,
-          message: '인증이 완료되었습니다.',
-          temporaryPassword: data.temporaryPassword,
-        },
-        { status: 200 }
-      );
-    } catch (backendError) {
-      console.error('Backend request failed:', backendError);
-
-      // 백엔드 연결 실패 시 개발 모드에서만 bypass 허용
-      if (isDevelopment) {
-        console.log('⚠️ 백엔드 연결 실패, 개발 모드 fallback 사용');
-        return NextResponse.json(
-          {
-            success: true,
-            message: '인증이 완료되었습니다. (개발 모드 fallback)',
-            temporaryPassword: 'temp1234!',
-          },
-          { status: 200 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: '백엔드 서버와 통신할 수 없습니다.' },
-        { status: 503 }
+        { error: data.message || '인증에 실패했습니다.' },
+        { status: response.status }
       );
     }
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: '인증이 완료되었습니다.',
+        temporaryPassword: data.temporaryPassword,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Verify and reset error:', error);
     return NextResponse.json(

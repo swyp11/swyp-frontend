@@ -11,7 +11,7 @@ export async function POST(
   { params }: { params: { provider: string } }
 ) {
   return proxyToBackend(request, {
-    path: `/oauth/login/${params.provider}`,
+    path: `/api/auth/oauth/login/${params.provider}`,
     method: 'POST',
   });
 }
