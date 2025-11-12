@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BackHeader } from "@/components/common/BackHeader";
+import { useRequestEmailVerification } from "@/hooks/useAuth";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -11,7 +12,8 @@ export default function SignupPage() {
   const [isVerificationSent, setIsVerificationSent] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [codeError, setCodeError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
+  const requestVerificationMutation = useRequestEmailVerification();
 
   // 이메일 유효성 검사
   const validateEmail = (email: string): boolean => {
@@ -45,33 +47,20 @@ export default function SignupPage() {
       return;
     }
 
-    setIsLoading(true);
     setEmailError("");
 
     try {
-      const response = await fetch("/api/auth/verify-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setIsVerificationSent(true);
-        setEmailError("");
-      } else {
-        setEmailError(data.error || "인증요청에 실패했습니다.");
-      }
-    } catch (err) {
+      await requestVerificationMutation.mutateAsync(email);
+      setIsVerificationSent(true);
+      setEmailError("");
+    } catch (err: any) {
       console.error("Verification request error:", err);
-      setEmailError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-    } finally {
-      setIsLoading(false);
+      setEmailError(err.response?.data?.error || err.message || "인증요청에 실패했습니다.");
     }
   };
+
+  // 로딩 상태
+  const isLoading = requestVerificationMutation.isPending;
 
   // 다음 버튼 활성화 조건
   const isFormValid =

@@ -27,6 +27,28 @@ export const authApi = {
   },
 
   /**
+   * 이메일 인증 요청
+   */
+  requestEmailVerification: async (email: string) => {
+    const response = await apiClient.post<ApiResponse<boolean>>(
+      '/auth/request-verification',
+      { email }
+    );
+    return response.data.data;
+  },
+
+  /**
+   * 이메일 인증번호 확인
+   */
+  verifyEmail: async (email: string, code: string) => {
+    const response = await apiClient.post<ApiResponse<boolean>>(
+      '/auth/verify-email',
+      { email, code }
+    );
+    return response.data.data;
+  },
+
+  /**
    * 로그아웃
    */
   logout: () => {

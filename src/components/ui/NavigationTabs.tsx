@@ -51,7 +51,7 @@ export const NavigationTabs = React.forwardRef<HTMLElement, NavigationTabsProps>
                     {tab.label}
                   </span>
                   <div
-                    className="relative self-stretch w-full h-1 bg-primary rounded-[2px_2px_0px_0px]"
+                    className="relative self-stretch w-full h-1 bg-primary rounded-t-[2px]"
                     aria-hidden="true"
                   />
                 </div>
