@@ -4,7 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL?.replace(/\/api$/, '') || 'http://localhost:8080';
 
 interface ProxyOptions {
   path: string;
@@ -32,6 +32,9 @@ export async function proxyToBackend(
     if (authHeader) {
       headers['Authorization'] = authHeader;
     }
+
+    // 디버깅: 토큰 확인
+    console.log('🔑 Authorization Header:', authHeader ? '있음' : '❌ 없음');
 
     // 요청 body가 있는 경우 파싱
     let body: string | undefined;

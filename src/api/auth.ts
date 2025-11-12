@@ -4,25 +4,26 @@
 
 import { apiClient } from './client';
 import { OAuthCodeRequest, LoginRequest, TokenResponse, OAuthProvider } from '@/types/auth';
+import { ApiResponse } from '@/types/common';
 
 export const authApi = {
   /**
    * OAuth 로그인
    */
   oauthLogin: async (provider: OAuthProvider, data: OAuthCodeRequest) => {
-    const response = await apiClient.post<TokenResponse>(
+    const response = await apiClient.post<ApiResponse<TokenResponse>>(
       `/auth/oauth/${provider}`,
       data
     );
-    return response.data;
+    return response.data.data;
   },
 
   /**
    * 일반 로그인
    */
   login: async (data: LoginRequest) => {
-    const response = await apiClient.post<TokenResponse>('/auth/login', data);
-    return response.data;
+    const response = await apiClient.post<ApiResponse<TokenResponse>>('/auth/login', data);
+    return response.data.data;
   },
 
   /**

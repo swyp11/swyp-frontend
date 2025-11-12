@@ -2,20 +2,24 @@
  * 샵(드레스샵, 메이크업샵) 관련 Custom Hook
  */
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { dressShopApi, makeupShopApi } from '@/api';
-import { DressShopRequest, MakeupShopRequest, ShopSearchParams } from '@/types';
+import { DressShopRequest, MakeupShopRequest, ShopSearchParams, DressShopResponse, MakeupShopResponse } from '@/types';
 
 // ===== 드레스샵 훅 =====
 
 /**
  * 드레스샵 목록 조회 훅
  */
-export const useDressShopList = (params?: ShopSearchParams) => {
+export const useDressShopList = (
+  params?: ShopSearchParams,
+  options?: Omit<UseQueryOptions<DressShopResponse[]>, 'queryKey' | 'queryFn'>
+) => {
   return useQuery({
     queryKey: ['dressShop', 'list', params],
     queryFn: () => dressShopApi.getList(params),
     staleTime: 5 * 60 * 1000, // 5분
+    ...options,
   });
 };
 
@@ -92,11 +96,15 @@ export const useDeleteDressShop = () => {
 /**
  * 메이크업샵 목록 조회 훅
  */
-export const useMakeupShopList = (params?: ShopSearchParams) => {
+export const useMakeupShopList = (
+  params?: ShopSearchParams,
+  options?: Omit<UseQueryOptions<MakeupShopResponse[]>, 'queryKey' | 'queryFn'>
+) => {
   return useQuery({
     queryKey: ['makeupShop', 'list', params],
     queryFn: () => makeupShopApi.getList(params),
     staleTime: 5 * 60 * 1000, // 5분
+    ...options,
   });
 };
 

@@ -11,16 +11,16 @@ export const hallApi = {
    * 홀 목록 조회
    */
   getList: async () => {
-    const response = await apiClient.get<HallResponse[]>('/hall');
-    return response.data;
+    const response = await apiClient.get<ApiResponse<HallResponse[]>>('/hall');
+    return response.data.data;
   },
 
   /**
    * 홀 상세 조회
    */
   getDetail: async (id: number) => {
-    const response = await apiClient.get<HallResponse>(`/hall/${id}`);
-    return response.data;
+    const response = await apiClient.get<ApiResponse<HallResponse>>(`/hall/${id}`);
+    return response.data.data;
   },
 
   /**
@@ -31,7 +31,7 @@ export const hallApi = {
       '/hall',
       data
     );
-    return response.data;
+    return response.data.data;
   },
 
   /**
@@ -42,7 +42,7 @@ export const hallApi = {
       `/hall/${id}`,
       data
     );
-    return response.data;
+    return response.data.data;
   },
 
   /**
@@ -52,6 +52,6 @@ export const hallApi = {
     const response = await apiClient.delete<ApiResponse<boolean>>(
       `/hall/${id}`
     );
-    return response.data;
+    return response.data.data;
   },
 };

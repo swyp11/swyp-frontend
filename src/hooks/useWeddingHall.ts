@@ -2,10 +2,11 @@
  * 웨딩홀 관련 Custom Hook
  */
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { weddingHallApi, hallApi } from '@/api';
 import {
   WeddingHallRequest,
+  WeddingHallResponse,
   HallRequest,
   WeddingHallSearchParams,
 } from '@/types';
@@ -15,11 +16,15 @@ import {
 /**
  * 웨딩홀 목록 조회 훅
  */
-export const useWeddingHallList = (params?: WeddingHallSearchParams) => {
+export const useWeddingHallList = (
+  params?: WeddingHallSearchParams,
+  options?: Omit<UseQueryOptions<WeddingHallResponse[]>, 'queryKey' | 'queryFn'>
+) => {
   return useQuery({
     queryKey: ['weddingHall', 'list', params],
     queryFn: () => weddingHallApi.getList(params),
     staleTime: 5 * 60 * 1000, // 5분
+    ...options,
   });
 };
 

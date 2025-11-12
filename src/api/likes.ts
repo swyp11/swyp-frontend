@@ -13,7 +13,7 @@ export const likesApi = {
     const response = await apiClient.post<ApiResponse<boolean>>(
       `/likes/${category}/${postId}`
     );
-    return response.data;
+    return response.data.data;
   },
 
   /**
@@ -23,6 +23,6 @@ export const likesApi = {
     const response = await apiClient.delete<ApiResponse<boolean>>(
       `/likes/delete/${id}`
     );
-    return response.data;
+    return response.data.data;
   },
 };
