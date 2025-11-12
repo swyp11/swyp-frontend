@@ -1,0 +1,9 @@
+import{j as t,r as o,u as h,f}from"./iframe-BXIlaz2d.js";import{F as g}from"./FeaturedItemsSection-gMjt7I_T.js";import{N as x}from"./NavigationTabSection-CdU4sVkM.js";import{M as S}from"./MainContentSection-CfPBQHfS.js";import{R as b}from"./RecommendationSection-Ck2ZpD6F.js";import{w as j}from"./decorators-Cos6l-TR.js";import"./preload-helper-ByZkdcDp.js";import"./Button-81gYiLei.js";import"./FieldLabel-BpkJpxf0.js";import"./TabBar-DCQpbWtV.js";import"./Tooltip-D0PmNOGd.js";import"./GNB-Cei53FoB.js";import"./CalendarSelect-D0mqBlXL.js";import"./Chip-DzV2jjrU.js";import"./OptionGroup-BoJmsQxc.js";import"./SearchInput-GBiqzGf9.js";import"./NavigationTabs-CuxIs8pF.js";import"./HorizontalSlider-DzbCZXuV.js";import"./useWeddingHall-iTqHod9N.js";import"./client-Chm_LENq.js";function y(){const i=h(),s=f(),p=s.get("tab")||"wedding-hall",[r,c]=o.useState(p),[n,u]=o.useState("");o.useEffect(()=>{const e=s.get("tab");e&&e!==r&&c(e)},[s]);const d=e=>{c(e),i.push(`/main?tab=${e}`,{scroll:!1})},l=()=>{n.trim()&&i.push(`/search?q=${encodeURIComponent(n)}&tab=${r}`)};return t.jsxs(t.Fragment,{children:[t.jsx(g,{searchQuery:n,onSearchChange:u,onSearch:l}),t.jsx(x,{activeTab:r,onTabChange:d}),r==="dress"&&t.jsx(S,{}),t.jsx(b,{activeTab:r})]})}function m(){return t.jsx(o.Suspense,{fallback:t.jsx("div",{children:"Loading..."}),children:t.jsx(y,{})})}m.__docgenInfo={description:"",methods:[],displayName:"MainPage"};const O={title:"Pages/MainPage",component:m,decorators:[j],parameters:{layout:"fullscreen",nextjs:{appDirectory:!0}},tags:["autodocs"]},a={parameters:{docs:{description:{story:"메인 페이지 - 홈 화면입니다."}}}};a.parameters={...a.parameters,docs:{...a.parameters?.docs,source:{originalSource:`{
+  parameters: {
+    docs: {
+      description: {
+        story: '메인 페이지 - 홈 화면입니다.'
+      }
+    }
+  }
+}`,...a.parameters?.docs?.source}}};const z=["Default"];export{a as Default,z as __namedExportsOrder,O as default};
