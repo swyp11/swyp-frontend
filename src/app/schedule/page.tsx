@@ -11,6 +11,7 @@ import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
 import { useAuth } from "@/contexts/AuthContext";
+import { useScheduleList, useMonthlySchedule, useWeeklySchedule, useDailySchedule } from "@/hooks/useSchedule";
 
 interface Event {
   id: string;
@@ -26,72 +27,39 @@ interface Event {
 function SchedulePage() {
   const { checkAuth } = useAuth();
   const router = useRouter();
-  const [currentMonth, setCurrentMonth] = useState(10);
-  const [currentYear, setCurrentYear] = useState(2024);
-  const [selectedDate, setSelectedDate] = useState(10);
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [selectedDate, setSelectedDate] = useState(new Date().getDate());
   const [calendarView, setCalendarView] = useState<CalendarView>("weekly");
-  const [events, setEvents] = useState<Event[]>([]);
 
-  // 샘플 이벤트 데이터 (월별 뷰용)
-  const sampleMonthlyEvents: { [key: number]: string[] } = {
-    4: ["드레스 투어", "스튜디오 예약"],
-    10: ["웨딩 플래너 미팅"],
-    15: ["예식장 방문"],
-    20: ["답례품 구매"],
+  // 현재 주차 계산
+  const getCurrentWeek = () => {
+    const date = new Date(currentYear, currentMonth - 1, selectedDate);
+    const firstDayOfMonth = new Date(currentYear, currentMonth - 1, 1);
+    const daysDiff = Math.floor((date.getTime() - firstDayOfMonth.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.floor(daysDiff / 7) + 1;
   };
 
-  // 샘플 이벤트 데이터 (주별 뷰용)
-  const sampleWeekEvents = [
-    {
-      id: "1",
-      title: "드레스 투어",
-      startTime: 0,
-      endTime: 2,
-      dayOfWeek: 3, // 목요일
-      color: "#f3335d",
-    },
-    {
-      id: "2",
-      title: "드레스 투어",
-      startTime: 0,
-      endTime: 1,
-      dayOfWeek: 4, // 금요일
-      color: "#f3335d",
-    },
-    {
-      id: "3",
-      title: "드레스 투어",
-      startTime: 0,
-      endTime: 1,
-      dayOfWeek: 4, // 금요일
-      color: "#f3335d",
-    },
-  ];
+  // 현재 날짜 문자열 (YYYY-MM-DD)
+  const getCurrentDateString = () => {
+    const year = currentYear;
+    const month = String(currentMonth).padStart(2, '0');
+    const day = String(selectedDate).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
-  // 샘플 이벤트 데이터 (일별 뷰용)
-  const sampleDayEvents = [
-    {
-      id: "1",
-      title: "드레스 투어",
-      startTime: 10,
-      duration: 2, // 2시간
-      color: "#f3335d",
-    },
-    {
-      id: "2",
-      title: "스튜디오 촬영",
-      startTime: 14,
-      duration: 3, // 3시간
-      color: "#562699",
-    },
-    {
-      id: "3",
-      title: "웨딩 플래너 미팅",
-      startTime: 18,
-      duration: 1, // 1시간
-      color: "#5bb16b",
-    },
-  ];
+  // API 호출 - 뷰에 따라 조건부로 데이터 가져오기
+  const { data: scheduleList } = useScheduleList({ enabled: calendarView === 'monthly' });
+  const { data: weeklySchedule } = useWeeklySchedule(
+    currentYear,
+    currentMonth,
+    getCurrentWeek(),
+    { enabled: calendarView === 'weekly' }
+  );
+  const { data: dailySchedule } = useDailySchedule(
+    getCurrentDateString(),
+    { enabled: calendarView === 'daily' }
+  );
 
   const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth - 1, 1).getDay();
@@ -148,21 +116,23 @@ function SchedulePage() {
     setSelectedDate(currentDate.getDate());
   };
 
-
   // 월별 뷰용 이벤트 변환
   const getMonthlyEvents = () => {
     const monthlyEventsMap: { [key: number]: string[] } = {};
 
-    events.forEach((event) => {
-      const eventDate = event.startDate.getDate();
-      const eventMonth = event.startDate.getMonth() + 1;
-      const eventYear = event.startDate.getFullYear();
+    if (!scheduleList) return monthlyEventsMap;
+
+    scheduleList.forEach((schedule: any) => {
+      const scheduleDate = new Date(schedule.scheduleDate);
+      const eventDate = scheduleDate.getDate();
+      const eventMonth = scheduleDate.getMonth() + 1;
+      const eventYear = scheduleDate.getFullYear();
 
       if (eventMonth === currentMonth && eventYear === currentYear) {
         if (!monthlyEventsMap[eventDate]) {
           monthlyEventsMap[eventDate] = [];
         }
-        monthlyEventsMap[eventDate].push(event.title);
+        monthlyEventsMap[eventDate].push(schedule.title);
       }
     });
 
@@ -171,36 +141,40 @@ function SchedulePage() {
 
   // 주별 뷰용 이벤트 변환
   const getWeeklyEvents = () => {
-    return events.map((event) => ({
-      id: event.id,
-      title: event.title,
-      startTime: event.startTime,
-      endTime: event.endTime,
-      dayOfWeek: event.startDate.getDay(),
-      color: event.color,
-    }));
+    if (!weeklySchedule) return [];
+
+    return weeklySchedule.map((schedule: any) => {
+      const scheduleDate = new Date(schedule.scheduleDate);
+      const startHour = parseInt(schedule.startTime.split(':')[0]);
+      const endHour = parseInt(schedule.endTime.split(':')[0]);
+
+      return {
+        id: schedule.id.toString(),
+        title: schedule.title,
+        startTime: startHour,
+        endTime: endHour,
+        dayOfWeek: scheduleDate.getDay(),
+        color: schedule.color || "#f3335d",
+      };
+    });
   };
 
   // 일별 뷰용 이벤트 변환
   const getDailyEvents = () => {
-    return events
-      .filter((event) => {
-        const eventDate = event.startDate.getDate();
-        const eventMonth = event.startDate.getMonth() + 1;
-        const eventYear = event.startDate.getFullYear();
-        return (
-          eventDate === selectedDate &&
-          eventMonth === currentMonth &&
-          eventYear === currentYear
-        );
-      })
-      .map((event) => ({
-        id: event.id,
-        title: event.title,
-        startTime: event.startTime,
-        duration: event.endTime - event.startTime,
-        color: event.color,
-      }));
+    if (!dailySchedule) return [];
+
+    return dailySchedule.map((schedule: any) => {
+      const startHour = parseInt(schedule.startTime.split(':')[0]);
+      const endHour = parseInt(schedule.endTime.split(':')[0]);
+
+      return {
+        id: schedule.id.toString(),
+        title: schedule.title,
+        startTime: startHour,
+        duration: endHour - startHour,
+        color: schedule.color || "#f3335d",
+      };
+    });
   };
 
   const renderCalendar = () => {
@@ -267,7 +241,6 @@ function SchedulePage() {
     <div className="relative">
       {/* Content Container */}
       <div className="pb-16">
-
 
         {/* D-Day & View Selector */}
         <div className="px-2 pb-4">

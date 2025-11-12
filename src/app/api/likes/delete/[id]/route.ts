@@ -1,6 +1,6 @@
 /**
  * 찜 삭제 API Route Handler
- * DELETE /api/likes/[id]
+ * DELETE /api/likes/delete/[id]
  */
 
 import { NextRequest } from 'next/server';
