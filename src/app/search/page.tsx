@@ -36,17 +36,17 @@ function SearchResultsContent() {
 
   const { data: dressShops, isLoading: dressShopLoading } = useDressShopList(
     { shopName: query, sort: sortOrder },
-    { enabled: activeTab === 'dress' }
+    { enabled: activeTab === 'dress-shop' }
   );
 
   const { data: makeupShops, isLoading: makeupLoading } = useMakeupShopList(
     { shopName: query, sort: sortOrder },
-    { enabled: activeTab === 'makeup' }
+    { enabled: activeTab === 'makeup-shop' }
   );
 
   const { data: dresses, isLoading: dressLoading } = useDressList(
     { shopNameContains: query, sort: sortOrder },
-    { enabled: activeTab === 'dress-item' }
+    { enabled: activeTab === 'dress' }
   );
 
   // 현재 탭의 데이터 및 로딩 상태
@@ -54,11 +54,11 @@ function SearchResultsContent() {
     switch (activeTab) {
       case 'wedding-hall':
         return { data: weddingHalls, isLoading: weddingLoading };
-      case 'dress':
+      case 'dress-shop':
         return { data: dressShops, isLoading: dressShopLoading };
-      case 'makeup':
+      case 'makeup-shop':
         return { data: makeupShops, isLoading: makeupLoading };
-      case 'dress-item':
+      case 'dress':
         return { data: dresses, isLoading: dressLoading };
       default:
         return { data: [], isLoading: false };

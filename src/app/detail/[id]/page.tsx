@@ -25,17 +25,17 @@ export default function DetailPage() {
 
   const { data: dressShop, isLoading: dressShopLoading } = useDressShopDetail(
     id,
-    { enabled: tab === 'dress' }
+    { enabled: tab === 'dress-shop' }
   );
 
   const { data: makeupShop, isLoading: makeupLoading } = useMakeupShopDetail(
     id,
-    { enabled: tab === 'makeup' }
+    { enabled: tab === 'makeup-shop' }
   );
 
   const { data: dress, isLoading: dressLoading } = useDressDetail(
     id,
-    { enabled: tab === 'dress-item' }
+    { enabled: tab === 'dress' }
   );
 
   const { toggleLikes, isLoading: isTogglingLikes } = useToggleLikes();
@@ -45,11 +45,11 @@ export default function DetailPage() {
     switch (tab) {
       case 'wedding-hall':
         return { data: weddingHall, isLoading: weddingLoading };
-      case 'dress':
+      case 'dress-shop':
         return { data: dressShop, isLoading: dressShopLoading };
-      case 'makeup':
+      case 'makeup-shop':
         return { data: makeupShop, isLoading: makeupLoading };
-      case 'dress-item':
+      case 'dress':
         return { data: dress, isLoading: dressLoading };
       default:
         return { data: null, isLoading: false };
@@ -100,9 +100,9 @@ export default function DetailPage() {
     // 백엔드 category 문자열로 매핑
     const categoryMap: Record<string, 'hall' | 'wedding_hall' | 'dress' | 'dress_shop' | 'makeup_shop'> = {
       'wedding-hall': 'wedding_hall',
-      'dress': 'dress_shop',     // 드레스샵
-      'makeup': 'makeup_shop',   // 메이크업샵
-      'dress-item': 'dress',     // 드레스 아이템
+      'dress-shop': 'dress_shop',     // 드레스샵
+      'makeup-shop': 'makeup_shop',   // 메이크업샵
+      'dress': 'dress',               // 드레스 아이템
       'hall': 'hall',
     };
 

@@ -48,7 +48,7 @@ function MainPageContent() {
       <NavigationTabSection activeTab={activeTab} onTabChange={handleTabChange} />
 
       {/* Recommendation Banner */}
-      {activeTab === "dress" && <MainContentSection />}
+      {activeTab === "dress-shop" && <MainContentSection />}
 
       {/* Content Sections */}
       <RecommendationSection activeTab={activeTab} />

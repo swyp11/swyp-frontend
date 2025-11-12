@@ -11,8 +11,8 @@ interface NavigationTabSectionProps {
 export const NavigationTabSection = ({ activeTab, onTabChange }: NavigationTabSectionProps) => {
   const tabs: NavigationTab[] = [
     { id: "wedding-hall", label: "웨딩홀" },
-    { id: "dress", label: "드레스샵" },
-    { id: "makeup", label: "메이크업샵" },
+    { id: "dress-shop", label: "드레스샵" },
+    { id: "makeup-shop", label: "메이크업샵" },
   ];
 
   return (

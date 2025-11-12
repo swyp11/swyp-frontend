@@ -13,7 +13,7 @@ interface ShopCard {
   image: string;
   title: string;
   description: string;
-  category: 'wedding-hall' | 'dress' | 'makeup';
+  category: 'wedding-hall' | 'dress-shop' | 'makeup-shop';
 }
 
 interface RecommendationSectionProps {
@@ -32,12 +32,12 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
 
   const { data: popularDressShops, isLoading: popularDressLoading } = useDressShopList(
     { sort: 'FAVORITE' },
-    { enabled: activeTab === 'dress' }
+    { enabled: activeTab === 'dress-shop' }
   );
 
   const { data: popularMakeupShops, isLoading: popularMakeupLoading } = useMakeupShopList(
     { sort: 'FAVORITE' },
-    { enabled: activeTab === 'makeup' }
+    { enabled: activeTab === 'makeup-shop' }
   );
 
   // 신규 샵 (RECENT 정렬)
@@ -48,12 +48,12 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
 
   const { data: newDressShops, isLoading: newDressLoading } = useDressShopList(
     { sort: 'RECENT' },
-    { enabled: activeTab === 'dress' }
+    { enabled: activeTab === 'dress-shop' }
   );
 
   const { data: newMakeupShops, isLoading: newMakeupLoading } = useMakeupShopList(
     { sort: 'RECENT' },
-    { enabled: activeTab === 'makeup' }
+    { enabled: activeTab === 'makeup-shop' }
   );
 
   // 현재 탭의 데이터 가져오기
@@ -61,9 +61,9 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
     switch (activeTab) {
       case 'wedding-hall':
         return { data: popularWeddingHalls, isLoading: popularWeddingLoading };
-      case 'dress':
+      case 'dress-shop':
         return { data: popularDressShops, isLoading: popularDressLoading };
-      case 'makeup':
+      case 'makeup-shop':
         return { data: popularMakeupShops, isLoading: popularMakeupLoading };
       default:
         return { data: [], isLoading: false };
@@ -74,9 +74,9 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
     switch (activeTab) {
       case 'wedding-hall':
         return { data: newWeddingHalls, isLoading: newWeddingLoading };
-      case 'dress':
+      case 'dress-shop':
         return { data: newDressShops, isLoading: newDressLoading };
-      case 'makeup':
+      case 'makeup-shop':
         return { data: newMakeupShops, isLoading: newMakeupLoading };
       default:
         return { data: [], isLoading: false };
@@ -93,7 +93,7 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
       image: item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
       title: item.name || item.shopName || item.hallName || item.dressName || '업체명',
       description: item.address || item.description || '주소 정보 없음',
-      category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
+      category: activeTab as 'wedding-hall' | 'dress-shop' | 'makeup-shop'
     }));
   };
 
@@ -140,9 +140,9 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
     switch (activeTab) {
       case 'wedding-hall':
         return '웨딩홀';
-      case 'dress':
+      case 'dress-shop':
         return '드레스샵';
-      case 'makeup':
+      case 'makeup-shop':
         return '메이크업샵';
       default:
         return '샵';
