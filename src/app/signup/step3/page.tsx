@@ -6,11 +6,13 @@ import { BackHeader } from "@/components/common/BackHeader";
 import { DatePicker } from "@/components/common/DatePicker";
 import { useJoin } from "@/hooks/useUser";
 import { authApi } from "@/api/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Gender = "GROOM" | "BRIDE" | null;
 
 export default function SignupStep3Page() {
   const router = useRouter();
+  const { login: authLogin } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     birthdate: "",
@@ -100,7 +102,10 @@ export default function SignupStep3Page() {
         console.log("✅ 자동 로그인 성공");
         console.log("🔑 토큰 저장 완료");
 
-        // 토큰은 authApi.login 내부의 인터셉터에서 자동으로 localStorage에 저장됨
+        // AuthContext 상태 업데이트
+        if (loginResponse?.accessToken) {
+          authLogin(loginResponse.accessToken);
+        }
       } catch (loginErr) {
         console.error("⚠️ 자동 로그인 실패:", loginErr);
         // 로그인 실패해도 회원가입은 성공했으므로 계속 진행

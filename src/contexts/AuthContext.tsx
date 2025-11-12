@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const checkAuthStatus = () => {
     try {
-      const token = localStorage.getItem('userToken');
+      const token = localStorage.getItem('accessToken');
       setIsAuthenticated(!!token);
     } catch (error) {
       console.error('Auth check error:', error);
@@ -48,12 +48,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const login = (token: string) => {
-    localStorage.setItem('userToken', token);
+    localStorage.setItem('accessToken', token);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    localStorage.removeItem('userToken');
+    localStorage.removeItem('accessToken');
     sessionStorage.clear();
 
     // 모든 쿠키 삭제
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const checkAuth = (): boolean => {
-    const token = localStorage.getItem('userToken');
+    const token = localStorage.getItem('accessToken');
     const authenticated = !!token;
 
     if (!authenticated) {

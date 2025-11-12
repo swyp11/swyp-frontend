@@ -167,13 +167,37 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
     </div>
   );
 
+  const handleSeeMore = (type: 'popular' | 'new') => {
+    const sort = type === 'popular' ? 'FAVORITE' : 'RECENT';
+    router.push(`/search?tab=${activeTab}&sort=${sort}`);
+  };
+
   return (
     <section className="flex flex-col items-start gap-10 px-4 py-6 relative self-stretch w-full bg-white flex-1">
       {/* 인기있는 샵 */}
       <div className="flex flex-col items-start gap-4 w-full">
-        <h2 className="w-fit mt-[-1.00px] title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
-          지금 인기있는 {categoryLabel}
-        </h2>
+        {/* 섹션 헤더 */}
+        <div className="flex items-center justify-between w-full">
+          <h2 className="title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap [font-style:var(--title-2-font-style)]">
+            지금 인기있는 {categoryLabel}
+          </h2>
+          <button
+            onClick={() => handleSeeMore('popular')}
+            className="flex items-center gap-0 shrink-0"
+          >
+            <span className="body-2-medium font-[number:var(--body-2-medium-font-weight)] text-on-surface-subtle text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] whitespace-nowrap [font-style:var(--body-2-medium-font-style)]">
+              더보기
+            </span>
+            <Image
+              src={getAssetPath("/img/chevron_forward.svg")}
+              alt="더보기"
+              width={24}
+              height={24}
+              className="w-6 h-6"
+            />
+          </button>
+        </div>
+
         {popularShops.length > 0 ? (
           <HorizontalSlider gap={12} className="w-full px-0 py-1">
             {popularShops.map((shop, index) => renderShopCard(shop, index))}
@@ -185,9 +209,28 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
 
       {/* 신규 샵 */}
       <div className="flex flex-col items-start gap-4 w-full">
-        <h2 className="w-fit mt-[-1.00px] title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--title-2-font-style)]">
-          신규 {categoryLabel}
-        </h2>
+        {/* 섹션 헤더 */}
+        <div className="flex items-center justify-between w-full">
+          <h2 className="title-2 font-[number:var(--title-2-font-weight)] text-black text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] whitespace-nowrap [font-style:var(--title-2-font-style)]">
+            신규 {categoryLabel}
+          </h2>
+          <button
+            onClick={() => handleSeeMore('new')}
+            className="flex items-center gap-0 shrink-0"
+          >
+            <span className="body-2-medium font-[number:var(--body-2-medium-font-weight)] text-on-surface-subtle text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] whitespace-nowrap [font-style:var(--body-2-medium-font-style)]">
+              더보기
+            </span>
+            <Image
+              src={getAssetPath("/img/chevron_forward.svg")}
+              alt="더보기"
+              width={24}
+              height={24}
+              className="w-6 h-6"
+            />
+          </button>
+        </div>
+
         {newShops.length > 0 ? (
           <HorizontalSlider gap={12} className="w-full px-0 py-1">
             {newShops.map((shop, index) => renderShopCard(shop, index))}

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useGoogleLogin } from "@/hooks/useGoogleLogin";
 import { useLogin } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function LoginPage() {
 
   const { login: googleLogin } = useGoogleLogin();
   const loginMutation = useLogin();
+  const { login: authLogin } = useAuth();
 
   // 로그인 화면 진입 시 모든 쿠키 및 스토리지 초기화
   useEffect(() => {
@@ -40,10 +42,15 @@ export default function LoginPage() {
     setError("");
 
     try {
-      await loginMutation.mutateAsync({ userId, password });
+      const response = await loginMutation.mutateAsync({ userId, password });
 
       // 로그인 성공
       console.log("Login successful");
+
+      // AuthContext 상태 업데이트
+      if (response?.accessToken) {
+        authLogin(response.accessToken);
+      }
 
       // 메인 페이지로 이동
       router.push("/main");

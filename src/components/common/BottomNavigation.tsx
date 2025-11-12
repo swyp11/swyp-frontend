@@ -89,7 +89,7 @@ export const BottomNavigation = () => {
 
   return (
     <nav
-      className="flex items-center relative self-stretch w-full bg-white border-t [border-top-style:solid] border-border-subtlest flex-shrink-0"
+      className="flex items-center relative self-stretch w-full bg-white border-t [border-top-style:solid] border-subtlest flex-shrink-0"
       style={{ height: "var(--footer-height)", minHeight: "var(--footer-height)" }}
       role="navigation"
       aria-label="Main navigation"

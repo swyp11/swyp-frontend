@@ -1,46 +1,55 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { BackHeader } from "@/components/common/BackHeader";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
+import { useUserInfo } from "@/hooks/useUser";
 
 function ProfilePage() {
   const router = useRouter();
+  const { data: userInfo, isLoading } = useUserInfo();
 
-  // TODO: 실제 사용자 정보를 가져와야 함
-  const userInfo = {
-    name: "김수지",
-    birthDate: "yyyy년 m월 d일",
-    role: "-",
-    weddingDate: "yyyy년 m월 d일",
-    isGoogleLogin: false, // TODO: 실제 로그인 타입 확인
+  // 날짜 포맷 함수 (YYYY-MM-DD → YYYY년 M월 D일)
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
   };
+
+  // 신랑/신부 표시
+  const roleText = useMemo(() => {
+    if (!userInfo?.weddingRole) return "-";
+    return userInfo.weddingRole === "GROOM" ? "신랑" : "신부";
+  }, [userInfo?.weddingRole]);
+
+  // OAuth 로그인 여부 (provider 필드가 있으면 OAuth)
+  const isOAuthLogin = !!userInfo?.provider;
 
   const profileFields = [
     {
       label: "이름",
-      value: userInfo.name,
+      value: userInfo?.nickname || "-",
       onClick: () => router.push("/my/profile/edit?field=name"),
     },
     {
       label: "생년월일",
-      value: userInfo.birthDate,
+      value: formatDate(userInfo?.birth),
       onClick: () => router.push("/my/profile/edit?field=birthDate"),
     },
     {
       label: "신랑/신부",
-      value: userInfo.role,
+      value: roleText,
       onClick: () => router.push("/my/profile/edit?field=role"),
     },
     {
       label: "결혼식 예정일",
-      value: userInfo.weddingDate,
+      value: formatDate(userInfo?.weddingDate),
       onClick: () => router.push("/my/profile/edit?field=weddingDate"),
     },
-    ...(userInfo.isGoogleLogin
+    ...(isOAuthLogin
       ? []
       : [
           {
@@ -50,6 +59,17 @@ function ProfilePage() {
           },
         ]),
   ];
+
+  if (isLoading) {
+    return (
+      <>
+        <BackHeader title="내 정보" />
+        <div className="flex items-center justify-center h-full">
+          <div className="text-on-surface-subtle">로딩 중...</div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

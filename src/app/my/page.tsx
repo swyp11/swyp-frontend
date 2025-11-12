@@ -1,18 +1,35 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
+import { useUserInfo } from "@/hooks/useUser";
 
 function MyPage() {
   const router = useRouter();
+  const { data: userInfo, isLoading } = useUserInfo();
 
-  // TODO: 실제 사용자 정보를 가져와야 함
-  const userName = "따뜻한고구마";
-  const userRole = "신부님";
-  const daysUntilWedding = 99;
+  // 결혼식까지 남은 날짜 계산
+  const daysUntilWedding = useMemo(() => {
+    if (!userInfo?.weddingDate) return null;
+
+    const today = new Date();
+    const weddingDate = new Date(userInfo.weddingDate);
+    const diffTime = weddingDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays > 0 ? diffDays : null;
+  }, [userInfo?.weddingDate]);
+
+  // 신랑/신부 표시
+  const userRole = useMemo(() => {
+    if (!userInfo?.weddingRole) return "";
+    return userInfo.weddingRole === "GROOM" ? "신랑님" : "신부님";
+  }, [userInfo?.weddingRole]);
+
+  const userName = userInfo?.nickname || "사용자";
 
   const menuItems = [
     {
@@ -43,6 +60,14 @@ function MyPage() {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-on-surface-subtle">로딩 중...</div>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Profile Section */}
@@ -62,7 +87,10 @@ function MyPage() {
               {userName}
             </div>
             <div className="label-1 text-on-surface-subtle">
-              {userRole} ・ 결혼식까지 {daysUntilWedding}일
+              {userRole && `${userRole}`}
+              {userRole && daysUntilWedding && " ・ "}
+              {daysUntilWedding && `결혼식까지 ${daysUntilWedding}일`}
+              {!userRole && !daysUntilWedding && "프로필을 완성해보세요"}
             </div>
           </div>
 

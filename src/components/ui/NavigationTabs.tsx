@@ -25,7 +25,7 @@ export const NavigationTabs = React.forwardRef<HTMLElement, NavigationTabsProps>
     return (
       <nav
         ref={ref}
-        className={`self-stretch w-full flex-[0_0_auto] border-b [border-bottom-style:solid] border-border-subtlest flex items-center relative ${className}`}
+        className={`self-stretch w-full flex-[0_0_auto] border-b [border-bottom-style:solid] border-subtlest flex items-center relative ${className}`}
         role="navigation"
         aria-label={ariaLabel}
       >
