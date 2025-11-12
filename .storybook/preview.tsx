@@ -4,6 +4,7 @@ import { Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "../src/styles/globals.css";
 import { NavigationProvider } from "../src/contexts/NavigationContext";
+import { AuthProvider } from "../src/contexts/AuthContext";
 import { Header } from "../src/components/common/Header";
 import { BottomNavigation } from "../src/components/common/BottomNavigation";
 
@@ -189,6 +190,9 @@ const preview: Preview = {
                 'Pages/Auth/SignupPage',
                 'Pages/Auth/SignupStep2Page',
                 'Pages/Auth/SignupCompletePage',
+                'Pages/Auth/ForgotPasswordPage',
+                'Pages/Auth/ForgotPasswordEmailPage',
+                'Pages/Auth/ForgotPasswordSuccessPage',
                 'Pages/Schedule/AddSchedulePage',
             ];
 
@@ -197,6 +201,10 @@ const preview: Preview = {
                 'Pages/SettingsPage',
                 'Pages/FavoritesPage',
                 'Pages/ReviewsPage',
+                'Pages/DetailPage',
+                'Pages/SearchPage',
+                'Pages/MyPage/ProfilePage',
+                'Pages/MyPage/ProfileEditPage',
             ];
 
             const shouldHideHeader = hideNavigationPages.includes(storyTitle) || hideHeaderOnlyPages.includes(storyTitle);
@@ -220,41 +228,49 @@ const preview: Preview = {
                     } as React.CSSProperties}
                 >
                     <div
-                        className="relative flex flex-col h-screen"
-                        style={{ width: appWidth, maxWidth: '100%' }}
+                        className="relative flex flex-col"
+                        style={{
+                            width: appWidth,
+                            maxWidth: '100%',
+                            height: isPageStory ? '100vh' : 'auto',
+                            minHeight: isPageStory ? '100vh' : 'auto'
+                        }}
                     >
-                        <NavigationProvider>
-                            {/* Fixed Header - Pages 스토리에서만 조건부 렌더링 */}
-                            {isPageStory && !shouldHideHeader && (
-                                <div
-                                    className="fixed top-0 left-1/2 -translate-x-1/2 z-50"
-                                    style={{ width: appWidth }}
-                                >
-                                    <Header />
-                                </div>
-                            )}
+                        <AuthProvider>
+                            <NavigationProvider>
+                                {/* Fixed Header - Pages 스토리에서만 조건부 렌더링 */}
+                                {isPageStory && !shouldHideHeader && (
+                                    <div
+                                        className="fixed top-0 left-1/2 -translate-x-1/2 z-50"
+                                        style={{ width: appWidth }}
+                                    >
+                                        <Header />
+                                    </div>
+                                )}
 
-                            {/* Scrollable Content */}
-                            <div
-                                className="flex-1 w-full overflow-y-auto"
-                                style={{
-                                    paddingTop: isPageStory && !shouldHideHeader ? '64px' : '0',
-                                    paddingBottom: isPageStory && !shouldHideBottomNav ? '64px' : '0'
-                                }}
-                            >
-                                <Story />
-                            </div>
-
-                            {/* Fixed Bottom Navigation - Pages 스토리에서만 조건부 렌더링 */}
-                            {isPageStory && !shouldHideBottomNav && (
+                                {/* Scrollable Content */}
                                 <div
-                                    className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50"
-                                    style={{ width: appWidth }}
+                                    className="flex-1 w-full overflow-y-auto bg-white"
+                                    style={{
+                                        paddingTop: isPageStory && !shouldHideHeader ? '64px' : '0',
+                                        paddingBottom: isPageStory && !shouldHideBottomNav ? '64px' : '0',
+                                        minHeight: isPageStory ? '100vh' : 'auto'
+                                    }}
                                 >
-                                    <BottomNavigation />
+                                    <Story />
                                 </div>
-                            )}
-                        </NavigationProvider>
+
+                                {/* Fixed Bottom Navigation - Pages 스토리에서만 조건부 렌더링 */}
+                                {isPageStory && !shouldHideBottomNav && (
+                                    <div
+                                        className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50"
+                                        style={{ width: appWidth }}
+                                    >
+                                        <BottomNavigation />
+                                    </div>
+                                )}
+                            </NavigationProvider>
+                        </AuthProvider>
                     </div>
                 </div>
             );
