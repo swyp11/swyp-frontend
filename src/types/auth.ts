@@ -10,16 +10,15 @@ export interface OAuthCodeRequest {
 
 // 일반 로그인 요청
 export interface LoginRequest {
-  username: string;
+  userId: string;       // 사용자 ID
   password: string;
 }
 
 // 토큰 응답
 export interface TokenResponse {
   accessToken: string;
-  refreshToken?: string;
-  tokenType?: string;
-  expiresIn?: number;
+  expiresIn: number;        // long → number
+  tokenType: string;        // Bearer
 }
 
 // OAuth Provider

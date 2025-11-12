@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { BackHeader } from "@/components/common/BackHeader";
 import { DatePicker } from "@/components/common/DatePicker";
 import { useJoin } from "@/hooks/useUser";
+import { authApi } from "@/api/auth";
 
-type Gender = "groom" | "bride" | null;
+type Gender = "GROOM" | "BRIDE" | null;
 
 export default function SignupStep3Page() {
   const router = useRouter();
@@ -19,6 +20,20 @@ export default function SignupStep3Page() {
   const [error, setError] = useState("");
 
   const joinMutation = useJoin();
+
+  // 생년월일 포맷 변환 함수 (YYMMDD → YYYY-MM-DD)
+  const formatBirthdate = (birthdate: string): string => {
+    if (birthdate.length !== 6) return '';
+
+    const year = birthdate.substring(0, 2);
+    const month = birthdate.substring(2, 4);
+    const day = birthdate.substring(4, 6);
+
+    // 2000년대생 가정 (00~99 → 2000~2099)
+    const fullYear = `20${year}`;
+
+    return `${fullYear}-${month}-${day}`;
+  };
 
   // 입력 필드 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,19 +64,48 @@ export default function SignupStep3Page() {
       // localStorage에서 이전 단계 데이터 가져오기
       const signupData = JSON.parse(localStorage.getItem("signupData") || "{}");
 
-      // 전체 회원가입 데이터 구성
-      const completeSignupData = {
-        username: signupData.email || signupData.username,
+      // 전체 회원가입 데이터 구성 (백엔드 스펙에 맞게)
+      const completeSignupData: any = {
+        userId: signupData.email,           // 이메일을 userId로 사용
         password: signupData.password,
         email: signupData.email,
-        name: formData.name,
-        phone: formData.birthdate, // TODO: phone 필드 추가 필요
+        nickname: formData.name,            // name을 nickname으로 매핑
       };
+
+      // Optional fields - 값이 있을 때만 포함
+      if (formData.birthdate) {
+        completeSignupData.birth = formatBirthdate(formData.birthdate);
+      }
+      if (formData.weddingDate) {
+        completeSignupData.weddingDate = formData.weddingDate;
+      }
+      if (formData.gender) {
+        completeSignupData.weddingRole = formData.gender;
+      }
 
       console.log("Complete sign up:", completeSignupData);
 
       // 회원가입 API 호출 (Custom Hook 사용)
       await joinMutation.mutateAsync(completeSignupData);
+      console.log("✅ 회원가입 성공");
+
+      // 회원가입 성공 후 자동 로그인 시도
+      console.log("🔐 자동 로그인 시도 중...");
+      try {
+        const loginResponse = await authApi.login({
+          userId: signupData.email,         // userId로 변경
+          password: signupData.password,
+        });
+
+        console.log("✅ 자동 로그인 성공");
+        console.log("🔑 토큰 저장 완료");
+
+        // 토큰은 authApi.login 내부의 인터셉터에서 자동으로 localStorage에 저장됨
+      } catch (loginErr) {
+        console.error("⚠️ 자동 로그인 실패:", loginErr);
+        // 로그인 실패해도 회원가입은 성공했으므로 계속 진행
+        // 사용자는 나중에 수동 로그인 가능
+      }
 
       // 회원가입 성공 - localStorage 정리
       localStorage.removeItem("signupData");
@@ -138,18 +182,18 @@ export default function SignupStep3Page() {
             <div className="flex gap-2">
               <button
                 type="button"
-                onClick={() => handleGenderSelect("groom")}
+                onClick={() => handleGenderSelect("GROOM")}
                 className={`chip flex-1 h-12 ${
-                  formData.gender === "groom" ? "chip-selected" : ""
+                  formData.gender === "GROOM" ? "chip-selected" : ""
                 }`}
               >
                 신랑
               </button>
               <button
                 type="button"
-                onClick={() => handleGenderSelect("bride")}
+                onClick={() => handleGenderSelect("BRIDE")}
                 className={`chip flex-1 h-12 ${
-                  formData.gender === "bride" ? "chip-selected" : ""
+                  formData.gender === "BRIDE" ? "chip-selected" : ""
                 }`}
               >
                 신부

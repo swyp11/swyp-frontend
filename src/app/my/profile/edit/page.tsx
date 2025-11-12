@@ -32,13 +32,13 @@ function ProfileEditContent() {
     if (userInfo) {
       switch (field) {
         case "name":
-          setEditValue(userInfo.name || "");
+          setEditValue(userInfo.nickname || "");
           break;
         case "birthDate":
-          setEditValue(userInfo.birthDate || "");
+          setEditValue(userInfo.birth || "");
           break;
         case "role":
-          setEditValue(userInfo.role || "-");
+          setEditValue(userInfo.weddingRole || "-");
           break;
         case "weddingDate":
           setEditValue(userInfo.weddingDate || "");

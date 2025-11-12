@@ -31,11 +31,15 @@ export const useWeddingHallList = (
 /**
  * 웨딩홀 상세 조회 훅
  */
-export const useWeddingHallDetail = (id: number) => {
+export const useWeddingHallDetail = (
+  id: number,
+  options?: Omit<UseQueryOptions<WeddingHallResponse>, 'queryKey' | 'queryFn'>
+) => {
   return useQuery({
     queryKey: ['weddingHall', 'detail', id],
     queryFn: () => weddingHallApi.getDetail(id),
     enabled: !!id,
+    ...options,
   });
 };
 

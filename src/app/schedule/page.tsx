@@ -11,7 +11,7 @@ import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
 import { useAuth } from "@/contexts/AuthContext";
-import { useScheduleList, useMonthlySchedule, useWeeklySchedule, useDailySchedule } from "@/hooks/useSchedule";
+import { useMonthSchedule, useWeekSchedule, useDaySchedule } from "@/hooks/useSchedule";
 
 interface Event {
   id: string;
@@ -49,17 +49,9 @@ function SchedulePage() {
   };
 
   // API 호출 - 뷰에 따라 조건부로 데이터 가져오기
-  const { data: scheduleList } = useScheduleList({ enabled: calendarView === 'monthly' });
-  const { data: weeklySchedule } = useWeeklySchedule(
-    currentYear,
-    currentMonth,
-    getCurrentWeek(),
-    { enabled: calendarView === 'weekly' }
-  );
-  const { data: dailySchedule } = useDailySchedule(
-    getCurrentDateString(),
-    { enabled: calendarView === 'daily' }
-  );
+  const { data: monthSchedule } = useMonthSchedule(currentYear, currentMonth);
+  const { data: weekSchedule } = useWeekSchedule(getCurrentDateString());
+  const { data: daySchedule } = useDaySchedule(getCurrentDateString());
 
   const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth - 1, 1).getDay();
@@ -120,9 +112,9 @@ function SchedulePage() {
   const getMonthlyEvents = () => {
     const monthlyEventsMap: { [key: number]: string[] } = {};
 
-    if (!scheduleList) return monthlyEventsMap;
+    if (!monthSchedule) return monthlyEventsMap;
 
-    scheduleList.forEach((schedule: any) => {
+    monthSchedule.forEach((schedule: any) => {
       const scheduleDate = new Date(schedule.scheduleDate);
       const eventDate = scheduleDate.getDate();
       const eventMonth = scheduleDate.getMonth() + 1;
@@ -141,9 +133,9 @@ function SchedulePage() {
 
   // 주별 뷰용 이벤트 변환
   const getWeeklyEvents = () => {
-    if (!weeklySchedule) return [];
+    if (!weekSchedule) return [];
 
-    return weeklySchedule.map((schedule: any) => {
+    return weekSchedule.map((schedule: any) => {
       const scheduleDate = new Date(schedule.scheduleDate);
       const startHour = parseInt(schedule.startTime.split(':')[0]);
       const endHour = parseInt(schedule.endTime.split(':')[0]);
@@ -161,9 +153,9 @@ function SchedulePage() {
 
   // 일별 뷰용 이벤트 변환
   const getDailyEvents = () => {
-    if (!dailySchedule) return [];
+    if (!daySchedule) return [];
 
-    return dailySchedule.map((schedule: any) => {
+    return daySchedule.map((schedule: any) => {
       const startHour = parseInt(schedule.startTime.split(':')[0]);
       const endHour = parseInt(schedule.endTime.split(':')[0]);
 

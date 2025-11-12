@@ -7,7 +7,7 @@ import { useLogin } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -32,7 +32,7 @@ export default function LoginPage() {
     e.preventDefault();
 
     // 입력값 검증
-    if (!username || !password) {
+    if (!userId || !password) {
       setError("아이디와 비밀번호를 모두 입력해주세요.");
       return;
     }
@@ -40,7 +40,7 @@ export default function LoginPage() {
     setError("");
 
     try {
-      await loginMutation.mutateAsync({ username, password });
+      await loginMutation.mutateAsync({ userId, password });
 
       // 로그인 성공
       console.log("Login successful");
@@ -58,7 +58,7 @@ export default function LoginPage() {
   };
 
   // 로그인 버튼 활성화 조건
-  const isFormValid = username.trim() !== "" && password.trim() !== "";
+  const isFormValid = userId.trim() !== "" && password.trim() !== "";
   const isLoading = loginMutation.isPending;
 
   return (
@@ -75,12 +75,12 @@ export default function LoginPage() {
 
         {/* Form */}
         <form onSubmit={handleLogin} className="flex flex-col gap-2 w-full">
-          {/* Username Field */}
+          {/* User ID Field */}
           <input
             type="text"
-            value={username}
+            value={userId}
             onChange={(e) => {
-              setUsername(e.target.value);
+              setUserId(e.target.value);
               setError("");
             }}
             placeholder="아이디"

@@ -26,11 +26,15 @@ export const useDressShopList = (
 /**
  * 드레스샵 상세 조회 훅
  */
-export const useDressShopDetail = (id: number) => {
+export const useDressShopDetail = (
+  id: number,
+  options?: Omit<UseQueryOptions<DressShopResponse>, 'queryKey' | 'queryFn'>
+) => {
   return useQuery({
     queryKey: ['dressShop', 'detail', id],
     queryFn: () => dressShopApi.getDetail(id),
     enabled: !!id,
+    ...options,
   });
 };
 
@@ -111,11 +115,15 @@ export const useMakeupShopList = (
 /**
  * 메이크업샵 상세 조회 훅
  */
-export const useMakeupShopDetail = (id: number) => {
+export const useMakeupShopDetail = (
+  id: number,
+  options?: Omit<UseQueryOptions<MakeupShopResponse>, 'queryKey' | 'queryFn'>
+) => {
   return useQuery({
     queryKey: ['makeupShop', 'detail', id],
     queryFn: () => makeupShopApi.getDetail(id),
     enabled: !!id,
+    ...options,
   });
 };
 

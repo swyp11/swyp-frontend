@@ -1,74 +1,59 @@
 /**
  * 샵(드레스샵, 메이크업샵) 관련 타입 정의
+ * Backend DTO와 정확히 일치하도록 작성
  */
+
+// 드레스샵 등록/수정 요청
+export interface DressShopRequest {
+  shopName: string;       // @NotNull in backend
+  description?: string;
+  address?: string;
+  phone?: string;
+  snsUrl?: string;
+  imageUrl?: string;
+  specialty?: string;
+  features?: string;
+}
 
 // 드레스샵 응답
 export interface DressShopResponse {
   id: number;
-  name: string;
-  shopName?: string; // 하위 호환성
+  shopName: string;
+  description?: string;
   address?: string;
   phone?: string;
-  email?: string;
-  description?: string;
+  snsUrl?: string;
   imageUrl?: string;
-  images?: string[];
   specialty?: string;
-  businessHours?: string;
-  website?: string;
-  favorite?: number;
-  createdAt?: string;
-  updatedAt?: string;
+  features?: string;
 }
 
-// 드레스샵 등록/수정 요청
-export interface DressShopRequest {
-  shopName: string;
+// 메이크업샵 등록/수정 요청
+export interface MakeupShopRequest {
+  shopName: string;       // @NotNull in backend
+  description?: string;
   address?: string;
   phone?: string;
-  description?: string;
+  snsUrl?: string;
   imageUrl?: string;
-  images?: string[];
   specialty?: string;
-  businessHours?: string;
-  website?: string;
+  features?: string;
 }
 
 // 메이크업샵 응답
 export interface MakeupShopResponse {
   id: number;
-  name: string;
-  shopName?: string; // 하위 호환성
-  address?: string;
-  phone?: string;
-  email?: string;
-  description?: string;
-  imageUrl?: string;
-  images?: string[];
-  specialty?: string;
-  businessHours?: string;
-  website?: string;
-  priceRange?: string;
-  favorite?: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// 메이크업샵 등록/수정 요청
-export interface MakeupShopRequest {
   shopName: string;
+  description?: string;
   address?: string;
   phone?: string;
-  description?: string;
+  snsUrl?: string;
   imageUrl?: string;
-  images?: string[];
   specialty?: string;
-  businessHours?: string;
-  website?: string;
-  priceRange?: string;
+  features?: string;
 }
 
-// 샵 검색 파라미터
+// 샵 검색 파라미터 (프론트엔드 전용)
 export interface ShopSearchParams {
   shopName?: string;
   address?: string;

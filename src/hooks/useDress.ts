@@ -2,9 +2,9 @@
  * 드레스 관련 Custom Hook
  */
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { dressApi } from '@/api';
-import { DressRequest, DressSearchParams } from '@/types';
+import { DressRequest, DressResponse, DressSearchParams } from '@/types';
 
 /**
  * 드레스 목록 조회 훅
@@ -20,11 +20,15 @@ export const useDressList = (params?: DressSearchParams) => {
 /**
  * 드레스 상세 조회 훅
  */
-export const useDressDetail = (id: number) => {
+export const useDressDetail = (
+  id: number,
+  options?: Omit<UseQueryOptions<DressResponse>, 'queryKey' | 'queryFn'>
+) => {
   return useQuery({
     queryKey: ['dress', 'detail', id],
     queryFn: () => dressApi.getDetail(id),
     enabled: !!id,
+    ...options,
   });
 };
 
