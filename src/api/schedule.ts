@@ -16,7 +16,7 @@ export const scheduleApi = {
    */
   create: async (data: ScheduleRequest) => {
     const response = await apiClient.post<ScheduleResponse>(
-      '/api/schedule',
+      '/schedule',
       data
     );
     return response.data;
@@ -27,7 +27,7 @@ export const scheduleApi = {
    */
   getMonthEvents: async (year: number, month: number) => {
     const response = await apiClient.get<ScheduleMonthResponse[]>(
-      '/api/schedule/month',
+      '/schedule/month',
       {
         params: { year, month },
       }
@@ -40,7 +40,7 @@ export const scheduleApi = {
    */
   getWeekEvents: async (startDate: string) => {
     const response = await apiClient.get<ScheduleWeekResponse[]>(
-      '/api/schedule/week',
+      '/schedule/week',
       {
         params: { startDate },
       }
@@ -53,7 +53,7 @@ export const scheduleApi = {
    */
   getDayEvents: async (date: string) => {
     const response = await apiClient.get<ScheduleResponse[]>(
-      '/api/schedule/day',
+      '/schedule/day',
       {
         params: { date },
       }
@@ -66,7 +66,7 @@ export const scheduleApi = {
    */
   getDetail: async (id: number) => {
     const response = await apiClient.get<ScheduleResponse>(
-      `/api/schedule/${id}`
+      `/schedule/${id}`
     );
     return response.data;
   },
@@ -76,7 +76,7 @@ export const scheduleApi = {
    */
   update: async (id: number, data: ScheduleRequest) => {
     const response = await apiClient.put<ScheduleResponse>(
-      `/api/schedule/${id}`,
+      `/schedule/${id}`,
       data
     );
     return response.data;
@@ -86,7 +86,7 @@ export const scheduleApi = {
    * 일정 삭제
    */
   delete: async (id: number) => {
-    const response = await apiClient.delete(`/api/schedule/${id}`);
+    const response = await apiClient.delete(`/schedule/${id}`);
     return response.data;
   },
 };

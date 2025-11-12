@@ -11,7 +11,7 @@ export const likesApi = {
    */
   store: async (category: LikesCategory, postId: number) => {
     const response = await apiClient.post<ApiResponse<boolean>>(
-      `/api/likes/${category}/${postId}`
+      `/likes/${category}/${postId}`
     );
     return response.data;
   },
@@ -21,7 +21,7 @@ export const likesApi = {
    */
   delete: async (id: number) => {
     const response = await apiClient.delete<ApiResponse<boolean>>(
-      `/api/likes/${id}`
+      `/likes/delete/${id}`
     );
     return response.data;
   },

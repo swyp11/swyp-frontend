@@ -12,7 +12,7 @@ export const dressShopApi = {
    */
   getList: async (params?: ShopSearchParams) => {
     const response = await apiClient.get<DressShopResponse[]>(
-      '/api/dress-shop',
+      '/dress-shop',
       { params }
     );
     return response.data;
@@ -23,7 +23,7 @@ export const dressShopApi = {
    */
   getDetail: async (id: number) => {
     const response = await apiClient.get<DressShopResponse>(
-      `/api/dress-shop/${id}`
+      `/dress-shop/${id}`
     );
     return response.data;
   },
@@ -33,7 +33,7 @@ export const dressShopApi = {
    */
   getDresses: async (id: number) => {
     const response = await apiClient.get<DressResponse[]>(
-      `/api/dress-shop/${id}/dresses`
+      `/dress-shop/${id}/dresses`
     );
     return response.data;
   },
@@ -43,7 +43,7 @@ export const dressShopApi = {
    */
   create: async (data: DressShopRequest) => {
     const response = await apiClient.post<DressShopResponse>(
-      '/api/dress-shop',
+      '/dress-shop',
       data
     );
     return response.data;
@@ -54,7 +54,7 @@ export const dressShopApi = {
    */
   update: async (id: number, data: DressShopRequest) => {
     const response = await apiClient.put<DressShopResponse>(
-      `/api/dress-shop/${id}`,
+      `/dress-shop/${id}`,
       data
     );
     return response.data;
@@ -64,7 +64,7 @@ export const dressShopApi = {
    * 드레스샵 삭제
    */
   delete: async (id: number) => {
-    const response = await apiClient.delete(`/api/dress-shop/${id}`);
+    const response = await apiClient.delete(`/dress-shop/${id}`);
     return response.data;
   },
 };

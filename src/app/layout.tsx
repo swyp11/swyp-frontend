@@ -7,6 +7,7 @@ import localFont from "next/font/local";
 import "../styles/globals.css";
 import { NavigationProvider } from "../contexts/NavigationContext";
 import { AuthProvider } from "../contexts/AuthContext";
+import { QueryProvider } from "../providers/QueryProvider";
 import { Header } from "../components/common/Header";
 import { BottomNavigation } from "../components/common/BottomNavigation";
 import { usePathname } from "next/navigation";
@@ -86,45 +87,47 @@ export default function RootLayout({
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} ${roboto.variable} ${pretendard.variable} antialiased`}
       >
-        <AuthProvider>
-          <NavigationProvider>
-            <div
-              className="flex flex-col h-screen items-start relative bg-white mx-auto"
-              style={{ width: "var(--app-width)", maxWidth: "100vw" }}
-            >
-            {/* Fixed Header */}
-            {!shouldHideHeader && (
+        <QueryProvider>
+          <AuthProvider>
+            <NavigationProvider>
               <div
-                className="fixed top-0 left-1/2 -translate-x-1/2 z-50"
-                style={{ width: "var(--app-width)" }}
+                className="flex flex-col h-screen items-start relative bg-white mx-auto"
+                style={{ width: "var(--app-width)", maxWidth: "100vw" }}
               >
-                <Header />
-              </div>
-            )}
+              {/* Fixed Header */}
+              {!shouldHideHeader && (
+                <div
+                  className="fixed top-0 left-1/2 -translate-x-1/2 z-50"
+                  style={{ width: "var(--app-width)" }}
+                >
+                  <Header />
+                </div>
+              )}
 
-            {/* Scrollable Content */}
-            <div 
-              className="flex-1 w-full overflow-y-auto" 
-              style={{ 
-                paddingTop: shouldHideHeader ? "0" : "var(--header-height)", 
-                paddingBottom: shouldHideBottomNav ? "0" : "var(--footer-height)" 
-              }}
-            >
-              {children}
-            </div>
-
-            {/* Fixed Bottom Navigation */}
-            {!shouldHideBottomNav && (
+              {/* Scrollable Content */}
               <div
-                className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50"
-                style={{ width: "var(--app-width)" }}
+                className="flex-1 w-full overflow-y-auto"
+                style={{
+                  paddingTop: shouldHideHeader ? "0" : "var(--header-height)",
+                  paddingBottom: shouldHideBottomNav ? "0" : "var(--footer-height)"
+                }}
               >
-                <BottomNavigation />
+                {children}
               </div>
-            )}
-            </div>
-          </NavigationProvider>
-        </AuthProvider>
+
+              {/* Fixed Bottom Navigation */}
+              {!shouldHideBottomNav && (
+                <div
+                  className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50"
+                  style={{ width: "var(--app-width)" }}
+                >
+                  <BottomNavigation />
+                </div>
+              )}
+              </div>
+            </NavigationProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

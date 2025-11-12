@@ -16,7 +16,7 @@ export const weddingHallApi = {
    */
   getList: async (params?: WeddingHallSearchParams) => {
     const response = await apiClient.get<WeddingHallResponse[]>(
-      '/api/wedding',
+      '/wedding',
       { params }
     );
     return response.data;
@@ -27,7 +27,7 @@ export const weddingHallApi = {
    */
   getDetail: async (id: number) => {
     const response = await apiClient.get<WeddingHallResponse>(
-      `/api/wedding/${id}`
+      `/wedding/${id}`
     );
     return response.data;
   },
@@ -37,7 +37,7 @@ export const weddingHallApi = {
    */
   create: async (data: WeddingHallRequest) => {
     const response = await apiClient.post<ApiResponse<boolean>>(
-      '/api/wedding',
+      '/wedding',
       data
     );
     return response.data;
@@ -48,7 +48,7 @@ export const weddingHallApi = {
    */
   update: async (id: number, data: WeddingHallRequest) => {
     const response = await apiClient.put<ApiResponse<boolean>>(
-      `/api/wedding/${id}`,
+      `/wedding/${id}`,
       data
     );
     return response.data;
@@ -59,7 +59,7 @@ export const weddingHallApi = {
    */
   delete: async (id: number) => {
     const response = await apiClient.delete<ApiResponse<boolean>>(
-      `/api/wedding/${id}`
+      `/wedding/${id}`
     );
     return response.data;
   },

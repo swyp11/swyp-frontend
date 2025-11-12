@@ -11,7 +11,7 @@ export const makeupShopApi = {
    */
   getList: async (params?: ShopSearchParams) => {
     const response = await apiClient.get<MakeupShopResponse[]>(
-      '/api/makeup-shop',
+      '/makeup-shop',
       { params }
     );
     return response.data;
@@ -22,7 +22,7 @@ export const makeupShopApi = {
    */
   getDetail: async (id: number) => {
     const response = await apiClient.get<MakeupShopResponse>(
-      `/api/makeup-shop/${id}`
+      `/makeup-shop/${id}`
     );
     return response.data;
   },
@@ -32,7 +32,7 @@ export const makeupShopApi = {
    */
   create: async (data: MakeupShopRequest) => {
     const response = await apiClient.post<MakeupShopResponse>(
-      '/api/makeup-shop',
+      '/makeup-shop',
       data
     );
     return response.data;
@@ -43,7 +43,7 @@ export const makeupShopApi = {
    */
   update: async (id: number, data: MakeupShopRequest) => {
     const response = await apiClient.put<MakeupShopResponse>(
-      `/api/makeup-shop/${id}`,
+      `/makeup-shop/${id}`,
       data
     );
     return response.data;
@@ -53,7 +53,7 @@ export const makeupShopApi = {
    * 메이크업샵 삭제
    */
   delete: async (id: number) => {
-    const response = await apiClient.delete(`/api/makeup-shop/${id}`);
+    const response = await apiClient.delete(`/makeup-shop/${id}`);
     return response.data;
   },
 };
