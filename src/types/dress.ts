@@ -84,6 +84,7 @@ export interface DressResponse {
   neckline?: DressNeckline;
   mood?: DressMood;
   fabric?: DressFabric;
+  isLiked?: boolean;       // 찜 여부
 }
 
 // 드레스 검색 파라미터 (프론트엔드 전용)

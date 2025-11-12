@@ -50,6 +50,7 @@ export interface WeddingHallResponse {
   snsUrl?: string;
   imageUrl?: string;
   venueType?: WeddingHallVenueType;
+  isLiked?: boolean;       // 찜 여부
 }
 
 // 홀 등록/수정 요청 (웨딩홀 내부 홀)

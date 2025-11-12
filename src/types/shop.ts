@@ -26,6 +26,7 @@ export interface DressShopResponse {
   imageUrl?: string;
   specialty?: string;
   features?: string;
+  isLiked?: boolean;       // 찜 여부
 }
 
 // 메이크업샵 등록/수정 요청
@@ -51,6 +52,7 @@ export interface MakeupShopResponse {
   imageUrl?: string;
   specialty?: string;
   features?: string;
+  isLiked?: boolean;       // 찜 여부
 }
 
 // 샵 검색 파라미터 (프론트엔드 전용)

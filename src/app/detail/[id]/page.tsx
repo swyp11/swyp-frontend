@@ -17,8 +17,6 @@ export default function DetailPage() {
   const id = Number(params.id);
   const tab = searchParams.get("tab") || "wedding-hall";
 
-  const [isFavorite, setIsFavorite] = useState(false);
-
   // 탭에 따라 조건부로 API 호출
   const { data: weddingHall, isLoading: weddingLoading } = useWeddingHallDetail(
     id,
@@ -40,7 +38,7 @@ export default function DetailPage() {
     { enabled: tab === 'dress-item' }
   );
 
-  const toggleLikes = useToggleLikes();
+  const { toggleLikes, isLoading: isTogglingLikes } = useToggleLikes();
 
   // 현재 탭의 데이터 및 로딩 상태
   const getCurrentData = () => {
@@ -82,6 +80,7 @@ export default function DetailPage() {
       specialty: item.specialty || "",
       features: item.features || "",
       snsUrl: item.snsUrl || "",
+      isLiked: item.isLiked || false,
       images,
       businessHours: [
         { day: "월", time: "10:00 - 20:00" },
@@ -95,18 +94,26 @@ export default function DetailPage() {
     };
   })() : null;
 
-  const handleFavoriteToggle = async () => {
-    try {
-      await toggleLikes.mutateAsync({
-        targetType: tab === 'wedding-hall' ? 'WEDDING_HALL' :
-                    tab === 'dress' ? 'DRESS_SHOP' :
-                    tab === 'makeup' ? 'MAKEUP_SHOP' : 'DRESS',
-        targetId: id,
-      });
-      setIsFavorite(!isFavorite);
-    } catch (error) {
-      console.error('Error toggling favorite:', error);
-    }
+  const handleFavoriteToggle = () => {
+    if (!itemData) return;
+
+    // 백엔드 category 문자열로 매핑
+    const categoryMap: Record<string, 'hall' | 'wedding_hall' | 'dress' | 'dress_shop' | 'makeup_shop'> = {
+      'wedding-hall': 'wedding_hall',
+      'dress': 'dress_shop',     // 드레스샵
+      'makeup': 'makeup_shop',   // 메이크업샵
+      'dress-item': 'dress',     // 드레스 아이템
+      'hall': 'hall',
+    };
+
+    const category = categoryMap[tab] || 'wedding_hall';
+
+    toggleLikes({
+      isLiked: itemData.isLiked,
+      likesId: undefined, // TODO: API에서 likesId를 받아야 함
+      category,
+      postId: id,
+    });
   };
 
   if (isLoading) {
@@ -132,45 +139,53 @@ export default function DetailPage() {
   }
 
   return (
-    <div
-      className="bg-white flex flex-col min-h-screen mx-auto"
-      style={{ width: "var(--app-width)" }}
-    >
+    <div className="bg-white flex flex-col h-screen">
       <BackHeader title={itemData.title} />
 
-      {/* Content */}
+      {/* Content - Scrollable */}
       <div className="flex-1 bg-white flex flex-col gap-6 p-6 overflow-y-auto">
-        {/* Image Gallery - Horizontal Scroll */}
-        <div className="flex gap-2 overflow-x-auto">
-          {itemData.images.map((image: string, index: number) => (
-            <div
-              key={index}
-              className="relative flex-shrink-0 w-[280px] h-[280px] rounded-lg overflow-hidden"
-            >
-              <Image
-                src={getAssetPath(image)}
-                alt={`${itemData.title} ${index + 1}`}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ))}
-        </div>
+        {/* Image Gallery - Horizontal Scroll or Single Image */}
+        {itemData.images.length === 1 ? (
+          <div className="relative w-full rounded-lg overflow-hidden aspect-square">
+            <Image
+              src={getAssetPath(itemData.images[0])}
+              alt={itemData.title}
+              fill
+              className="object-cover"
+            />
+          </div>
+        ) : (
+          <div className="flex gap-2 overflow-x-auto">
+            {itemData.images.map((image: string, index: number) => (
+              <div
+                key={index}
+                className="relative flex-shrink-0 w-[280px] h-[280px] rounded-lg overflow-hidden"
+              >
+                <Image
+                  src={getAssetPath(image)}
+                  alt={`${itemData.title} ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Title & Favorite */}
-        <div className="flex items-center justify-center gap-2.5 w-full">
+        <div className="flex items-center gap-2.5 w-full">
           <h2 className="title-1 text-on-surface flex-1">{itemData.title}</h2>
           <button
             onClick={handleFavoriteToggle}
-            disabled={toggleLikes.isPending}
-            className="flex items-center gap-2.5 p-2"
-            aria-label={isFavorite ? "즐겨찾기 해제" : "즐겨찾기 추가"}
+            disabled={isTogglingLikes}
+            className="flex items-center justify-center p-2 w-10 h-10"
+            aria-label={itemData.isLiked ? "즐겨찾기 해제" : "즐겨찾기 추가"}
           >
             <Image
               src={getAssetPath(
-                isFavorite ? "/img/favorite_color.svg" : "/img/favorite_border.svg"
+                itemData.isLiked ? "/img/favorite_color.svg" : "/img/favorite_border.svg"
               )}
-              alt="즐겨찾기"
+              alt=""
               width={24}
               height={24}
             />
@@ -180,9 +195,9 @@ export default function DetailPage() {
         {/* Details */}
         <div className="flex flex-col gap-2 w-full">
           {/* Address */}
-          {itemData.address && (
+          {itemData.address && itemData.address !== "주소 정보 없음" && (
             <div className="flex gap-4 items-start w-full">
-              <p className="body-2-medium text-on-surface-subtle flex-shrink-0">
+              <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
                 주소
               </p>
               <p className="body-2 text-on-surface flex-1">
@@ -191,15 +206,31 @@ export default function DetailPage() {
             </div>
           )}
 
+          {/* Business Hours */}
+          {itemData.businessHours && (
+            <div className="flex gap-4 items-start w-full">
+              <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                영업시간
+              </p>
+              <div className="flex flex-col body-2 text-on-surface flex-1">
+                {itemData.businessHours.map((hours: any, index: number) => (
+                  <p key={index}>
+                    {hours.day}: {hours.time}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Phone */}
-          {itemData.phone && (
-            <div className="flex gap-4 items-center">
-              <p className="body-2-medium text-on-surface-subtle flex-shrink-0">
+          {itemData.phone && itemData.phone !== "전화번호 없음" && (
+            <div className="flex gap-4 items-start">
+              <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
                 전화번호
               </p>
               <a
                 href={`tel:${itemData.phone}`}
-                className="body-2 text-[#3190ff] flex items-center gap-1.5"
+                className="body-2 text-[#3190ff]"
               >
                 {itemData.phone}
               </a>
@@ -208,15 +239,15 @@ export default function DetailPage() {
 
           {/* SNS URL */}
           {itemData.snsUrl && (
-            <div className="flex gap-4 items-center">
-              <p className="body-2-medium text-on-surface-subtle flex-shrink-0">
+            <div className="flex gap-4 items-start">
+              <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
                 SNS
               </p>
               <a
                 href={itemData.snsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="body-2 text-[#3190ff] flex items-center gap-1.5"
+                className="body-2 text-[#3190ff] break-all"
               >
                 {itemData.snsUrl}
               </a>
@@ -226,7 +257,7 @@ export default function DetailPage() {
           {/* Specialty */}
           {itemData.specialty && (
             <div className="flex gap-4 items-start w-full">
-              <p className="body-2-medium text-on-surface-subtle flex-shrink-0">
+              <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
                 전문분야
               </p>
               <p className="body-2 text-on-surface flex-1">
@@ -238,7 +269,7 @@ export default function DetailPage() {
           {/* Features */}
           {itemData.features && (
             <div className="flex gap-4 items-start w-full">
-              <p className="body-2-medium text-on-surface-subtle flex-shrink-0">
+              <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
                 특징
               </p>
               <p className="body-2 text-on-surface flex-1">
@@ -248,30 +279,14 @@ export default function DetailPage() {
           )}
 
           {/* Description */}
-          {itemData.description && (
+          {itemData.description && itemData.description !== "소개 정보 없음" && (
             <div className="flex gap-4 items-start w-full">
-              <p className="body-2-medium text-on-surface-subtle flex-shrink-0">
-                소개
+              <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                가게소개
               </p>
               <p className="body-2 text-on-surface flex-1">
                 {itemData.description}
               </p>
-            </div>
-          )}
-
-          {/* Business Hours */}
-          {itemData.businessHours && (
-            <div className="flex gap-4 items-start w-full">
-              <p className="body-2-medium text-on-surface-subtle flex-shrink-0">
-                영업시간
-              </p>
-              <div className="flex flex-col body-2 text-on-surface flex-1">
-                {itemData.businessHours.map((hours: any, index: number) => (
-                  <p key={index} className="whitespace-nowrap">
-                    {hours.day}: {hours.time}
-                  </p>
-                ))}
-              </div>
             </div>
           )}
         </div>

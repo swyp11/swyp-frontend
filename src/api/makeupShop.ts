@@ -31,10 +31,20 @@ export const makeupShopApi = {
    * 메이크업샵 상세 조회
    */
   getDetail: async (id: number) => {
-    const response = await apiClient.get<{ success: boolean; data: MakeupShopResponse }>(
-      `/makeup-shop/${id}`
-    );
-    return response.data.data;
+    try {
+      const response = await apiClient.get<{ success: boolean; data: MakeupShopResponse }>(
+        `/makeup-shop/${id}`
+      );
+      // 응답 구조 확인 및 안전한 반환
+      if (response.data && 'data' in response.data) {
+        return response.data.data;
+      }
+      // 응답이 직접 객체인 경우 (이전 형식)
+      return response.data as any;
+    } catch (error) {
+      console.error('메이크업샵 상세 조회 실패:', error);
+      throw error;
+    }
   },
 
   /**
