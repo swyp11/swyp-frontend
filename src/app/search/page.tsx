@@ -109,7 +109,7 @@ function SearchResultsContent() {
       <div className="px-4 py-4 border-b border-subtlest">
         <SearchInput
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={setSearchQuery}
           onSearch={handleSearch}
           placeholder="검색어를 입력하세요"
         />

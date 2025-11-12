@@ -9,11 +9,15 @@ import { DressRequest, DressResponse, DressSearchParams } from '@/types';
 /**
  * 드레스 목록 조회 훅
  */
-export const useDressList = (params?: DressSearchParams) => {
+export const useDressList = (
+  params?: DressSearchParams,
+  options?: Omit<UseQueryOptions<DressResponse[]>, 'queryKey' | 'queryFn'>
+) => {
   return useQuery({
     queryKey: ['dress', 'list', params],
     queryFn: () => dressApi.getList(params),
     staleTime: 5 * 60 * 1000, // 5분
+    ...options,
   });
 };
 
