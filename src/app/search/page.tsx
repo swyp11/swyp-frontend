@@ -89,7 +89,7 @@ function SearchResultsContent() {
 
   const handleTabChange = (newTab: string) => {
     setActiveTab(newTab);
-    router.push(`/search?q=${encodeURIComponent(searchQuery)}&tab=${newTab}&sort=${sortOrder}`, { scroll: false });
+    router.replace(`/search?q=${encodeURIComponent(searchQuery)}&tab=${newTab}&sort=${sortOrder}`, { scroll: false });
   };
 
   const handleResultClick = (id: number) => {
@@ -98,7 +98,7 @@ function SearchResultsContent() {
 
   const handleSortChange = (newSort: 'FAVORITE' | 'RECENT') => {
     setSortOrder(newSort);
-    router.push(`/search?q=${encodeURIComponent(searchQuery)}&tab=${activeTab}&sort=${newSort}`, { scroll: false });
+    router.replace(`/search?q=${encodeURIComponent(searchQuery)}&tab=${activeTab}&sort=${newSort}`, { scroll: false });
   };
 
   return (

@@ -27,17 +27,17 @@ export default function DetailPage() {
 
   const { data: dressShop, isLoading: dressShopLoading } = useDressShopDetail(
     id,
-    { enabled: tab === 'dress-shop' }
+    { enabled: tab === 'dress' }
   );
 
   const { data: makeupShop, isLoading: makeupLoading } = useMakeupShopDetail(
     id,
-    { enabled: tab === 'makeup-shop' }
+    { enabled: tab === 'makeup' }
   );
 
   const { data: dress, isLoading: dressLoading } = useDressDetail(
     id,
-    { enabled: tab === 'dress' }
+    { enabled: tab === 'dress-item' }
   );
 
   const toggleLikes = useToggleLikes();
@@ -47,11 +47,11 @@ export default function DetailPage() {
     switch (tab) {
       case 'wedding-hall':
         return { data: weddingHall, isLoading: weddingLoading };
-      case 'dress-shop':
-        return { data: dressShop, isLoading: dressShopLoading };
-      case 'makeup-shop':
-        return { data: makeupShop, isLoading: makeupLoading };
       case 'dress':
+        return { data: dressShop, isLoading: dressShopLoading };
+      case 'makeup':
+        return { data: makeupShop, isLoading: makeupLoading };
+      case 'dress-item':
         return { data: dress, isLoading: dressLoading };
       default:
         return { data: null, isLoading: false };
@@ -99,8 +99,8 @@ export default function DetailPage() {
     try {
       await toggleLikes.mutateAsync({
         targetType: tab === 'wedding-hall' ? 'WEDDING_HALL' :
-                    tab === 'dress-shop' ? 'DRESS_SHOP' :
-                    tab === 'makeup-shop' ? 'MAKEUP_SHOP' : 'DRESS',
+                    tab === 'dress' ? 'DRESS_SHOP' :
+                    tab === 'makeup' ? 'MAKEUP_SHOP' : 'DRESS',
         targetId: id,
       });
       setIsFavorite(!isFavorite);

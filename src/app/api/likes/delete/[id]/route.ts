@@ -8,10 +8,11 @@ import { proxyToBackend } from '@/lib/apiProxy';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   return proxyToBackend(request, {
-    path: `/api/likes/${params.id}`,
+    path: `/api/likes/${id}`,
     method: 'DELETE',
   });
 }
