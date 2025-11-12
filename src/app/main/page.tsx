@@ -26,7 +26,7 @@ function MainPageContent() {
   const handleTabChange = (newTab: string) => {
     setActiveTab(newTab);
     // URL에 탭 정보 반영
-    router.push(`/main?tab=${newTab}`, { scroll: false });
+    router.replace(`/main?tab=${newTab}`, { scroll: false });
   };
 
   const handleSearch = () => {
