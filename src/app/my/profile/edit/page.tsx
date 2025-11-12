@@ -6,6 +6,7 @@ import Image from "next/image";
 import { BackHeader } from "@/components/common/BackHeader";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
+import { useUserInfo, useUpdateUserInfo } from "@/hooks/useUser";
 
 type FieldType = "name" | "birthDate" | "role" | "weddingDate" | "password";
 
@@ -22,29 +23,34 @@ function ProfileEditContent() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // TODO: 실제 사용자 정보를 가져와야 함
+  // 사용자 정보 가져오기
+  const { data: userInfo, isLoading } = useUserInfo();
+  const updateUserMutation = useUpdateUserInfo();
+
+  // 사용자 정보로 초기값 설정
   useEffect(() => {
-    // 초기값 설정
-    switch (field) {
-      case "name":
-        setEditValue("김수지");
-        break;
-      case "birthDate":
-        setEditValue("yyyy년 m월 d일");
-        break;
-      case "role":
-        setEditValue("-");
-        break;
-      case "weddingDate":
-        setEditValue("yyyy년 m월 d일");
-        break;
-      case "password":
-        setEditValue("");
-        break;
-      default:
-        router.push("/my/profile");
+    if (userInfo) {
+      switch (field) {
+        case "name":
+          setEditValue(userInfo.name || "");
+          break;
+        case "birthDate":
+          setEditValue(userInfo.birthDate || "");
+          break;
+        case "role":
+          setEditValue(userInfo.role || "-");
+          break;
+        case "weddingDate":
+          setEditValue(userInfo.weddingDate || "");
+          break;
+        case "password":
+          setEditValue("");
+          break;
+        default:
+          router.push("/my/profile");
+      }
     }
-  }, [field, router]);
+  }, [field, userInfo, router]);
 
   const getTitle = () => {
     switch (field) {
@@ -110,65 +116,47 @@ function ProfileEditContent() {
         return;
       }
 
-      // 비밀번호 변경 API 호출
-      try {
-        const response = await fetch("/api/auth/change-password", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            currentPassword,
-            newPassword,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          setErrorMessage(data.error || "비밀번호 변경에 실패했습니다.");
-          return;
-        }
-
-        alert("비밀번호가 변경되었습니다.");
-        router.back();
-      } catch (error) {
-        console.error("비밀번호 변경 오류:", error);
-        setErrorMessage("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-      }
+      // TODO: 백엔드에 비밀번호 변경 API 추가 필요
+      // 현재 PUT /api/user/info는 password 필드를 지원하지 않음
+      // 별도의 비밀번호 변경 엔드포인트 필요 (예: PUT /api/user/password)
+      setErrorMessage("비밀번호 변경 기능은 현재 지원되지 않습니다.");
       return;
     }
 
-    // 다른 필드 업데이트 API 호출
+    // 다른 필드 업데이트
     try {
-      const response = await fetch("/api/profile/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          field,
-          value: editValue,
-        }),
-      });
+      const updateData: any = {};
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setErrorMessage(data.error || "프로필 업데이트에 실패했습니다.");
-        return;
+      if (field === "name") {
+        updateData.name = editValue;
+      } else if (field === "birthDate") {
+        updateData.birthDate = editValue;
+      } else if (field === "role") {
+        updateData.role = editValue;
+      } else if (field === "weddingDate") {
+        updateData.weddingDate = editValue;
       }
+
+      await updateUserMutation.mutateAsync(updateData);
 
       alert("프로필이 업데이트되었습니다.");
       router.back();
-    } catch (error) {
+    } catch (error: any) {
       console.error("프로필 업데이트 오류:", error);
-      setErrorMessage("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      setErrorMessage(error.response?.data?.error || error.message || "프로필 업데이트에 실패했습니다.");
     }
   };
 
   if (!field) {
     return null;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-on-surface-subtle">로딩 중...</p>
+      </div>
+    );
   }
 
   return (
@@ -300,12 +288,12 @@ function ProfileEditContent() {
       <div className="fixed bottom-0 left-0 right-0 px-4 pb-8 pt-4 bg-white" style={{ maxWidth: "var(--app-width)", margin: "0 auto" }}>
         <button
           onClick={handleSave}
+          disabled={updateUserMutation.isPending || (field === "password" && (!currentPassword || !newPassword || !confirmPassword))}
           className={`h-12 w-full bg-primary rounded-lg body-2-medium text-on-primary ${
-            field === "password" && (!currentPassword || !newPassword || !confirmPassword) ? "opacity-40" : ""
+            (updateUserMutation.isPending || (field === "password" && (!currentPassword || !newPassword || !confirmPassword))) ? "opacity-40" : ""
           }`}
-          disabled={field === "password" && (!currentPassword || !newPassword || !confirmPassword)}
         >
-          완료
+          {updateUserMutation.isPending ? "처리 중..." : "완료"}
         </button>
       </div>
     </>

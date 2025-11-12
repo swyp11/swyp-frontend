@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BackHeader } from "@/components/common/BackHeader";
 import { DatePicker } from "@/components/common/DatePicker";
+import { useJoin } from "@/hooks/useUser";
 
 type Gender = "groom" | "bride" | null;
 
@@ -15,8 +16,9 @@ export default function SignupStep3Page() {
     gender: null as Gender,
     weddingDate: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const joinMutation = useJoin();
 
   // 입력 필드 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +43,6 @@ export default function SignupStep3Page() {
   const handleComplete = async () => {
     if (!isFormValid) return;
 
-    setIsLoading(true);
     setError("");
 
     try {
@@ -50,44 +51,29 @@ export default function SignupStep3Page() {
 
       // 전체 회원가입 데이터 구성
       const completeSignupData = {
-        email: signupData.email,
+        username: signupData.email || signupData.username,
         password: signupData.password,
-        verificationCode: signupData.verificationCode,
+        email: signupData.email,
         name: formData.name,
-        birthdate: formData.birthdate,
-        gender: formData.gender,
-        weddingDate: formData.weddingDate,
+        phone: formData.birthdate, // TODO: phone 필드 추가 필요
       };
 
       console.log("Complete sign up:", completeSignupData);
 
-      // 회원가입 API 호출
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(completeSignupData),
-      });
+      // 회원가입 API 호출 (Custom Hook 사용)
+      await joinMutation.mutateAsync(completeSignupData);
 
-      const data = await response.json();
-
-      if (data.success) {
-        // 회원가입 성공 - localStorage 정리
-        localStorage.removeItem("signupData");
-        // 회원가입 완료 페이지로 이동
-        router.push("/signup/complete");
-      } else {
-        // 회원가입 실패
-        setError(data.error || "회원가입에 실패했습니다.");
-      }
-    } catch (err) {
+      // 회원가입 성공 - localStorage 정리
+      localStorage.removeItem("signupData");
+      // 회원가입 완료 페이지로 이동
+      router.push("/signup/complete");
+    } catch (err: any) {
       console.error("Signup error:", err);
-      setError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-    } finally {
-      setIsLoading(false);
+      setError(err.response?.data?.error || err.message || "회원가입에 실패했습니다.");
     }
   };
+
+  const isLoading = joinMutation.isPending;
 
   // 뒤로가기 핸들러
   const handleBack = () => {

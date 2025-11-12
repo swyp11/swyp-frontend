@@ -39,14 +39,12 @@ function FavoritesPageContent() {
       setError(null);
 
       try {
-        const response = await fetch(`/api/favorites?tab=${activeTab}`);
-        const data = await response.json();
+        // TODO: 백엔드에서 찜 목록을 가져오는 API가 필요합니다
+        // 현재는 카테고리별로 찜한 항목만 가져올 수 있습니다
+        // GET /api/likes 엔드포인트를 백엔드에 추가해야 합니다
 
-        if (!response.ok) {
-          throw new Error(data.error || '찜 목록을 불러오는데 실패했습니다.');
-        }
-
-        setFavorites(data.data);
+        // 임시로 빈 배열 반환
+        setFavorites([]);
       } catch (err) {
         console.error('[Favorites] Fetch error:', err);
         setError(err instanceof Error ? err.message : '서버 오류가 발생했습니다.');

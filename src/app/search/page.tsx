@@ -7,6 +7,9 @@ import { getAssetPath } from "@/utils/assetPath";
 import { BackHeader } from "@/components/common/BackHeader";
 import { SearchInput } from "@/components/ui";
 import { NavigationTabSection } from "@/components/main/NavigationTabSection";
+import { useDressList } from "@/hooks/useDress";
+import { useDressShopList, useMakeupShopList } from "@/hooks/useShops";
+import { useWeddingHallList } from "@/hooks/useWeddingHall";
 
 function SearchResultsContent() {
   const router = useRouter();
@@ -16,68 +19,62 @@ function SearchResultsContent() {
 
   const [searchQuery, setSearchQuery] = useState(query);
   const [activeTab, setActiveTab] = useState(tab);
-  const [results, setResults] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setSearchQuery(query);
     setActiveTab(tab);
-    fetchSearchResults();
   }, [query, tab]);
 
-  const fetchSearchResults = async () => {
-    setIsLoading(true);
-    try {
-      let apiEndpoint = '';
-      const params = new URLSearchParams();
+  // 탭에 따라 조건부로 API 호출
+  const { data: weddingHalls, isLoading: weddingLoading } = useWeddingHallList(
+    { sort: 'RECENT' },
+    { enabled: activeTab === 'wedding-hall' }
+  );
 
-      switch (activeTab) {
-        case 'wedding-hall':
-          apiEndpoint = '/api/weddinghole';
-          if (query) params.append('hallName', query);
-          break;
-        case 'dress-shop':
-          apiEndpoint = '/api/dressshop';
-          if (query) params.append('shopName', query);
-          break;
-        case 'makeup-shop':
-          apiEndpoint = '/api/makeupshop';
-          if (query) params.append('shopName', query);
-          break;
-        case 'dress':
-          apiEndpoint = '/api/dressshop';
-          if (query) params.append('shopName', query);
-          break;
-        default:
-          apiEndpoint = '/api/weddinghole';
-      }
+  const { data: dressShops, isLoading: dressShopLoading } = useDressShopList(
+    { shopName: query, sort: 'RECENT' },
+    { enabled: activeTab === 'dress-shop' && !!query }
+  );
 
-      const response = await fetch(`${apiEndpoint}?${params.toString()}`);
-      const data = await response.json();
+  const { data: makeupShops, isLoading: makeupLoading } = useMakeupShopList(
+    { shopName: query, sort: 'RECENT' },
+    { enabled: activeTab === 'makeup-shop' && !!query }
+  );
 
-      if (data.success) {
-        const formattedResults = data.data.map((item: any) => {
-          // Use image from API response (proxy API handles fallback images)
-          const image = item.image || item.imageUrl || item.thumbnail || '/img/placeholder.jpg';
+  const { data: dresses, isLoading: dressLoading } = useDressList(
+    { shopNameContains: query, sort: 'RECENT' },
+    { enabled: activeTab === 'dress' && !!query }
+  );
 
-          return {
-            id: item.id,
-            title: item.shopName || item.hallName || item.dressName || item.title,
-            description: item.address || item.description,
-            image,
-          };
-        });
-        setResults(formattedResults);
-      } else {
-        setResults([]);
-      }
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-      setResults([]);
-    } finally {
-      setIsLoading(false);
+  // 현재 탭의 데이터 및 로딩 상태
+  const getCurrentData = () => {
+    switch (activeTab) {
+      case 'wedding-hall':
+        return { data: weddingHalls, isLoading: weddingLoading };
+      case 'dress-shop':
+        return { data: dressShops, isLoading: dressShopLoading };
+      case 'makeup-shop':
+        return { data: makeupShops, isLoading: makeupLoading };
+      case 'dress':
+        return { data: dresses, isLoading: dressLoading };
+      default:
+        return { data: [], isLoading: false };
     }
   };
+
+  const { data: currentData, isLoading } = getCurrentData();
+
+  // 데이터 포맷팅
+  const results = (currentData || []).map((item: any) => {
+    const image = item.image || item.imageUrl || item.thumbnail || '/img/placeholder.jpg';
+
+    return {
+      id: item.id,
+      title: item.shopName || item.hallName || item.dressName || item.title,
+      description: item.address || item.description,
+      image,
+    };
+  });
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -95,88 +92,70 @@ function SearchResultsContent() {
   };
 
   return (
-    <div
-      className="bg-white flex flex-col min-h-screen mx-auto"
-      style={{ width: "var(--app-width)" }}
-    >
-      <BackHeader title="업체찾기" />
+    <>
+      <BackHeader title="" />
 
-      {/* Search Bar */}
-      <div className="flex flex-col items-end gap-2.5 p-4">
+      {/* 검색 입력 */}
+      <div className="px-4 py-4 border-b border-[#f1f1f1]">
         <SearchInput
           value={searchQuery}
-          onChange={setSearchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           onSearch={handleSearch}
-          placeholder="검색어를 입력해보세요."
-          className="w-full"
+          placeholder="검색어를 입력하세요"
         />
       </div>
 
-      {/* Navigation Tabs */}
+      {/* 탭 네비게이션 */}
       <NavigationTabSection activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* Search Results */}
-      <div className="flex-1 bg-white flex flex-col items-center justify-center gap-3 p-6">
+      {/* 검색 결과 */}
+      <div className="flex-1 overflow-y-auto px-4 py-4">
         {isLoading ? (
-          <p className="body-2 text-on-surface-subtle">검색 중...</p>
+          <div className="flex items-center justify-center py-20">
+            <p className="body-2 text-on-surface-subtle">검색 중...</p>
+          </div>
         ) : results.length === 0 ? (
-          <>
-            <div className="w-6 h-6">
-              <Image
-                src={getAssetPath("/img/search.svg")}
-                alt="검색"
-                width={24}
-                height={24}
-                className="text-on-surface-subtle"
-              />
-            </div>
-            <div className="flex flex-col items-center gap-0.5 text-center">
-              <p className="body-1-medium text-on-surface-subtle">
-                검색결과 없음
-              </p>
-              <p className="body-2 text-on-surface-subtle">
-                검색 옵션을 변경해서 다시 검색해 보세요.
-              </p>
-            </div>
-          </>
+          <div className="flex items-center justify-center py-20">
+            <p className="body-2 text-on-surface-subtle">
+              {query ? "검색 결과가 없습니다." : "검색어를 입력해주세요."}
+            </p>
+          </div>
         ) : (
-          <div className="w-full px-4">
-            <div className="mb-4">
-              <p className="body-2-medium text-on-surface">
-                '{query}' 검색 결과 {results.length}개
-              </p>
-            </div>
+          <div className="flex flex-col gap-4">
+            {results.map((result) => (
+              <div
+                key={result.id}
+                onClick={() => handleResultClick(result.id)}
+                className="flex items-center gap-4 cursor-pointer hover:bg-surface-1 p-3 rounded-lg transition-colors"
+              >
+                {/* 이미지 */}
+                <div className="w-20 h-20 bg-surface-2 rounded-lg overflow-hidden shrink-0">
+                  <Image
+                    src={getAssetPath(result.image)}
+                    alt={result.title}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {results.map((result) => (
-                <button
-                  key={result.id}
-                  onClick={() => handleResultClick(result.id)}
-                  className="flex flex-col gap-2 text-left"
-                >
-                  <div className="aspect-[3/2] relative rounded bg-surface-2 overflow-hidden">
-                    <Image
-                      src={getAssetPath(result.image)}
-                      alt={result.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div>
-                    <p className="body-2-medium text-on-surface truncate">
-                      {result.title}
-                    </p>
-                    <p className="label-1-regular text-on-surface-subtle truncate">
+                {/* 정보 */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="body-1-medium text-on-surface truncate mb-1">
+                    {result.title}
+                  </h3>
+                  {result.description && (
+                    <p className="label-1 text-on-surface-subtle truncate">
                       {result.description}
                     </p>
-                  </div>
-                </button>
-              ))}
-            </div>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }
 

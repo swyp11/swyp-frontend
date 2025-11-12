@@ -16,6 +16,9 @@ export const useGoogleLogin = (): GoogleLoginHookReturn => {
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // 구글 OAuth 인증 URL로 리디렉션
+  const redirectUri = `${window.location.origin}/api/auth/google`;
+
   // 구글 로그인 시작
   const login = useCallback(() => {
     const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -25,8 +28,6 @@ export const useGoogleLogin = (): GoogleLoginHookReturn => {
       return;
     }
 
-    // 구글 OAuth 인증 URL로 리디렉션
-    const redirectUri = `${window.location.origin}/api/auth/google`;
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=openid%20email%20profile`;
 
     console.log('구글 로그인 URL:', googleAuthUrl);
@@ -57,10 +58,10 @@ export const useGoogleLogin = (): GoogleLoginHookReturn => {
       setError('');
       setIsProcessing(true);
 
-      const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_TEST_URL;
+      const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL + '/oauth/login/google';
 
       const response = await fetch(
-        `${BACKEND_URL}?code=${code}`,
+        `${BACKEND_URL}?code=${code}&redirect_uri=${encodeURIComponent(redirectUri)}`,
         {
           method: 'POST',
           credentials: 'include',

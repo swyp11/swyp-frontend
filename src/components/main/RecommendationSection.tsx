@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { HorizontalSlider } from "../common/HorizontalSlider";
 import { getAssetPath } from "@/utils/assetPath";
+import { useDressShopList, useMakeupShopList } from "@/hooks/useShops";
+import { useWeddingHallList } from "@/hooks/useWeddingHall";
 
 interface ShopCard {
   id: string;
@@ -20,68 +22,84 @@ interface RecommendationSectionProps {
 
 export const RecommendationSection = ({ activeTab }: RecommendationSectionProps) => {
   const router = useRouter();
-  const [popularShops, setPopularShops] = useState<ShopCard[]>([]);
-  const [newShops, setNewShops] = useState<ShopCard[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchShops = async () => {
-      setIsLoading(true);
-      try {
-        // activeTab에 따라 다른 API 엔드포인트 선택
-        const getApiEndpoint = () => {
-          switch (activeTab) {
-            case 'wedding-hall':
-              return '/api/weddinghole';
-            case 'dress':
-              return '/api/dressshop';
-            case 'makeup':
-              return '/api/makeupshop';
-            default:
-              return '/api/dressshop';
-          }
-        };
+  // 탭에 따라 조건부로 API 호출
+  // 인기 있는 샵 (FAVORITE 정렬)
+  const { data: popularWeddingHalls, isLoading: popularWeddingLoading } = useWeddingHallList(
+    { sort: 'FAVORITE' },
+    { enabled: activeTab === 'wedding-hall' }
+  );
 
-        const apiEndpoint = getApiEndpoint();
+  const { data: popularDressShops, isLoading: popularDressLoading } = useDressShopList(
+    { sort: 'FAVORITE' },
+    { enabled: activeTab === 'dress' }
+  );
 
-        // 인기 상품 가져오기
-        const popularResponse = await fetch(`${apiEndpoint}?type=popular`);
-        const popularData = await popularResponse.json();
+  const { data: popularMakeupShops, isLoading: popularMakeupLoading } = useMakeupShopList(
+    { sort: 'FAVORITE' },
+    { enabled: activeTab === 'makeup' }
+  );
 
-        // 신규 상품 가져오기
-        const newResponse = await fetch(`${apiEndpoint}?type=new`);
-        const newData = await newResponse.json();
+  // 신규 샵 (RECENT 정렬)
+  const { data: newWeddingHalls, isLoading: newWeddingLoading } = useWeddingHallList(
+    { sort: 'RECENT' },
+    { enabled: activeTab === 'wedding-hall' }
+  );
 
-        if (popularData.success) {
-          const formattedPopular = popularData.data.map((item: any) => ({
-            id: item.id,
-            image: item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
-            title: item.shopName || item.hallName || item.dressName || '업체명',
-            description: item.address || item.description || '주소 정보 없음',
-            category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
-          }));
-          setPopularShops(formattedPopular);
-        }
+  const { data: newDressShops, isLoading: newDressLoading } = useDressShopList(
+    { sort: 'RECENT' },
+    { enabled: activeTab === 'dress' }
+  );
 
-        if (newData.success) {
-          const formattedNew = newData.data.map((item: any) => ({
-            id: item.id,
-            image: item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
-            title: item.shopName || item.hallName || item.dressName || '업체명',
-            description: item.address || item.description || '주소 정보 없음',
-            category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
-          }));
-          setNewShops(formattedNew);
-        }
-      } catch (error) {
-        console.error('Failed to fetch shops:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { data: newMakeupShops, isLoading: newMakeupLoading } = useMakeupShopList(
+    { sort: 'RECENT' },
+    { enabled: activeTab === 'makeup' }
+  );
 
-    fetchShops();
-  }, [activeTab]);
+  // 현재 탭의 데이터 가져오기
+  const getPopularData = () => {
+    switch (activeTab) {
+      case 'wedding-hall':
+        return { data: popularWeddingHalls, isLoading: popularWeddingLoading };
+      case 'dress':
+        return { data: popularDressShops, isLoading: popularDressLoading };
+      case 'makeup':
+        return { data: popularMakeupShops, isLoading: popularMakeupLoading };
+      default:
+        return { data: [], isLoading: false };
+    }
+  };
+
+  const getNewData = () => {
+    switch (activeTab) {
+      case 'wedding-hall':
+        return { data: newWeddingHalls, isLoading: newWeddingLoading };
+      case 'dress':
+        return { data: newDressShops, isLoading: newDressLoading };
+      case 'makeup':
+        return { data: newMakeupShops, isLoading: newMakeupLoading };
+      default:
+        return { data: [], isLoading: false };
+    }
+  };
+
+  const { data: popularData, isLoading: popularLoading } = getPopularData();
+  const { data: newData, isLoading: newLoading } = getNewData();
+
+  // 데이터 포맷팅
+  const formatShopData = (data: any[]): ShopCard[] => {
+    return (data || []).map((item: any) => ({
+      id: item.id,
+      image: item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
+      title: item.shopName || item.hallName || item.dressName || '업체명',
+      description: item.address || item.description || '주소 정보 없음',
+      category: activeTab as 'wedding-hall' | 'dress' | 'makeup'
+    }));
+  };
+
+  const popularShops = formatShopData(popularData || []);
+  const newShops = formatShopData(newData || []);
+  const isLoading = popularLoading || newLoading;
 
   const handleShopClick = (shopId: string) => {
     router.push(`/detail/${shopId}?tab=${activeTab}`);

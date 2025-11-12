@@ -1,97 +1,112 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { BackHeader } from "@/components/common/BackHeader";
+import { useDressDetail } from "@/hooks/useDress";
+import { useDressShopDetail, useMakeupShopDetail } from "@/hooks/useShops";
+import { useWeddingHallDetail } from "@/hooks/useWeddingHall";
+import { useToggleLikes } from "@/hooks/useLikes";
 
 export default function DetailPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const id = params.id as string;
+  const id = Number(params.id);
   const tab = searchParams.get("tab") || "wedding-hall";
 
-  const [itemData, setItemData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  useEffect(() => {
-    fetchItemDetails();
-  }, [id, tab]);
+  // 탭에 따라 조건부로 API 호출
+  const { data: weddingHall, isLoading: weddingLoading } = useWeddingHallDetail(
+    id,
+    { enabled: tab === 'wedding-hall' }
+  );
 
-  const fetchItemDetails = async () => {
-    setIsLoading(true);
-    try {
-      let apiEndpoint = '';
+  const { data: dressShop, isLoading: dressShopLoading } = useDressShopDetail(
+    id,
+    { enabled: tab === 'dress-shop' }
+  );
 
-      switch (tab) {
-        case 'wedding-hall':
-          apiEndpoint = `/api/weddinghole/${id}`;
-          break;
-        case 'dress-shop':
-          apiEndpoint = `/api/dressshop/${id}`;
-          break;
-        case 'makeup-shop':
-          apiEndpoint = `/api/makeupshop/${id}`;
-          break;
-        case 'dress':
-          apiEndpoint = `/api/dressshop/${id}`;
-          break;
-        default:
-          apiEndpoint = `/api/weddinghole/${id}`;
-      }
+  const { data: makeupShop, isLoading: makeupLoading } = useMakeupShopDetail(
+    id,
+    { enabled: tab === 'makeup-shop' }
+  );
 
-      const response = await fetch(apiEndpoint);
-      const result = await response.json();
+  const { data: dress, isLoading: dressLoading } = useDressDetail(
+    id,
+    { enabled: tab === 'dress' }
+  );
 
-      if (result.success && result.data) {
-        const item = result.data;
+  const toggleLikes = useToggleLikes();
 
-        // Use images from API response (proxy API handles fallback images)
-        let images = ["/img/placeholder.jpg"]; // Default image
-
-        if (item.images && Array.isArray(item.images) && item.images.length > 0) {
-          images = item.images;
-        } else if (item.image || item.imageUrl || item.thumbnail) {
-          images = [item.image || item.imageUrl || item.thumbnail];
-        }
-
-        setItemData({
-          id: item.id,
-          title: item.shopName || item.hallName || item.dressName || item.title || "업체명",
-          phone: item.phone || "전화번호 없음",
-          description: item.description || item.features || "소개 정보 없음",
-          address: item.address || "주소 정보 없음",
-          specialty: item.specialty || "",
-          features: item.features || "",
-          snsUrl: item.snsUrl || "",
-          images,
-          businessHours: [
-            { day: "월", time: "10:00 - 20:00" },
-            { day: "화", time: "10:00 - 20:00" },
-            { day: "수", time: "10:00 - 20:00" },
-            { day: "목", time: "10:00 - 20:00" },
-            { day: "금", time: "10:00 - 20:00" },
-            { day: "토", time: "10:00 - 20:00" },
-            { day: "일", time: "휴무일" },
-          ], // Mock business hours for now
-        });
-      } else {
-        setItemData(null);
-      }
-    } catch (error) {
-      console.error('Error fetching item details:', error);
-      setItemData(null);
-    } finally {
-      setIsLoading(false);
+  // 현재 탭의 데이터 및 로딩 상태
+  const getCurrentData = () => {
+    switch (tab) {
+      case 'wedding-hall':
+        return { data: weddingHall, isLoading: weddingLoading };
+      case 'dress-shop':
+        return { data: dressShop, isLoading: dressShopLoading };
+      case 'makeup-shop':
+        return { data: makeupShop, isLoading: makeupLoading };
+      case 'dress':
+        return { data: dress, isLoading: dressLoading };
+      default:
+        return { data: null, isLoading: false };
     }
   };
 
-  const handleFavoriteToggle = () => {
-    setIsFavorite(!isFavorite);
-    // TODO: Update favorite status in backend
+  const { data: currentData, isLoading } = getCurrentData();
+
+  // 데이터 포맷팅
+  const itemData = currentData ? (() => {
+    const item = currentData as any;
+
+    // Use images from API response (proxy API handles fallback images)
+    let images = ["/img/placeholder.jpg"]; // Default image
+
+    if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+      images = item.images;
+    } else if (item.image || item.imageUrl || item.thumbnail) {
+      images = [item.image || item.imageUrl || item.thumbnail];
+    }
+
+    return {
+      id: item.id,
+      title: item.shopName || item.hallName || item.dressName || item.title || "업체명",
+      phone: item.phone || "전화번호 없음",
+      description: item.description || item.features || "소개 정보 없음",
+      address: item.address || "주소 정보 없음",
+      specialty: item.specialty || "",
+      features: item.features || "",
+      snsUrl: item.snsUrl || "",
+      images,
+      businessHours: [
+        { day: "월", time: "10:00 - 20:00" },
+        { day: "화", time: "10:00 - 20:00" },
+        { day: "수", time: "10:00 - 20:00" },
+        { day: "목", time: "10:00 - 20:00" },
+        { day: "금", time: "10:00 - 20:00" },
+        { day: "토", time: "10:00 - 20:00" },
+        { day: "일", time: "휴무일" },
+      ], // Mock business hours for now
+    };
+  })() : null;
+
+  const handleFavoriteToggle = async () => {
+    try {
+      await toggleLikes.mutateAsync({
+        targetType: tab === 'wedding-hall' ? 'WEDDING_HALL' :
+                    tab === 'dress-shop' ? 'DRESS_SHOP' :
+                    tab === 'makeup-shop' ? 'MAKEUP_SHOP' : 'DRESS',
+        targetId: id,
+      });
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
   };
 
   if (isLoading) {
@@ -147,6 +162,7 @@ export default function DetailPage() {
           <h2 className="title-1 text-on-surface flex-1">{itemData.title}</h2>
           <button
             onClick={handleFavoriteToggle}
+            disabled={toggleLikes.isPending}
             className="flex items-center gap-2.5 p-2"
             aria-label={isFavorite ? "즐겨찾기 해제" : "즐겨찾기 추가"}
           >

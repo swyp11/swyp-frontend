@@ -3,16 +3,18 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useGoogleLogin } from "@/hooks/useGoogleLogin";
+import { useLogin } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { login: googleLogin } = useGoogleLogin();
 
-  // 로그인 화면 진입 시 모든 쿠키 삭제
+  const { login: googleLogin } = useGoogleLogin();
+  const loginMutation = useLogin();
+
+  // 로그인 화면 진입 시 모든 쿠키 및 스토리지 초기화
   useEffect(() => {
     // 모든 쿠키 삭제
     document.cookie.split(";").forEach((cookie) => {
@@ -21,6 +23,7 @@ export default function LoginPage() {
     });
 
     // localStorage와 sessionStorage도 초기화
+    localStorage.removeItem("accessToken");
     localStorage.removeItem("userToken");
     sessionStorage.clear();
   }, []);
@@ -34,39 +37,19 @@ export default function LoginPage() {
       return;
     }
 
-    setIsLoading(true);
     setError("");
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      await loginMutation.mutateAsync({ username, password });
 
-      const data = await response.json();
+      // 로그인 성공
+      console.log("Login successful");
 
-      if (data.success) {
-        // 로그인 성공
-        console.log("Login successful:", data);
-
-        // 토큰 저장
-        localStorage.setItem("userToken", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        // 메인 페이지로 이동
-        router.push("/main");
-      } else {
-        // 로그인 실패
-        setError(data.error || "로그인에 실패했습니다.");
-      }
-    } catch (err) {
+      // 메인 페이지로 이동
+      router.push("/main");
+    } catch (err: any) {
       console.error("Login error:", err);
-      setError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-    } finally {
-      setIsLoading(false);
+      setError(err.response?.data?.error || err.message || "로그인에 실패했습니다.");
     }
   };
 
@@ -76,6 +59,7 @@ export default function LoginPage() {
 
   // 로그인 버튼 활성화 조건
   const isFormValid = username.trim() !== "" && password.trim() !== "";
+  const isLoading = loginMutation.isPending;
 
   return (
     <div
