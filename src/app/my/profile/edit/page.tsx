@@ -128,11 +128,11 @@ function ProfileEditContent() {
       const updateData: any = {};
 
       if (field === "name") {
-        updateData.name = editValue;
+        updateData.nickname = editValue;
       } else if (field === "birthDate") {
-        updateData.birthDate = editValue;
+        updateData.birth = editValue;
       } else if (field === "role") {
-        updateData.role = editValue;
+        updateData.weddingRole = editValue;
       } else if (field === "weddingDate") {
         updateData.weddingDate = editValue;
       }
