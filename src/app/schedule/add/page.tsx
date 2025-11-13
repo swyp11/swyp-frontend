@@ -6,6 +6,7 @@ import { CalendarSelect } from "../../../components/ui/CalendarSelect";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
+import { scheduleApi } from "@/api/schedule";
 
 function AddSchedulePage() {
   const router = useRouter();
@@ -15,8 +16,43 @@ function AddSchedulePage() {
   const [endDate, setEndDate] = useState("2025. 10. 25");
   const [startTime, setStartTime] = useState("오전 9시");
   const [endTime, setEndTime] = useState("오전 10시");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /**
+   * 날짜 형식 변환: "2025. 10. 25" → "2025-10-25"
+   */
+  const formatDate = (dateStr: string): string => {
+    const cleaned = dateStr.replace(/\s/g, '').replace(/\./g, '-');
+    const parts = cleaned.split('-');
+    if (parts.length === 3) {
+      const [year, month, day] = parts;
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    return cleaned;
+  };
+
+  /**
+   * 시간 형식 변환: "오전 9시" → "09:00:00"
+   */
+  const formatTime = (timeStr: string): string => {
+    const isPM = timeStr.includes('오후');
+    const hourMatch = timeStr.match(/(\d+)/);
+
+    if (!hourMatch) return "00:00:00";
+
+    let hour = parseInt(hourMatch[1]);
+
+    // 12시간 형식을 24시간 형식으로 변환
+    if (isPM && hour !== 12) {
+      hour += 12;
+    } else if (!isPM && hour === 12) {
+      hour = 0;
+    }
+
+    return `${hour.toString().padStart(2, '0')}:00:00`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim()) {
@@ -24,18 +60,27 @@ function AddSchedulePage() {
       return;
     }
 
-    // TODO: 일정 저장 로직 추가
-    console.log({
-      title,
-      description,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-    });
+    setIsLoading(true);
 
-    // 완료 후 캘린더로 돌아가기
-    router.back();
+    try {
+      // 일정 생성 API 호출
+      await scheduleApi.create({
+        title: title.trim(),
+        memo: description.trim() || undefined,
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+        startTime: formatTime(startTime),
+        endTime: formatTime(endTime),
+      });
+
+      // 성공 시 캘린더로 돌아가기
+      router.push('/schedule');
+    } catch (error) {
+      console.error('일정 생성 실패:', error);
+      alert('일정 생성에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -141,9 +186,12 @@ function AddSchedulePage() {
         <div className="p-4 border-t border-[#f1f1f1] shrink-0">
           <button
             type="submit"
-            className="w-full h-11 bg-primary rounded-sm flex items-center justify-center"
+            disabled={isLoading}
+            className="w-full h-11 bg-primary rounded-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="body-2-medium text-white">완료</span>
+            <span className="body-2-medium text-white">
+              {isLoading ? '저장 중...' : '완료'}
+            </span>
           </button>
         </div>
       </form>

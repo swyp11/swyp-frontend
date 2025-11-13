@@ -23,33 +23,33 @@ export const useCreateSchedule = () => {
 /**
  * 월별 일정 조회 훅
  */
-export const useMonthSchedule = (year: number, month: number) => {
+export const useMonthSchedule = (year: number, month: number, enabled: boolean = true) => {
   return useQuery({
     queryKey: ['schedule', 'month', year, month],
     queryFn: () => scheduleApi.getMonthEvents(year, month),
-    enabled: !!year && !!month,
+    enabled: enabled && !!year && !!month,
   });
 };
 
 /**
  * 주별 일정 조회 훅
  */
-export const useWeekSchedule = (startDate: string) => {
+export const useWeekSchedule = (startDate: string, enabled: boolean = true) => {
   return useQuery({
     queryKey: ['schedule', 'week', startDate],
     queryFn: () => scheduleApi.getWeekEvents(startDate),
-    enabled: !!startDate,
+    enabled: enabled && !!startDate,
   });
 };
 
 /**
  * 일별 일정 조회 훅
  */
-export const useDaySchedule = (date: string) => {
+export const useDaySchedule = (date: string, enabled: boolean = true) => {
   return useQuery({
     queryKey: ['schedule', 'day', date],
     queryFn: () => scheduleApi.getDayEvents(date),
-    enabled: !!date,
+    enabled: enabled && !!date,
   });
 };
 

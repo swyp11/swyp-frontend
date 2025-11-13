@@ -6,11 +6,11 @@
 // 일정 등록/수정 요청
 export interface ScheduleRequest {
   title: string;                  // @NotNull in backend
-  description?: string;
-  scheduleDate: string;           // @NotNull in backend, LocalDate → string (YYYY-MM-DD)
+  memo?: string;                  // description → memo (백엔드 DTO에 맞춤)
+  startDate: string;              // LocalDate → string (YYYY-MM-DD)
+  endDate: string;                // LocalDate → string (YYYY-MM-DD)
   startTime?: string;             // LocalTime → string (HH:mm:ss)
   endTime?: string;               // LocalTime → string (HH:mm:ss)
-  location?: string;
 }
 
 // 일정 응답
@@ -18,11 +18,11 @@ export interface ScheduleResponse {
   id: number;
   userId: number;
   title: string;
-  description?: string;
-  scheduleDate: string;           // LocalDate → string (YYYY-MM-DD)
+  memo?: string;                  // description → memo (백엔드 DTO에 맞춤)
+  startDate: string;              // LocalDate → string (YYYY-MM-DD)
+  endDate: string;                // LocalDate → string (YYYY-MM-DD)
   startTime?: string;             // LocalTime → string (HH:mm:ss)
   endTime?: string;               // LocalTime → string (HH:mm:ss)
-  location?: string;
   createdAt: string;              // LocalDateTime → string (ISO-8601)
   updatedAt: string;              // LocalDateTime → string (ISO-8601)
 }
