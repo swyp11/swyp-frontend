@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useMemo, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { WeekCalendar } from "../../components/schedule/WeekCalendar";
 import { DayCalendar } from "../../components/schedule/DayCalendar";
@@ -27,11 +27,34 @@ interface Event {
 function SchedulePage() {
   const { checkAuth } = useAuth();
   const router = useRouter();
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [selectedDate, setSelectedDate] = useState(new Date().getDate());
-  const [calendarView, setCalendarView] = useState<CalendarView>("weekly");
+  const searchParams = useSearchParams();
 
+  // 초기값: query params가 있으면 사용, 없으면 현재 날짜 사용
+  const today = new Date();
+  const initialYear = parseInt(searchParams.get('year') || '') || today.getFullYear();
+  const initialMonth = parseInt(searchParams.get('month') || '') || (today.getMonth() + 1);
+  const initialDate = parseInt(searchParams.get('date') || '') || today.getDate();
+  const initialView = (searchParams.get('view') as CalendarView) || 'weekly';
+
+  const [currentMonth, setCurrentMonth] = useState(initialMonth);
+  const [currentYear, setCurrentYear] = useState(initialYear);
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+  const [calendarView, setCalendarView] = useState<CalendarView>(initialView);
+
+  // URL query params 업데이트 함수
+  const updateQueryParams = (year: number, month: number, date: number, view: CalendarView) => {
+    const params = new URLSearchParams();
+    params.set('year', year.toString());
+    params.set('month', month.toString());
+    params.set('date', date.toString());
+    params.set('view', view);
+    router.replace(`/schedule?${params.toString()}`, { scroll: false });
+  };
+
+  // 상태 변경 시 query params 업데이트
+  useEffect(() => {
+    updateQueryParams(currentYear, currentMonth, selectedDate, calendarView);
+  }, [currentYear, currentMonth, selectedDate, calendarView]);
 
   // 현재 주차 계산 (해당 월의 몇 주차인지)
   const getCurrentWeek = () => {
@@ -72,26 +95,32 @@ function SchedulePage() {
     return `${year}-${month}-${day}`;
   }, [currentYear, currentMonth, selectedDate]);
 
-  // 주별 뷰를 위한 시작일 계산 (해당 주의 월요일)
+  // 현재 주차 계산 (useMemo로 최적화)
+  const currentWeek = useMemo(() => getCurrentWeek(), [currentYear, currentMonth, selectedDate]);
+
+  // 주별 뷰를 위한 시작일 계산 (현재 선택된 날짜가 속한 주의 월요일)
   const weekStartDate = useMemo(() => {
-    const firstDayOfMonth = new Date(currentYear, currentMonth - 1, 1);
-    const firstDayOfWeek = firstDayOfMonth.getDay();
-    const firstMonday = firstDayOfWeek === 0 ? 2 : (2 - firstDayOfWeek);
+    // 현재 선택된 날짜
+    const currentDate = new Date(currentYear, currentMonth - 1, selectedDate);
 
-    const currentWeek = getCurrentWeek();
-    const targetDate = new Date(currentYear, currentMonth - 1, firstMonday + (currentWeek - 1) * 7);
+    // JavaScript getDay(): 0=일요일, 1=월요일, ..., 6=토요일
+    const dayOfWeek = currentDate.getDay();
 
-    const year = targetDate.getFullYear();
-    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
-    const day = String(targetDate.getDate()).padStart(2, '0');
+    // 월요일까지의 일수 계산 (일요일인 경우 -6, 월요일인 경우 0, 화요일인 경우 -1, ...)
+    const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+    // 해당 주의 월요일 계산
+    const monday = new Date(currentDate);
+    monday.setDate(currentDate.getDate() + daysToMonday);
+
+    const year = monday.getFullYear();
+    const month = String(monday.getMonth() + 1).padStart(2, '0');
+    const day = String(monday.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   }, [currentYear, currentMonth, selectedDate]);
 
   // API 호출 - 뷰에 따라 조건부로 데이터 가져오기
-  console.log(`현재 날짜: ${currentYear}년 ${currentMonth}월 ${selectedDate}일, 뷰: ${calendarView}`);
-  console.log(`주별 시작일: ${weekStartDate}`);
-
   const { data: monthSchedule } = useMonthSchedule(
     currentYear,
     currentMonth,
@@ -105,10 +134,6 @@ function SchedulePage() {
     currentDateString,
     calendarView === "daily"
   );
-
-  console.log('API 응답 - monthSchedule:', monthSchedule);
-  console.log('API 응답 - weekSchedule:', weekSchedule);
-  console.log('API 응답 - daySchedule:', daySchedule);
 
   const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth - 1, 1).getDay();
@@ -170,84 +195,66 @@ function SchedulePage() {
     const monthlyEventsMap: { [key: number]: Array<{ id: string; title: string }> } = {};
 
     if (!monthSchedule) return monthlyEventsMap;
+    if (!Array.isArray(monthSchedule)) return monthlyEventsMap;
+    if (monthSchedule.length === 0) return monthlyEventsMap;
 
-    console.log('월별 스케줄 원본 데이터:', monthSchedule);
+    const firstItem = monthSchedule[0];
 
-    // 배열 구조 확인 - ScheduleMonthResponse[] vs ScheduleResponse[]
-    if (Array.isArray(monthSchedule) && monthSchedule.length > 0) {
-      const firstItem = monthSchedule[0];
-      // ScheduleMonthResponse[] 형태인 경우
-      if (firstItem && typeof firstItem === 'object' && 'schedules' in firstItem && Array.isArray(firstItem.schedules)) {
-        monthSchedule.forEach((dayData: any) => {
-          const scheduleDate = new Date(dayData.date);
-          const eventDate = scheduleDate.getDate();
-          const eventMonth = scheduleDate.getMonth() + 1;
-          const eventYear = scheduleDate.getFullYear();
+    // ScheduleMonthResponse[] 형태인 경우
+    if (firstItem && typeof firstItem === 'object' && 'schedules' in firstItem && Array.isArray(firstItem.schedules)) {
+      monthSchedule.forEach((dayData: any) => {
+        const scheduleDate = new Date(dayData.date);
+        const eventDate = scheduleDate.getDate();
+        const eventMonth = scheduleDate.getMonth() + 1;
+        const eventYear = scheduleDate.getFullYear();
 
-          if (eventMonth === currentMonth && eventYear === currentYear) {
-            if (!monthlyEventsMap[eventDate]) {
-              monthlyEventsMap[eventDate] = [];
-            }
-            dayData.schedules.forEach((schedule: any) => {
-              monthlyEventsMap[eventDate].push({
-                id: schedule.id.toString(),
-                title: schedule.title
-              });
-            });
+        if (eventMonth === currentMonth && eventYear === currentYear) {
+          if (!monthlyEventsMap[eventDate]) {
+            monthlyEventsMap[eventDate] = [];
           }
-        });
-      }
-      // ScheduleResponse[] 형태인 경우 (백엔드가 다른 구조로 반환하는 경우)
-      else {
-        monthSchedule.forEach((schedule: any) => {
-          const scheduleDate = new Date(schedule.startDate || schedule.scheduleDate);
-          const eventDate = scheduleDate.getDate();
-          const eventMonth = scheduleDate.getMonth() + 1;
-          const eventYear = scheduleDate.getFullYear();
-
-          console.log(`일정 날짜: ${eventYear}-${eventMonth}-${eventDate}, 현재: ${currentYear}-${currentMonth}`);
-
-          if (eventMonth === currentMonth && eventYear === currentYear) {
-            if (!monthlyEventsMap[eventDate]) {
-              monthlyEventsMap[eventDate] = [];
-            }
+          dayData.schedules.forEach((schedule: any) => {
             monthlyEventsMap[eventDate].push({
               id: schedule.id.toString(),
               title: schedule.title
             });
-            console.log(`일정 추가됨: ${eventDate}일 - ${schedule.title}`);
+          });
+        }
+      });
+    }
+    // ScheduleResponse[] 형태인 경우
+    else {
+      monthSchedule.forEach((schedule: any) => {
+        const scheduleDate = new Date(schedule.startDate || schedule.scheduleDate);
+        const eventDate = scheduleDate.getDate();
+        const eventMonth = scheduleDate.getMonth() + 1;
+        const eventYear = scheduleDate.getFullYear();
+
+        if (eventMonth === currentMonth && eventYear === currentYear) {
+          if (!monthlyEventsMap[eventDate]) {
+            monthlyEventsMap[eventDate] = [];
           }
-        });
-      }
+          monthlyEventsMap[eventDate].push({
+            id: schedule.id.toString(),
+            title: schedule.title
+          });
+        }
+      });
     }
 
-    console.log('최종 월별 이벤트 맵:', monthlyEventsMap);
     return monthlyEventsMap;
   };
 
   // 주별 뷰용 이벤트 변환
   const getWeeklyEvents = () => {
     if (!weekSchedule) return [];
-
-    console.log('주별 스케줄 원본 데이터:', weekSchedule);
-
-    // 배열인지 확인
-    if (!Array.isArray(weekSchedule)) {
-      console.warn('weekSchedule이 배열이 아닙니다:', typeof weekSchedule);
-      return [];
-    }
-
-    // 첫 번째 요소 확인하여 데이터 구조 판별
+    if (!Array.isArray(weekSchedule)) return [];
     if (weekSchedule.length === 0) return [];
 
     const firstItem = weekSchedule[0];
 
     // ScheduleWeekResponse[] 구조인 경우
     if (firstItem && typeof firstItem === 'object' && 'schedules' in firstItem && Array.isArray(firstItem.schedules)) {
-      console.log('ScheduleWeekResponse[] 구조로 처리');
       return weekSchedule.flatMap((dayData: any) => {
-        // 백엔드 dayOfWeek: 1=월, 2=화, ..., 7=일
-        // WeekCalendar 기대값: 0=월, 1=화, ..., 6=일
         const weekCalendarDayOfWeek = dayData.dayOfWeek - 1;
 
         return dayData.schedules
@@ -268,8 +275,7 @@ function SchedulePage() {
       });
     }
 
-    // ScheduleResponse[] 구조인 경우 (백엔드가 직접 배열 반환)
-    console.log('ScheduleResponse[] 구조로 처리');
+    // ScheduleResponse[] 구조인 경우
     return weekSchedule
       .filter((schedule: any) => schedule.startTime && schedule.endTime)
       .map((schedule: any) => {
@@ -277,8 +283,6 @@ function SchedulePage() {
         const startHour = parseInt(schedule.startTime.split(':')[0]);
         const endHour = parseInt(schedule.endTime.split(':')[0]);
 
-        // JavaScript getDay(): 0=일, 1=월, 2=화, ..., 6=토
-        // WeekCalendar 기대값: 0=월, 1=화, ..., 6=일
         const jsDayOfWeek = scheduleDate.getDay();
         const weekCalendarDayOfWeek = jsDayOfWeek === 0 ? 6 : jsDayOfWeek - 1;
 
@@ -287,7 +291,7 @@ function SchedulePage() {
           title: schedule.title,
           startTime: startHour,
           endTime: endHour,
-          dayOfWeek: weekCalendarDayOfWeek, // 0(월) ~ 6(일)
+          dayOfWeek: weekCalendarDayOfWeek,
           color: schedule.color || "#f3335d",
         };
       });
@@ -296,17 +300,10 @@ function SchedulePage() {
   // 일별 뷰용 이벤트 변환
   const getDailyEvents = () => {
     if (!daySchedule) return [];
-
-    console.log('일별 스케줄 원본 데이터:', daySchedule);
-
-    // 배열인지 확인
-    if (!Array.isArray(daySchedule)) {
-      console.warn('daySchedule이 배열이 아닙니다:', typeof daySchedule);
-      return [];
-    }
+    if (!Array.isArray(daySchedule)) return [];
 
     return daySchedule
-      .filter((schedule: any) => schedule.startTime && schedule.endTime) // 시간이 있는 일정만 표시
+      .filter((schedule: any) => schedule.startTime && schedule.endTime)
       .map((schedule: any) => {
         const startHour = parseInt(schedule.startTime.split(':')[0]);
         const endHour = parseInt(schedule.endTime.split(':')[0]);
@@ -315,7 +312,7 @@ function SchedulePage() {
           id: schedule.id.toString(),
           title: schedule.title,
           startTime: startHour,
-          duration: Math.max(endHour - startHour, 1), // 최소 1시간
+          duration: Math.max(endHour - startHour, 1),
           color: schedule.color || "#f3335d",
         };
       });
@@ -436,11 +433,11 @@ function SchedulePage() {
           <NavigationHeader
             onPrev={handlePrevWeek}
             onNext={handleNextWeek}
-            title={`${currentMonth}월 ${getCurrentWeek()}주차`}
+            title={`${currentMonth}월 ${currentWeek}주차`}
             showDropdown={true}
             currentMonth={currentMonth}
             currentYear={currentYear}
-            currentWeek={getCurrentWeek()}
+            currentWeek={currentWeek}
             totalWeeks={getTotalWeeksInMonth()}
             onMonthSelect={setCurrentMonth}
             onWeekSelect={handleWeekSelect}

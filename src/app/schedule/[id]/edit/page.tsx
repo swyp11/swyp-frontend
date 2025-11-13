@@ -1,23 +1,60 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { DatePicker } from "../../../components/common/DatePicker";
-import { TimePicker } from "../../../components/common/TimePicker";
+import React, { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { DatePicker } from "../../../../components/common/DatePicker";
+import { TimePicker } from "../../../../components/common/TimePicker";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
+import { useScheduleDetail, useUpdateSchedule } from "@/hooks/useSchedule";
 import { scheduleApi } from "@/api/schedule";
 
-function AddSchedulePage() {
+function EditSchedulePage() {
   const router = useRouter();
+  const params = useParams();
+  const scheduleId = Number(params.id);
+
+  const { data: schedule, isLoading } = useScheduleDetail(scheduleId);
+  const updateSchedule = useUpdateSchedule();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
+  /**
+   * 날짜 형식 변환: "2025-10-25" → "2025년 10월 25일"
+   */
+  const formatDateToDisplay = (dateStr: string): string => {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const [year, month, day] = parts;
+      return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
+    }
+    return dateStr;
+  };
+
+  /**
+   * 시간 형식 변환: "09:00:00" → "오전 9시"
+   */
+  const formatTimeToDisplay = (timeStr: string): string => {
+    const parts = timeStr.split(':');
+    if (parts.length < 1) return timeStr;
+
+    let hour = parseInt(parts[0]);
+    const isPM = hour >= 12;
+
+    if (hour > 12) {
+      hour -= 12;
+    } else if (hour === 0) {
+      hour = 12;
+    }
+
+    return `${isPM ? '오후' : '오전'} ${hour}시`;
+  };
 
   /**
    * 날짜 형식 변환: "2025년 10월 25일" → "2025-10-25"
@@ -25,7 +62,6 @@ function AddSchedulePage() {
   const formatDate = (dateStr: string): string => {
     if (!dateStr) return "";
 
-    // "2025년 10월 25일" 형식 파싱
     const match = dateStr.match(/(\d+)년\s*(\d+)월\s*(\d+)일/);
     if (match) {
       const [, year, month, day] = match;
@@ -45,7 +81,6 @@ function AddSchedulePage() {
 
     let hour = parseInt(hourMatch[1]);
 
-    // 12시간 형식을 24시간 형식으로 변환
     if (isPM && hour !== 12) {
       hour += 12;
     } else if (!isPM && hour === 12) {
@@ -54,6 +89,18 @@ function AddSchedulePage() {
 
     return `${hour.toString().padStart(2, '0')}:00:00`;
   };
+
+  // 일정 데이터 로드 후 상태 초기화
+  useEffect(() => {
+    if (schedule) {
+      setTitle(schedule.title);
+      setDescription(schedule.memo || "");
+      setStartDate(formatDateToDisplay(schedule.startDate));
+      setEndDate(formatDateToDisplay(schedule.endDate));
+      setStartTime(formatTimeToDisplay(schedule.startTime));
+      setEndTime(formatTimeToDisplay(schedule.endTime));
+    }
+  }, [schedule]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,28 +140,41 @@ function AddSchedulePage() {
       }
     }
 
-    setIsLoading(true);
-
     try {
-      // 일정 생성 API 호출
-      await scheduleApi.create({
-        title: title.trim(),
-        memo: description.trim() || undefined,
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
-        startTime: formattedStartTime,
-        endTime: formattedEndTime,
+      await updateSchedule.mutateAsync({
+        id: scheduleId,
+        data: {
+          title: title.trim(),
+          memo: description.trim() || undefined,
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
+          startTime: formattedStartTime,
+          endTime: formattedEndTime,
+        }
       });
 
-      // 성공 시 캘린더로 돌아가기
-      router.replace('/schedule');
+      router.replace(`/schedule/${scheduleId}`);
     } catch (error) {
-      console.error('일정 생성 실패:', error);
-      alert('일정 생성에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setIsLoading(false);
+      console.error('일정 수정 실패:', error);
+      alert('일정 수정에 실패했습니다. 다시 시도해주세요.');
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="body-2-medium text-on-surface-subtle">로딩 중...</p>
+      </div>
+    );
+  }
+
+  if (!schedule) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="body-2-medium text-on-surface-subtle">일정을 찾을 수 없습니다.</p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -124,7 +184,7 @@ function AddSchedulePage() {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-[#f1f1f1] shrink-0">
         <button
-          onClick={() => router.replace('/schedule')}
+          onClick={() => router.replace(`/schedule/${scheduleId}`)}
           className="w-10 h-10 flex items-center justify-center"
         >
           <Image
@@ -135,7 +195,7 @@ function AddSchedulePage() {
             height={24}
           />
         </button>
-        <h1 className="body-3 font-semibold text-on-surface">일정 생성</h1>
+        <h1 className="body-3 font-semibold text-on-surface">일정 수정</h1>
         <div className="w-10 h-10 opacity-0" />
       </div>
 
@@ -215,11 +275,11 @@ function AddSchedulePage() {
         <div className="p-4 border-t border-[#f1f1f1] shrink-0">
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={updateSchedule.isPending}
             className="w-full h-11 bg-primary rounded-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="body-2-medium text-white">
-              {isLoading ? '저장 중...' : '완료'}
+              {updateSchedule.isPending ? '저장 중...' : '완료'}
             </span>
           </button>
         </div>
@@ -228,4 +288,4 @@ function AddSchedulePage() {
   );
 }
 
-export default withAuth(AddSchedulePage);
+export default withAuth(EditSchedulePage);

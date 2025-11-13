@@ -39,6 +39,8 @@ export const useWeekSchedule = (startDate: string, enabled: boolean = true) => {
     queryKey: ['schedule', 'week', startDate],
     queryFn: () => scheduleApi.getWeekEvents(startDate),
     enabled: enabled && !!startDate,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
   });
 };
 
