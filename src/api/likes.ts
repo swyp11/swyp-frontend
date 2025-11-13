@@ -30,35 +30,19 @@ export const likesApi = {
    * 전체 찜 목록 조회
    */
   getAll: async () => {
-    try {
-      const response = await apiClient.get<{ success: boolean; data: LikesResponse[] }>(
-        '/likes'
-      );
-      if (response.data && 'data' in response.data) {
-        return response.data.data || [];
-      }
-      return Array.isArray(response.data) ? response.data : [];
-    } catch (error) {
-      console.error('찜 목록 조회 실패:', error);
-      return [];
-    }
+    const response = await apiClient.get<ApiResponse<LikesResponse[]>>(
+      '/likes'
+    );
+    return response.data.data;
   },
 
   /**
    * 카테고리별 찜 목록 조회
    */
   getByCategory: async (category: string) => {
-    try {
-      const response = await apiClient.get<{ success: boolean; data: LikesResponse[] }>(
-        `/likes/category/${category}`
-      );
-      if (response.data && 'data' in response.data) {
-        return response.data.data || [];
-      }
-      return Array.isArray(response.data) ? response.data : [];
-    } catch (error) {
-      console.error('카테고리별 찜 목록 조회 실패:', error);
-      return [];
-    }
+    const response = await apiClient.get<ApiResponse<LikesResponse[]>>(
+      `/likes/category/${category}`
+    );
+    return response.data.data;
   },
 };
