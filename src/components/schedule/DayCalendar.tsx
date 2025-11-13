@@ -13,16 +13,14 @@ interface Event {
 interface DayCalendarProps {
   currentDate: Date;
   events?: Event[];
-  onQuickAdd?: (title: string, startTime: number, currentDate: Date) => void;
+  onEventClick?: (eventId: string) => void;
 }
 
 export const DayCalendar: React.FC<DayCalendarProps> = ({
   currentDate,
   events = [],
-  onQuickAdd,
+  onEventClick,
 }) => {
-  const [editingHour, setEditingHour] = useState<number | null>(null);
-  const [quickTitle, setQuickTitle] = useState("");
 
   // 시간 라벨 생성 (12 AM부터)
   const hours = Array.from({ length: 24 }, (_, i) => {
@@ -75,30 +73,6 @@ export const DayCalendar: React.FC<DayCalendarProps> = ({
     };
   };
 
-  // 시간대 클릭 핸들러
-  const handleHourClick = (hour: number) => {
-    setEditingHour(hour);
-    setQuickTitle("");
-  };
-
-  // 빠른 일정 추가
-  const handleQuickAdd = (hour: number) => {
-    if (quickTitle.trim() && onQuickAdd) {
-      onQuickAdd(quickTitle.trim(), hour, currentDate);
-      setEditingHour(null);
-      setQuickTitle("");
-    }
-  };
-
-  // 엔터키 핸들러
-  const handleKeyDown = (e: React.KeyboardEvent, hour: number) => {
-    if (e.key === "Enter") {
-      handleQuickAdd(hour);
-    } else if (e.key === "Escape") {
-      setEditingHour(null);
-      setQuickTitle("");
-    }
-  };
 
   return (
     <div className="flex flex-col bg-white w-full h-full overflow-hidden">
@@ -117,32 +91,7 @@ export const DayCalendar: React.FC<DayCalendarProps> = ({
               </div>
 
               {/* 이벤트 영역 */}
-              <div
-                className="flex-1 relative cursor-pointer hover:bg-surface-2 transition-colors"
-                onClick={() => handleHourClick(index)}
-              >
-                {/* 빠른 입력 모드 */}
-                {editingHour === index && (
-                  <div className="absolute left-0 right-0 mx-2 top-1 z-10">
-                    <input
-                      type="text"
-                      value={quickTitle}
-                      onChange={(e) => setQuickTitle(e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, index)}
-                      onBlur={() => {
-                        if (quickTitle.trim()) {
-                          handleQuickAdd(index);
-                        } else {
-                          setEditingHour(null);
-                        }
-                      }}
-                      placeholder="일정 제목 입력 (Enter로 저장)"
-                      className="w-full px-2 py-1.5 text-sm border border-primary rounded-xs focus:outline-none focus:ring-1 focus:ring-primary"
-                      autoFocus
-                    />
-                  </div>
-                )}
-
+              <div className="flex-1 relative">
                 {/* 해당 시간에 시작하는 이벤트들 */}
                 {(() => {
                   const eventsAtHour = getEventsForHour(index);
@@ -151,7 +100,8 @@ export const DayCalendar: React.FC<DayCalendarProps> = ({
                     return (
                       <div
                         key={event.id}
-                        className="absolute rounded-xs overflow-hidden"
+                        className="absolute rounded-xs overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => onEventClick?.(event.id)}
                         style={{
                           backgroundColor: event.color || "#f3335d",
                           height: `${calculateEventHeight(event.duration)}px`,

@@ -14,11 +14,13 @@ interface Event {
 interface WeekCalendarProps {
   currentDate: Date;
   events?: Event[];
+  onEventClick?: (eventId: string) => void;
 }
 
 export const WeekCalendar: React.FC<WeekCalendarProps> = ({
   currentDate,
   events = [],
+  onEventClick,
 }) => {
   // 현재 주의 시작일(월요일) 계산
   const getWeekStart = (date: Date) => {
@@ -130,7 +132,8 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                         {cellEvents.map((event) => (
                           <div
                             key={event.id}
-                            className="flex-1 bg-alert rounded-xs px-0.5 py-0.5 overflow-hidden"
+                            className="flex-1 bg-alert rounded-xs px-0.5 py-0.5 overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                            onClick={() => onEventClick?.(event.id)}
                             style={{
                               backgroundColor: event.color || "#f3335d",
                             }}

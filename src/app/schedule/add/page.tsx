@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarSelect } from "../../../components/ui/CalendarSelect";
+import { DatePicker } from "../../../components/common/DatePicker";
+import { TimePicker } from "../../../components/common/TimePicker";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
@@ -12,23 +13,25 @@ function AddSchedulePage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("2025. 10. 25");
-  const [endDate, setEndDate] = useState("2025. 10. 25");
-  const [startTime, setStartTime] = useState("오전 9시");
-  const [endTime, setEndTime] = useState("오전 10시");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * 날짜 형식 변환: "2025. 10. 25" → "2025-10-25"
+   * 날짜 형식 변환: "2025년 10월 25일" → "2025-10-25"
    */
   const formatDate = (dateStr: string): string => {
-    const cleaned = dateStr.replace(/\s/g, '').replace(/\./g, '-');
-    const parts = cleaned.split('-');
-    if (parts.length === 3) {
-      const [year, month, day] = parts;
+    if (!dateStr) return "";
+
+    // "2025년 10월 25일" 형식 파싱
+    const match = dateStr.match(/(\d+)년\s*(\d+)월\s*(\d+)일/);
+    if (match) {
+      const [, year, month, day] = match;
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     }
-    return cleaned;
+    return dateStr;
   };
 
   /**
@@ -57,6 +60,16 @@ function AddSchedulePage() {
 
     if (!title.trim()) {
       alert("제목을 입력해주세요.");
+      return;
+    }
+
+    if (!startDate || !endDate) {
+      alert("날짜를 선택해주세요.");
+      return;
+    }
+
+    if (!startTime || !endTime) {
+      alert("시간을 선택해주세요.");
       return;
     }
 
@@ -113,20 +126,18 @@ function AddSchedulePage() {
           <div className="space-y-1">
             <label className="body-3 font-medium text-on-surface">날짜</label>
             <div className="flex items-center gap-2">
-              <CalendarSelect
+              <DatePicker
                 value={startDate}
-                onClick={() => {
-                  // TODO: 날짜 선택 모달 열기
-                }}
-                className="flex-1 h-12"
+                onChange={setStartDate}
+                placeholder="시작 날짜"
+                className="flex-1"
               />
               <span className="body-2-medium text-on-surface">-</span>
-              <CalendarSelect
+              <DatePicker
                 value={endDate}
-                onClick={() => {
-                  // TODO: 날짜 선택 모달 열기
-                }}
-                className="flex-1 h-12"
+                onChange={setEndDate}
+                placeholder="종료 날짜"
+                className="flex-1"
               />
             </div>
           </div>
@@ -135,20 +146,18 @@ function AddSchedulePage() {
           <div className="space-y-1">
             <label className="body-3 font-medium text-on-surface">시간</label>
             <div className="flex items-center gap-2">
-              <CalendarSelect
+              <TimePicker
                 value={startTime}
-                onClick={() => {
-                  // TODO: 시간 선택 모달 열기
-                }}
-                className="flex-1 h-12"
+                onChange={setStartTime}
+                placeholder="시작 시간"
+                className="flex-1"
               />
               <span className="body-2-medium text-on-surface">-</span>
-              <CalendarSelect
+              <TimePicker
                 value={endTime}
-                onClick={() => {
-                  // TODO: 시간 선택 모달 열기
-                }}
-                className="flex-1 h-12"
+                onChange={setEndTime}
+                placeholder="종료 시간"
+                className="flex-1"
               />
             </div>
           </div>

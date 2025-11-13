@@ -11,7 +11,7 @@ import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
 import { useAuth } from "@/contexts/AuthContext";
-import { useMonthSchedule, useWeekSchedule, useDaySchedule, useCreateSchedule } from "@/hooks/useSchedule";
+import { useMonthSchedule, useWeekSchedule, useDaySchedule } from "@/hooks/useSchedule";
 
 interface Event {
   id: string;
@@ -32,8 +32,6 @@ function SchedulePage() {
   const [selectedDate, setSelectedDate] = useState(new Date().getDate());
   const [calendarView, setCalendarView] = useState<CalendarView>("weekly");
 
-  // 일정 생성 mutation
-  const createSchedule = useCreateSchedule();
 
   // 현재 주차 계산 (해당 월의 몇 주차인지)
   const getCurrentWeek = () => {
@@ -61,24 +59,9 @@ function SchedulePage() {
   };
 
   // 일별 뷰 빠른 일정 추가
-  const handleQuickAdd = async (title: string, startHour: number, date: Date) => {
-    try {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const startDate = `${year}-${month}-${day}`;
-
-      await createSchedule.mutateAsync({
-        title,
-        startDate,
-        endDate: startDate,
-        startTime: `${String(startHour).padStart(2, '0')}:00:00`,
-        endTime: `${String(startHour + 1).padStart(2, '0')}:00:00`,
-      });
-    } catch (error) {
-      console.error('빠른 일정 생성 실패:', error);
-      alert('일정 생성에 실패했습니다.');
-    }
+  // 일정 클릭 핸들러
+  const handleEventClick = (eventId: string) => {
+    router.push(`/schedule/${eventId}`);
   };
 
   // 현재 날짜 문자열 (YYYY-MM-DD) - useMemo로 최적화
@@ -184,7 +167,7 @@ function SchedulePage() {
 
   // 월별 뷰용 이벤트 변환
   const getMonthlyEvents = () => {
-    const monthlyEventsMap: { [key: number]: string[] } = {};
+    const monthlyEventsMap: { [key: number]: Array<{ id: string; title: string }> } = {};
 
     if (!monthSchedule) return monthlyEventsMap;
 
@@ -192,8 +175,9 @@ function SchedulePage() {
 
     // 배열 구조 확인 - ScheduleMonthResponse[] vs ScheduleResponse[]
     if (Array.isArray(monthSchedule) && monthSchedule.length > 0) {
+      const firstItem = monthSchedule[0];
       // ScheduleMonthResponse[] 형태인 경우
-      if (monthSchedule[0].schedules && Array.isArray(monthSchedule[0].schedules)) {
+      if (firstItem && typeof firstItem === 'object' && 'schedules' in firstItem && Array.isArray(firstItem.schedules)) {
         monthSchedule.forEach((dayData: any) => {
           const scheduleDate = new Date(dayData.date);
           const eventDate = scheduleDate.getDate();
@@ -205,7 +189,10 @@ function SchedulePage() {
               monthlyEventsMap[eventDate] = [];
             }
             dayData.schedules.forEach((schedule: any) => {
-              monthlyEventsMap[eventDate].push(schedule.title);
+              monthlyEventsMap[eventDate].push({
+                id: schedule.id.toString(),
+                title: schedule.title
+              });
             });
           }
         });
@@ -224,7 +211,10 @@ function SchedulePage() {
             if (!monthlyEventsMap[eventDate]) {
               monthlyEventsMap[eventDate] = [];
             }
-            monthlyEventsMap[eventDate].push(schedule.title);
+            monthlyEventsMap[eventDate].push({
+              id: schedule.id.toString(),
+              title: schedule.title
+            });
             console.log(`일정 추가됨: ${eventDate}일 - ${schedule.title}`);
           }
         });
@@ -241,13 +231,19 @@ function SchedulePage() {
 
     console.log('주별 스케줄 원본 데이터:', weekSchedule);
 
+    // 배열인지 확인
+    if (!Array.isArray(weekSchedule)) {
+      console.warn('weekSchedule이 배열이 아닙니다:', typeof weekSchedule);
+      return [];
+    }
+
     // 첫 번째 요소 확인하여 데이터 구조 판별
     if (weekSchedule.length === 0) return [];
 
     const firstItem = weekSchedule[0];
 
     // ScheduleWeekResponse[] 구조인 경우
-    if (firstItem.schedules && Array.isArray(firstItem.schedules)) {
+    if (firstItem && typeof firstItem === 'object' && 'schedules' in firstItem && Array.isArray(firstItem.schedules)) {
       console.log('ScheduleWeekResponse[] 구조로 처리');
       return weekSchedule.flatMap((dayData: any) => {
         // 백엔드 dayOfWeek: 1=월, 2=화, ..., 7=일
@@ -303,6 +299,12 @@ function SchedulePage() {
 
     console.log('일별 스케줄 원본 데이터:', daySchedule);
 
+    // 배열인지 확인
+    if (!Array.isArray(daySchedule)) {
+      console.warn('daySchedule이 배열이 아닙니다:', typeof daySchedule);
+      return [];
+    }
+
     return daySchedule
       .filter((schedule: any) => schedule.startTime && schedule.endTime) // 시간이 있는 일정만 표시
       .map((schedule: any) => {
@@ -353,13 +355,17 @@ function SchedulePage() {
             {/* 이벤트 표시 */}
             {hasEvents && (
               <div className="flex flex-col gap-0.5 px-1">
-                {hasEvents.map((event, idx) => (
+                {hasEvents.map((event) => (
                   <div
-                    key={idx}
-                    className="bg-alert rounded-xs px-1 py-0.5 overflow-hidden"
+                    key={event.id}
+                    className="bg-alert rounded-xs px-1 py-0.5 overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEventClick(event.id);
+                    }}
                   >
                     <p className="text-white text-[9px] leading-3 overflow-hidden text-ellipsis whitespace-nowrap">
-                      {event}
+                      {event.title}
                     </p>
                   </div>
                 ))}
@@ -485,6 +491,7 @@ function SchedulePage() {
             <WeekCalendar
               currentDate={new Date(currentYear, currentMonth - 1, selectedDate)}
               events={getWeeklyEvents()}
+              onEventClick={handleEventClick}
             />
           </div>
         )}
@@ -495,7 +502,7 @@ function SchedulePage() {
             <DayCalendar
               currentDate={new Date(currentYear, currentMonth - 1, selectedDate)}
               events={getDailyEvents()}
-              onQuickAdd={handleQuickAdd}
+              onEventClick={handleEventClick}
             />
           </div>
         )}
