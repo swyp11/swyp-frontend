@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { LoginRequiredModal } from "@/components/common/LoginRequiredModal";
 
 export function withAuth<P extends object>(
   Component: React.ComponentType<P>
@@ -10,19 +11,46 @@ export function withAuth<P extends object>(
   return function ProtectedRoute(props: P) {
     const { isAuthenticated, isLoading } = useAuth();
     const router = useRouter();
+    const [showLoginModal, setShowLoginModal] = useState(false);
 
     useEffect(() => {
       if (!isLoading && !isAuthenticated) {
-        router.push("/login");
+        setShowLoginModal(true);
       }
-    }, [isAuthenticated, isLoading, router]);
+    }, [isAuthenticated, isLoading]);
 
-    // 로딩 중이거나 인증되지 않은 경우 아무것도 렌더링하지 않음
-    if (isLoading || !isAuthenticated) {
+    const handleLoginConfirm = () => {
+      setShowLoginModal(false);
+      router.push("/login");
+    };
+
+    const handleLoginCancel = () => {
+      setShowLoginModal(false);
+      router.back();
+    };
+
+    // 로딩 중인 경우 로딩 표시
+    if (isLoading) {
       return (
-        <div className="flex items-center justify-center h-screen">
+        <div className="fixed inset-0 flex items-center justify-center bg-white">
           <div className="text-on-surface-subtle">로딩 중...</div>
         </div>
+      );
+    }
+
+    // 인증되지 않은 경우 로딩 화면과 모달 표시
+    if (!isAuthenticated) {
+      return (
+        <>
+          <div className="fixed inset-0 flex items-center justify-center bg-white">
+            <div className="text-on-surface-subtle">로딩 중...</div>
+          </div>
+          <LoginRequiredModal
+            isOpen={showLoginModal}
+            onConfirm={handleLoginConfirm}
+            onCancel={handleLoginCancel}
+          />
+        </>
       );
     }
 

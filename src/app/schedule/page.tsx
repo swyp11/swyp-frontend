@@ -535,7 +535,11 @@ function SchedulePage() {
 
       {/* Floating Add Button */}
       <button
-        onClick={() => router.push("/schedule/add")}
+        onClick={() => {
+          if (checkAuth()) {
+            router.push("/schedule/add");
+          }
+        }}
         className="fixed bottom-24 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg z-40"
         style={{
           right: "calc(50% - var(--app-width)/2 + 1rem)"
