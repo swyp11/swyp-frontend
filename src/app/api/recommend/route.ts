@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export interface RecommendRequest {
   body_type?: 'thin' | 'medium' | 'heavy';
   arm_length: 'short' | 'medium' | 'long';
-  face_shape: 'oval' | 'round' | 'square' | 'heart' | 'oblong';
+  face_shape: 'oval' | 'wide' | 'angular' | 'long';
   leg_length: 'short' | 'medium' | 'long';
   neck_length: 'short' | 'medium' | 'long';
   num_recommendations: number;
