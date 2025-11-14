@@ -124,11 +124,11 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
           onDragStart={(e) => e.preventDefault()}
         />
       </div>
-      <div className="inline-flex flex-col items-start relative flex-[0_0_auto]">
-        <h3 className="w-fit mt-[-1.00px] body-2-medium font-[number:var(--body-2-medium-font-weight)] text-black text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--body-2-medium-font-style)]">
+      <div className="inline-flex flex-col items-start relative flex-[0_0_auto] w-full">
+        <h3 className="w-full mt-[-1.00px] body-2-medium font-[number:var(--body-2-medium-font-weight)] text-black text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] relative truncate [font-style:var(--body-2-medium-font-style)]">
           {shop.title}
         </h3>
-        <p className="w-fit label-1-regular font-[number:var(--label-1-regular-font-weight)] text-on-surface-subtle text-[length:var(--label-1-regular-font-size)] tracking-[var(--label-1-regular-letter-spacing)] leading-[var(--label-1-regular-line-height)] whitespace-nowrap relative flex items-center justify-center [font-style:var(--label-1-regular-font-style)]">
+        <p className="w-full label-1-regular font-[number:var(--label-1-regular-font-weight)] text-on-surface-subtle text-[length:var(--label-1-regular-font-size)] tracking-[var(--label-1-regular-letter-spacing)] leading-[var(--label-1-regular-line-height)] relative truncate [font-style:var(--label-1-regular-font-style)]">
           {shop.description}
         </p>
       </div>
