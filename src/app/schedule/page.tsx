@@ -217,40 +217,64 @@ function SchedulePage() {
     // ScheduleMonthResponse[] 형태인 경우
     if (firstItem && typeof firstItem === 'object' && 'schedules' in firstItem && Array.isArray(firstItem.schedules)) {
       monthSchedule.forEach((dayData: any) => {
-        const scheduleDate = new Date(dayData.date);
-        const eventDate = scheduleDate.getDate();
-        const eventMonth = scheduleDate.getMonth() + 1;
-        const eventYear = scheduleDate.getFullYear();
+        dayData.schedules.forEach((schedule: any) => {
+          // startDate부터 endDate까지 모든 날짜에 일정 추가
+          const startDate = new Date(schedule.startDate);
+          const endDate = new Date(schedule.endDate);
 
-        if (eventMonth === currentMonth && eventYear === currentYear) {
-          if (!monthlyEventsMap[eventDate]) {
-            monthlyEventsMap[eventDate] = [];
+          const currentDate = new Date(startDate);
+          while (currentDate <= endDate) {
+            const eventDate = currentDate.getDate();
+            const eventMonth = currentDate.getMonth() + 1;
+            const eventYear = currentDate.getFullYear();
+
+            if (eventMonth === currentMonth && eventYear === currentYear) {
+              if (!monthlyEventsMap[eventDate]) {
+                monthlyEventsMap[eventDate] = [];
+              }
+              // 중복 방지: 같은 ID가 이미 있는지 확인
+              const isDuplicate = monthlyEventsMap[eventDate].some(e => e.id === schedule.id.toString());
+              if (!isDuplicate) {
+                monthlyEventsMap[eventDate].push({
+                  id: schedule.id.toString(),
+                  title: schedule.title
+                });
+              }
+            }
+
+            currentDate.setDate(currentDate.getDate() + 1);
           }
-          dayData.schedules.forEach((schedule: any) => {
-            monthlyEventsMap[eventDate].push({
-              id: schedule.id.toString(),
-              title: schedule.title
-            });
-          });
-        }
+        });
       });
     }
     // ScheduleResponse[] 형태인 경우
     else {
       monthSchedule.forEach((schedule: any) => {
-        const scheduleDate = new Date(schedule.startDate || schedule.scheduleDate);
-        const eventDate = scheduleDate.getDate();
-        const eventMonth = scheduleDate.getMonth() + 1;
-        const eventYear = scheduleDate.getFullYear();
+        // startDate부터 endDate까지 모든 날짜에 일정 추가
+        const startDate = new Date(schedule.startDate || schedule.scheduleDate);
+        const endDate = new Date(schedule.endDate || schedule.startDate || schedule.scheduleDate);
 
-        if (eventMonth === currentMonth && eventYear === currentYear) {
-          if (!monthlyEventsMap[eventDate]) {
-            monthlyEventsMap[eventDate] = [];
+        const currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+          const eventDate = currentDate.getDate();
+          const eventMonth = currentDate.getMonth() + 1;
+          const eventYear = currentDate.getFullYear();
+
+          if (eventMonth === currentMonth && eventYear === currentYear) {
+            if (!monthlyEventsMap[eventDate]) {
+              monthlyEventsMap[eventDate] = [];
+            }
+            // 중복 방지: 같은 ID가 이미 있는지 확인
+            const isDuplicate = monthlyEventsMap[eventDate].some(e => e.id === schedule.id.toString());
+            if (!isDuplicate) {
+              monthlyEventsMap[eventDate].push({
+                id: schedule.id.toString(),
+                title: schedule.title
+              });
+            }
           }
-          monthlyEventsMap[eventDate].push({
-            id: schedule.id.toString(),
-            title: schedule.title
-          });
+
+          currentDate.setDate(currentDate.getDate() + 1);
         }
       });
     }
@@ -269,22 +293,39 @@ function SchedulePage() {
     // ScheduleWeekResponse[] 구조인 경우
     if (firstItem && typeof firstItem === 'object' && 'schedules' in firstItem && Array.isArray(firstItem.schedules)) {
       return weekSchedule.flatMap((dayData: any) => {
-        const weekCalendarDayOfWeek = dayData.dayOfWeek - 1;
-
         return dayData.schedules
           .filter((schedule: any) => schedule.startTime && schedule.endTime)
-          .map((schedule: any) => {
-            const startHour = parseInt(schedule.startTime.split(':')[0]);
-            const endHour = parseInt(schedule.endTime.split(':')[0]);
+          .flatMap((schedule: any) => {
+            const events = [];
+            const startDate = new Date(schedule.startDate);
+            const endDate = new Date(schedule.endDate);
 
-            return {
-              id: schedule.id.toString(),
-              title: schedule.title,
-              startTime: startHour,
-              endTime: endHour,
-              dayOfWeek: weekCalendarDayOfWeek,
-              color: schedule.color || "#f3335d",
-            };
+            // startDate부터 endDate까지 각 날짜에 대해 이벤트 생성
+            const currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+              const jsDayOfWeek = currentDate.getDay();
+              const weekCalendarDayOfWeek = jsDayOfWeek === 0 ? 6 : jsDayOfWeek - 1;
+
+              // 해당 날짜의 시작/종료 시간 계산
+              const isFirstDay = currentDate.getTime() === startDate.getTime();
+              const isLastDay = currentDate.getTime() === endDate.getTime();
+
+              const startHour = isFirstDay ? parseInt(schedule.startTime.split(':')[0]) : 0;
+              const endHour = isLastDay ? parseInt(schedule.endTime.split(':')[0]) : 24;
+
+              events.push({
+                id: schedule.id.toString(),
+                title: schedule.title,
+                startTime: startHour,
+                endTime: endHour,
+                dayOfWeek: weekCalendarDayOfWeek,
+                color: schedule.color || "#f3335d",
+              });
+
+              currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            return events;
           });
       });
     }
@@ -292,22 +333,37 @@ function SchedulePage() {
     // ScheduleResponse[] 구조인 경우
     return weekSchedule
       .filter((schedule: any) => schedule.startTime && schedule.endTime)
-      .map((schedule: any) => {
-        const scheduleDate = new Date(schedule.startDate);
-        const startHour = parseInt(schedule.startTime.split(':')[0]);
-        const endHour = parseInt(schedule.endTime.split(':')[0]);
+      .flatMap((schedule: any) => {
+        const events = [];
+        const startDate = new Date(schedule.startDate);
+        const endDate = new Date(schedule.endDate);
 
-        const jsDayOfWeek = scheduleDate.getDay();
-        const weekCalendarDayOfWeek = jsDayOfWeek === 0 ? 6 : jsDayOfWeek - 1;
+        // startDate부터 endDate까지 각 날짜에 대해 이벤트 생성
+        const currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+          const jsDayOfWeek = currentDate.getDay();
+          const weekCalendarDayOfWeek = jsDayOfWeek === 0 ? 6 : jsDayOfWeek - 1;
 
-        return {
-          id: schedule.id.toString(),
-          title: schedule.title,
-          startTime: startHour,
-          endTime: endHour,
-          dayOfWeek: weekCalendarDayOfWeek,
-          color: schedule.color || "#f3335d",
-        };
+          // 해당 날짜의 시작/종료 시간 계산
+          const isFirstDay = currentDate.getTime() === startDate.getTime();
+          const isLastDay = currentDate.getTime() === endDate.getTime();
+
+          const startHour = isFirstDay ? parseInt(schedule.startTime.split(':')[0]) : 0;
+          const endHour = isLastDay ? parseInt(schedule.endTime.split(':')[0]) : 24;
+
+          events.push({
+            id: schedule.id.toString(),
+            title: schedule.title,
+            startTime: startHour,
+            endTime: endHour,
+            dayOfWeek: weekCalendarDayOfWeek,
+            color: schedule.color || "#f3335d",
+          });
+
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return events;
       });
   };
 
