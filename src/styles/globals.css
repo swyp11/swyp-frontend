@@ -5,9 +5,23 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --app-width: 390px;
+  --app-width: 100%;
   --header-height: 64px;
   --footer-height: 64px;
+}
+
+/* 태블릿 사이즈 이상 (768px~) */
+@media (min-width: 768px) {
+  :root {
+    --app-width: 100%;
+  }
+}
+
+/* PC 사이즈 이상 (1024px~) */
+@media (min-width: 1024px) {
+  :root {
+    --app-width: 768px;
+  }
 }
 
 @theme inline {
