@@ -6,6 +6,7 @@ import { useGoogleLogin } from "@/hooks/useGoogleLogin";
 import { useLogin } from "@/hooks/useAuth";
 import { useAuth } from "@/contexts/AuthContext";
 import { getAssetPath } from "@/utils/assetPath";
+import { BackHeader } from "@/components/common/BackHeader";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -70,12 +71,11 @@ export default function LoginPage() {
   const isLoading = loginMutation.isPending;
 
   return (
-    <div
-      className="bg-white flex flex-col h-screen mx-auto"
-      style={{ width: "var(--app-width)" }}
-    >
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4">
+    <div className="h-screen overflow-hidden flex flex-col bg-white mx-auto" style={{ width: "var(--app-width)" }}>
+      <BackHeader title="로그인" onBack={() => router.push("/main")} />
+      <div className="flex-1 flex flex-col overflow-auto">
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Logo */}
         <div className="flex items-center justify-center py-6 mb-6">
           <img
@@ -171,6 +171,7 @@ export default function LoginPage() {
         <a href="/signup" className="underline">
           회원가입
         </a>
+      </div>
       </div>
     </div>
   );
