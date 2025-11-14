@@ -8,6 +8,7 @@ import { DayCalendar } from "../../components/schedule/DayCalendar";
 import { ViewSelector, CalendarView } from "../../components/schedule/ViewSelector";
 import { NavigationHeader } from "../../components/schedule/NavigationHeader";
 import { WeddingDateModal } from "../../components/schedule/WeddingDateModal";
+import { DayEventsModal } from "../../components/schedule/DayEventsModal";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
@@ -45,6 +46,8 @@ function SchedulePage() {
   const [selectedDate, setSelectedDate] = useState(initialDate);
   const [calendarView, setCalendarView] = useState<CalendarView>(initialView);
   const [isWeddingDateModalOpen, setIsWeddingDateModalOpen] = useState(false);
+  const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
+  const [selectedDayForModal, setSelectedDayForModal] = useState<number | null>(null);
 
   // URL query params 업데이트 함수
   const updateQueryParams = (year: number, month: number, date: number, view: CalendarView) => {
@@ -204,82 +207,119 @@ function SchedulePage() {
     setSelectedDate(currentDate.getDate());
   };
 
-  // 월별 뷰용 이벤트 변환
+  // 월별 뷰용 이벤트 변환 (날짜 범위 바 형태)
   const getMonthlyEvents = () => {
-    const monthlyEventsMap: { [key: number]: Array<{ id: string; title: string }> } = {};
+    const eventBars: Array<{
+      id: string;
+      title: string;
+      startDay: number;
+      endDay: number;
+      startWeek: number;
+      color: string;
+      row: number; // 같은 주에서 몇 번째 줄인지
+    }> = [];
 
-    if (!monthSchedule) return monthlyEventsMap;
-    if (!Array.isArray(monthSchedule)) return monthlyEventsMap;
-    if (monthSchedule.length === 0) return monthlyEventsMap;
+    if (!monthSchedule) return eventBars;
+    if (!Array.isArray(monthSchedule)) return eventBars;
+    if (monthSchedule.length === 0) return eventBars;
 
     const firstItem = monthSchedule[0];
+    const schedules: any[] = [];
 
     // ScheduleMonthResponse[] 형태인 경우
     if (firstItem && typeof firstItem === 'object' && 'schedules' in firstItem && Array.isArray(firstItem.schedules)) {
       monthSchedule.forEach((dayData: any) => {
-        dayData.schedules.forEach((schedule: any) => {
-          // startDate부터 endDate까지 모든 날짜에 일정 추가
-          const startDate = new Date(schedule.startDate);
-          const endDate = new Date(schedule.endDate);
-
-          const currentDate = new Date(startDate);
-          while (currentDate <= endDate) {
-            const eventDate = currentDate.getDate();
-            const eventMonth = currentDate.getMonth() + 1;
-            const eventYear = currentDate.getFullYear();
-
-            if (eventMonth === currentMonth && eventYear === currentYear) {
-              if (!monthlyEventsMap[eventDate]) {
-                monthlyEventsMap[eventDate] = [];
-              }
-              // 중복 방지: 같은 ID가 이미 있는지 확인
-              const isDuplicate = monthlyEventsMap[eventDate].some(e => e.id === schedule.id.toString());
-              if (!isDuplicate) {
-                monthlyEventsMap[eventDate].push({
-                  id: schedule.id.toString(),
-                  title: schedule.title
-                });
-              }
-            }
-
-            currentDate.setDate(currentDate.getDate() + 1);
-          }
-        });
+        schedules.push(...dayData.schedules);
       });
+    } else {
+      schedules.push(...monthSchedule);
     }
-    // ScheduleResponse[] 형태인 경우
-    else {
-      monthSchedule.forEach((schedule: any) => {
-        // startDate부터 endDate까지 모든 날짜에 일정 추가
-        const startDate = new Date(schedule.startDate || schedule.scheduleDate);
-        const endDate = new Date(schedule.endDate || schedule.startDate || schedule.scheduleDate);
 
-        const currentDate = new Date(startDate);
-        while (currentDate <= endDate) {
-          const eventDate = currentDate.getDate();
-          const eventMonth = currentDate.getMonth() + 1;
-          const eventYear = currentDate.getFullYear();
+    // 중복 제거 (같은 ID)
+    const uniqueSchedules = schedules.filter((schedule, index, self) =>
+      index === self.findIndex(s => s.id === schedule.id)
+    );
 
-          if (eventMonth === currentMonth && eventYear === currentYear) {
-            if (!monthlyEventsMap[eventDate]) {
-              monthlyEventsMap[eventDate] = [];
-            }
-            // 중복 방지: 같은 ID가 이미 있는지 확인
-            const isDuplicate = monthlyEventsMap[eventDate].some(e => e.id === schedule.id.toString());
-            if (!isDuplicate) {
-              monthlyEventsMap[eventDate].push({
-                id: schedule.id.toString(),
-                title: schedule.title
-              });
-            }
-          }
+    // 일정 길이 순으로 정렬 (긴 일정이 먼저)
+    uniqueSchedules.sort((a, b) => {
+      const aDuration = new Date(a.endDate || a.startDate).getTime() - new Date(a.startDate).getTime();
+      const bDuration = new Date(b.endDate || b.startDate).getTime() - new Date(b.startDate).getTime();
+      return bDuration - aDuration; // 내림차순 (긴 일정이 먼저)
+    });
 
-          currentDate.setDate(currentDate.getDate() + 1);
+    // 각 주별로 이벤트 행 관리
+    const weekRows: Map<number, Array<{ startDay: number; endDay: number }>> = new Map();
+
+    uniqueSchedules.forEach((schedule: any) => {
+      const startDate = new Date(schedule.startDate || schedule.scheduleDate);
+      const endDate = new Date(schedule.endDate || schedule.startDate || schedule.scheduleDate);
+
+      // 현재 월의 1일과 마지막 날
+      const monthStart = new Date(currentYear, currentMonth - 1, 1);
+      const monthEnd = new Date(currentYear, currentMonth, 0);
+
+      // 현재 월에 포함되는 부분만 계산
+      const displayStart = startDate > monthStart ? startDate : monthStart;
+      const displayEnd = endDate < monthEnd ? endDate : monthEnd;
+
+      // 현재 월과 겹치지 않으면 skip
+      if (displayStart > monthEnd || displayEnd < monthStart) {
+        return;
+      }
+
+      const startDay = displayStart.getDate();
+      const endDay = displayEnd.getDate();
+
+      // 시작 날짜의 주차 계산
+      const emptyDays = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+      const startWeek = Math.floor((startDay - 1 + emptyDays) / 7);
+      const endWeek = Math.floor((endDay - 1 + emptyDays) / 7);
+
+      // 여러 주에 걸쳐있는 경우 각 주별로 행 할당
+      for (let week = startWeek; week <= endWeek; week++) {
+        if (!weekRows.has(week)) {
+          weekRows.set(week, []);
         }
-      });
-    }
 
-    return monthlyEventsMap;
+        const weekEvents = weekRows.get(week)!;
+
+        // 현재 주에서의 시작/종료일 계산
+        const weekStartDay = week === startWeek ? startDay : (week * 7 - emptyDays + 1);
+        const weekEndDay = week === endWeek ? endDay : Math.min((week + 1) * 7 - emptyDays, daysInMonth);
+
+        // 겹치지 않는 행 찾기
+        let row = 0;
+        while (row < weekEvents.length) {
+          const existingEvent = weekEvents[row];
+          // 겹치는지 확인
+          if (weekStartDay > existingEvent.endDay || weekEndDay < existingEvent.startDay) {
+            // 겹치지 않음
+            break;
+          }
+          row++;
+        }
+
+        // 해당 행에 이벤트 추가
+        if (!weekEvents[row]) {
+          weekEvents[row] = { startDay: weekStartDay, endDay: weekEndDay };
+        }
+
+        // 첫 주에만 전체 이벤트 정보 추가
+        if (week === startWeek) {
+          eventBars.push({
+            id: schedule.id.toString(),
+            title: schedule.title,
+            startDay,
+            endDay,
+            startWeek,
+            color: schedule.color || "#f3335d",
+            row,
+          });
+        }
+      }
+    });
+
+    return eventBars;
   };
 
   // 주별 뷰용 이벤트 변환
@@ -419,29 +459,74 @@ function SchedulePage() {
       });
   };
 
+  // 특정 날짜의 모든 이벤트 가져오기
+  const getEventsForDay = (day: number) => {
+    if (!monthSchedule) return [];
+    if (!Array.isArray(monthSchedule)) return [];
+    if (monthSchedule.length === 0) return [];
+
+    const firstItem = monthSchedule[0];
+    const schedules: any[] = [];
+
+    // ScheduleMonthResponse[] 형태인 경우
+    if (firstItem && typeof firstItem === 'object' && 'schedules' in firstItem && Array.isArray(firstItem.schedules)) {
+      monthSchedule.forEach((dayData: any) => {
+        schedules.push(...dayData.schedules);
+      });
+    } else {
+      schedules.push(...monthSchedule);
+    }
+
+    // 중복 제거
+    const uniqueSchedules = schedules.filter((schedule, index, self) =>
+      index === self.findIndex(s => s.id === schedule.id)
+    );
+
+    // 해당 날짜를 포함하는 이벤트 필터링
+    return uniqueSchedules.filter((schedule: any) => {
+      const startDate = new Date(schedule.startDate || schedule.scheduleDate);
+      const endDate = new Date(schedule.endDate || schedule.startDate || schedule.scheduleDate);
+
+      const targetDate = new Date(currentYear, currentMonth - 1, day);
+      targetDate.setHours(0, 0, 0, 0);
+
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(23, 59, 59, 999);
+
+      return targetDate >= startDate && targetDate <= endDate;
+    }).map((schedule: any) => ({
+      id: schedule.id.toString(),
+      title: schedule.title,
+      color: schedule.color || "#f3335d",
+      startDate: schedule.startDate || schedule.scheduleDate,
+      endDate: schedule.endDate || schedule.startDate || schedule.scheduleDate,
+    }));
+  };
+
   const renderCalendar = () => {
     const days = [];
     const totalCells = 35; // 5주
-    const monthlyEvents = getMonthlyEvents();
+    const eventBars = getMonthlyEvents();
 
     // 빈 셀 추가 (월요일 시작 기준)
     const emptyDays = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
     for (let i = 0; i < emptyDays; i++) {
-      days.push(<div key={`empty-${i}`} className="h-20 border-r border-b border-[#f1f1f1]" />);
+      days.push(<div key={`empty-${i}`} className="h-24 border-r border-b border-[#f1f1f1]" />);
     }
 
     // 날짜 셀 추가
     for (let day = 1; day <= daysInMonth; day++) {
-      const hasEvents = monthlyEvents[day];
+      const dayEvents = getEventsForDay(day);
+      const hasMoreThan2Events = dayEvents.length > 2;
 
       days.push(
         <div
           key={day}
-          className="h-20 border-r border-b border-[#f1f1f1] p-1 bg-white cursor-pointer hover:bg-surface-2"
+          className="h-24 border-r border-b border-[#f1f1f1] p-1 bg-white cursor-pointer hover:bg-surface-2 relative"
           onClick={() => setSelectedDate(day)}
         >
           <div className="flex flex-col gap-1 h-full">
-            <div className="flex justify-center pt-1">
+            <div className="flex justify-center pt-1 relative z-10">
               {day === selectedDate ? (
                 <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                   <span className="label-2 text-white">{day}</span>
@@ -450,23 +535,21 @@ function SchedulePage() {
                 <span className="label-2 text-on-surface-subtle">{day}</span>
               )}
             </div>
-            {/* 이벤트 표시 */}
-            {hasEvents && (
-              <div className="flex flex-col gap-0.5 px-1">
-                {hasEvents.map((event) => (
-                  <div
-                    key={event.id}
-                    className="bg-alert rounded-xs px-1 py-0.5 overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEventClick(event.id);
-                    }}
-                  >
-                    <p className="text-white text-[9px] leading-3 overflow-hidden text-ellipsis whitespace-nowrap">
-                      {event.title}
-                    </p>
-                  </div>
-                ))}
+            {/* 더보기 버튼 */}
+            {hasMoreThan2Events && (
+              <div className="absolute bottom-1 left-1 right-1 z-10">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedDayForModal(day);
+                    setIsDayEventsModalOpen(true);
+                  }}
+                  className="w-full bg-surface-2 hover:bg-surface-3 rounded-xs px-1 py-0.5 transition-colors"
+                >
+                  <p className="text-on-surface-subtle text-[9px] leading-3">
+                    +{dayEvents.length - 2}개 더보기
+                  </p>
+                </button>
               </div>
             )}
           </div>
@@ -477,10 +560,10 @@ function SchedulePage() {
     // 남은 빈 셀 추가
     const remainingCells = totalCells - days.length;
     for (let i = 0; i < remainingCells; i++) {
-      days.push(<div key={`empty-end-${i}`} className="h-20 border-r border-b border-[#f1f1f1] opacity-0" />);
+      days.push(<div key={`empty-end-${i}`} className="h-24 border-r border-b border-[#f1f1f1] opacity-0" />);
     }
 
-    return days;
+    return { days, eventBars };
   };
 
   return (
@@ -490,6 +573,18 @@ function SchedulePage() {
         isOpen={isWeddingDateModalOpen}
         onClose={() => setIsWeddingDateModalOpen(false)}
         currentWeddingDate={userInfo?.weddingDate}
+      />
+
+      {/* Day Events Modal */}
+      <DayEventsModal
+        isOpen={isDayEventsModalOpen}
+        onClose={() => {
+          setIsDayEventsModalOpen(false);
+          setSelectedDayForModal(null);
+        }}
+        date={selectedDayForModal ? new Date(currentYear, currentMonth - 1, selectedDayForModal) : new Date()}
+        events={selectedDayForModal ? getEventsForDay(selectedDayForModal) : []}
+        onEventClick={handleEventClick}
       />
 
       {/* Content Container */}
@@ -577,26 +672,136 @@ function SchedulePage() {
         )}
 
         {/* 월별 캘린더 */}
-        {calendarView === "monthly" && (
-          <div className="flex-1 flex flex-col w-full overflow-hidden">
-            {/* Weekday Headers */}
-            <div className="grid grid-cols-7 border-b border-[#f1f1f1] flex-none">
-              {["월", "화", "수", "목", "금", "토", "일"].map((day) => (
-                <div
-                  key={day}
-                  className="h-7 flex items-center justify-center bg-white"
-                >
-                  <span className="label-2 text-on-surface-subtle">{day}</span>
-                </div>
-              ))}
-            </div>
+        {calendarView === "monthly" && (() => {
+          const { days, eventBars } = renderCalendar();
+          const emptyDays = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
-            {/* Calendar Grid - 스크롤 가능 */}
-            <div className="flex-1 overflow-y-auto">
-              <div className="grid grid-cols-7">{renderCalendar()}</div>
+          return (
+            <div className="flex-1 flex flex-col w-full overflow-hidden">
+              {/* Weekday Headers */}
+              <div className="grid grid-cols-7 border-b border-[#f1f1f1] flex-none">
+                {["월", "화", "수", "목", "금", "토", "일"].map((day) => (
+                  <div
+                    key={day}
+                    className="h-7 flex items-center justify-center bg-white"
+                  >
+                    <span className="label-2 text-on-surface-subtle">{day}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Calendar Grid - 스크롤 가능 */}
+              <div className="flex-1 overflow-y-auto">
+                <div className="grid grid-cols-7 relative">
+                  {days}
+
+                  {/* 이벤트 바 레이어 */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    {eventBars.filter(event => event.row < 2).map((event, index) => {
+                      // 셀 크기 계산
+                      const cellWidth = 100 / 7; // 7열
+                      const cellHeight = 96; // h-24 = 96px
+                      const eventBarHeight = 16; // 이벤트 바 높이
+                      const eventBarSpacing = 2; // 이벤트 바 간격
+
+                      // 시작 날짜의 column 위치
+                      const startCol = (event.startDay - 1 + emptyDays) % 7;
+                      // 종료 날짜의 column 위치
+                      const endCol = (event.endDay - 1 + emptyDays) % 7;
+                      // 시작 주차
+                      const startRow = event.startWeek;
+                      // 종료 주차
+                      const endRow = Math.floor((event.endDay - 1 + emptyDays) / 7);
+
+                      // 같은 주에 있는 경우
+                      if (startRow === endRow) {
+                        const left = startCol * cellWidth;
+                        const width = (endCol - startCol + 1) * cellWidth;
+                        const top = startRow * cellHeight + 32 + (event.row * (eventBarHeight + eventBarSpacing)); // 날짜 숫자 아래 + row별 간격
+
+                        return (
+                          <div
+                            key={event.id}
+                            className="absolute pointer-events-auto cursor-pointer hover:opacity-90 transition-opacity"
+                            style={{
+                              left: `${left}%`,
+                              width: `${width}%`,
+                              top: `${top}px`,
+                              height: `${eventBarHeight}px`,
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEventClick(event.id);
+                            }}
+                          >
+                            <div
+                              className="h-full rounded-sm px-1 flex items-center"
+                              style={{ backgroundColor: event.color }}
+                            >
+                              <p className="text-white text-[9px] leading-3 overflow-hidden text-ellipsis whitespace-nowrap">
+                                {event.title}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      } else {
+                        // 여러 주에 걸쳐 있는 경우 - 각 주별로 바를 그림
+                        const bars = [];
+                        for (let row = startRow; row <= endRow; row++) {
+                          const isFirstRow = row === startRow;
+                          const isLastRow = row === endRow;
+
+                          const left = isFirstRow ? startCol * cellWidth : 0;
+                          const width = isFirstRow
+                            ? (7 - startCol) * cellWidth
+                            : isLastRow
+                              ? (endCol + 1) * cellWidth
+                              : 100;
+                          const top = row * cellHeight + 32 + (event.row * (eventBarHeight + eventBarSpacing));
+
+                          bars.push(
+                            <div
+                              key={`${event.id}-row-${row}`}
+                              className="absolute pointer-events-auto cursor-pointer hover:opacity-90 transition-opacity"
+                              style={{
+                                left: `${left}%`,
+                                width: `${width}%`,
+                                top: `${top}px`,
+                                height: `${eventBarHeight}px`,
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEventClick(event.id);
+                              }}
+                            >
+                              <div
+                                className="h-full px-1 flex items-center"
+                                style={{
+                                  backgroundColor: event.color,
+                                  borderTopLeftRadius: isFirstRow ? '4px' : '0',
+                                  borderBottomLeftRadius: isFirstRow ? '4px' : '0',
+                                  borderTopRightRadius: isLastRow ? '4px' : '0',
+                                  borderBottomRightRadius: isLastRow ? '4px' : '0',
+                                }}
+                              >
+                                {isFirstRow && (
+                                  <p className="text-white text-[9px] leading-3 overflow-hidden text-ellipsis whitespace-nowrap">
+                                    {event.title}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        }
+                        return bars;
+                      }
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* 주별 캘린더 */}
         {calendarView === "weekly" && (
