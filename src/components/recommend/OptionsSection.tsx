@@ -81,11 +81,11 @@ export const OptionsSection = () => {
     setIsLoading(true);
     try {
       const requestData: RecommendRequest = {
-        ...(selectedOptions.bodyType && { body_type: mapToApiValue(selectedOptions.bodyType) as any }),
         arm_length: mapToApiValue(selectedOptions.armLength) as any,
-        face_shape: mapToApiValue(selectedOptions.faceShape) as any,
         leg_length: mapToApiValue(selectedOptions.legLength) as any,
         neck_length: mapToApiValue(selectedOptions.neckLength) as any,
+        face_shape: mapToApiValue(selectedOptions.faceShape) as any,
+        body_type: mapToApiValue(selectedOptions.bodyType) as any,
         num_recommendations: 3,
       };
 

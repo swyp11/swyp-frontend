@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Request types
 export interface RecommendRequest {
-  body_type?: 'thin' | 'medium' | 'heavy';
   arm_length: 'short' | 'medium' | 'long';
-  face_shape: 'oval' | 'wide' | 'angular' | 'long';
   leg_length: 'short' | 'medium' | 'long';
   neck_length: 'short' | 'medium' | 'long';
+  face_shape: 'oval' | 'wide' | 'angular' | 'long';
+  body_type: 'thin' | 'medium' | 'heavy';
   num_recommendations: number;
 }
 
