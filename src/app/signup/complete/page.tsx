@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import { getAssetPath } from "@/utils/assetPath";
 
 export default function SignupCompletePage() {
   const router = useRouter();
@@ -27,7 +28,11 @@ export default function SignupCompletePage() {
       {/* Main Content - Centered */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-6 min-h-0">
         {/* Logo */}
-        <div className="headline-1 text-primary">LOGO</div>
+        <img
+          src={getAssetPath("/img/Logo.svg")}
+          alt="로고"
+          className="h-10"
+        />
 
         {/* Welcome Message */}
         <div className="title-1 text-on-surface text-center">

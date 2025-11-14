@@ -20,7 +20,14 @@ export interface GNBProps {
 export const GNB = React.forwardRef<HTMLElement, GNBProps>(
   (
     {
-      logo = "LOGO",
+      logo = (
+        <Image
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/img/Logo.svg`}
+          alt="로고"
+          width={80}
+          height={32}
+        />
+      ),
       logoHref = "/",
       hasNotification = false,
       onNotificationClick,

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useGoogleLogin } from "@/hooks/useGoogleLogin";
 import { useLogin } from "@/hooks/useAuth";
 import { useAuth } from "@/contexts/AuthContext";
+import { getAssetPath } from "@/utils/assetPath";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -77,7 +78,11 @@ export default function LoginPage() {
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Logo */}
         <div className="flex items-center justify-center py-6 mb-6">
-          <h1 className="headline-1 text-primary">LOGO</h1>
+          <img
+            src={getAssetPath("/img/Logo.svg")}
+            alt="로고"
+            className="h-10"
+          />
         </div>
 
         {/* Form */}
