@@ -9,7 +9,7 @@ import { SearchInput } from "@/components/ui";
 import { NavigationTabSection } from "@/components/main/NavigationTabSection";
 import { useDressList } from "@/hooks/useDress";
 import { useDressShopList, useMakeupShopList } from "@/hooks/useShops";
-import { useWeddingHallList } from "@/hooks/useWeddingHall";
+import { useWeddingHallList, useWeddingHallSearch } from "@/hooks/useWeddingHall";
 
 function SearchResultsContent() {
   const router = useRouter();
@@ -29,10 +29,19 @@ function SearchResultsContent() {
   }, [query, tab, sort]);
 
   // 탭에 따라 조건부로 API 호출
-  const { data: weddingHalls, isLoading: weddingLoading } = useWeddingHallList(
-    { sort: sortOrder },
-    { enabled: activeTab === 'wedding-hall' }
+  // 웨딩홀: 검색어가 있으면 검색 API, 없으면 목록 API
+  const { data: weddingHallsSearch, isLoading: weddingSearchLoading } = useWeddingHallSearch(
+    query,
+    { enabled: activeTab === 'wedding-hall' && query.trim().length > 0 }
   );
+
+  const { data: weddingHallsList, isLoading: weddingListLoading } = useWeddingHallList(
+    { sort: sortOrder },
+    { enabled: activeTab === 'wedding-hall' && query.trim().length === 0 }
+  );
+
+  const weddingHalls = query.trim().length > 0 ? weddingHallsSearch : weddingHallsList;
+  const weddingLoading = query.trim().length > 0 ? weddingSearchLoading : weddingListLoading;
 
   const { data: dressShops, isLoading: dressShopLoading } = useDressShopList(
     { shopName: query, sort: sortOrder },

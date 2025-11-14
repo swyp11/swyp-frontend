@@ -89,6 +89,22 @@ export const useDeleteWeddingHall = () => {
   });
 };
 
+/**
+ * 웨딩홀 키워드 검색 훅
+ */
+export const useWeddingHallSearch = (
+  keyword: string,
+  options?: Omit<UseQueryOptions<WeddingHallResponse[]>, 'queryKey' | 'queryFn'>
+) => {
+  return useQuery({
+    queryKey: ['weddingHall', 'search', keyword],
+    queryFn: () => weddingHallApi.search(keyword),
+    enabled: keyword.trim().length > 0,
+    staleTime: 1 * 60 * 1000, // 1분
+    ...options,
+  });
+};
+
 // ===== 홀 훅 =====
 
 /**

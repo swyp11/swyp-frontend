@@ -63,4 +63,15 @@ export const weddingHallApi = {
     );
     return response.data.data;
   },
+
+  /**
+   * 웨딩홀 키워드 검색
+   */
+  search: async (keyword: string) => {
+    const response = await apiClient.get<ApiResponse<WeddingHallResponse[]>>(
+      '/wedding/search',
+      { params: { keyword } }
+    );
+    return response.data.data || [];
+  },
 };

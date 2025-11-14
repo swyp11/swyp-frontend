@@ -142,46 +142,50 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
 
                 {/* 년도와 월을 모두 선택할 수 있는 드롭다운 */}
                 {showDropdown && isDropdownOpen && isYearMonthDropdown && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white rounded-lg shadow-1 overflow-hidden z-50 min-w-[240px]">
-                        <div className="grid grid-cols-2 divide-x divide-[#f1f1f1]">
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white rounded-lg shadow-1 z-50 min-w-[280px] max-h-[320px] overflow-hidden">
+                        <div className="grid grid-cols-2 divide-x divide-[#f1f1f1] h-full">
                             {/* 년도 선택 */}
-                            <div className="max-h-[300px] overflow-y-auto">
-                                <div className="px-3 py-2 bg-surface-2 sticky top-0">
+                            <div className="overflow-y-auto">
+                                <div className="px-3 py-2 bg-surface-2 sticky top-0 z-10">
                                     <span className="label-2 text-on-surface-subtle">년도</span>
                                 </div>
-                                {Array.from({ length: 11 }, (_, i) => (currentYear || new Date().getFullYear()) - 5 + i).map((year) => (
-                                    <button
-                                        key={year}
-                                        onClick={() => handleYearSelect(year)}
-                                        className={`w-full px-4 py-2 text-center body-2-medium transition-colors hover:bg-surface-2 ${
-                                            currentYear === year
-                                                ? "text-primary bg-primary-container"
-                                                : "text-on-surface"
-                                        }`}
-                                    >
-                                        {year}년
-                                    </button>
-                                ))}
+                                <div>
+                                    {Array.from({ length: 11 }, (_, i) => (currentYear || new Date().getFullYear()) - 5 + i).map((year) => (
+                                        <button
+                                            key={year}
+                                            onClick={() => handleYearSelect(year)}
+                                            className={`w-full px-4 py-2 text-center body-2-medium transition-colors hover:bg-surface-2 ${
+                                                currentYear === year
+                                                    ? "text-primary bg-primary-container"
+                                                    : "text-on-surface"
+                                            }`}
+                                        >
+                                            {year}년
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
                             {/* 월 선택 */}
-                            <div className="max-h-[300px] overflow-y-auto">
-                                <div className="px-3 py-2 bg-surface-2 sticky top-0">
+                            <div className="overflow-y-auto">
+                                <div className="px-3 py-2 bg-surface-2 sticky top-0 z-10">
                                     <span className="label-2 text-on-surface-subtle">월</span>
                                 </div>
-                                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                                    <button
-                                        key={month}
-                                        onClick={() => handleMonthSelect(month)}
-                                        className={`w-full px-4 py-2 text-center body-2-medium transition-colors hover:bg-surface-2 ${
-                                            currentMonth === month
-                                                ? "text-primary bg-primary-container"
-                                                : "text-on-surface"
-                                        }`}
-                                    >
-                                        {month}월
-                                    </button>
-                                ))}
+                                <div>
+                                    {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                                        <button
+                                            key={month}
+                                            onClick={() => handleMonthSelect(month)}
+                                            className={`w-full px-4 py-2 text-center body-2-medium transition-colors hover:bg-surface-2 ${
+                                                currentMonth === month
+                                                    ? "text-primary bg-primary-container"
+                                                    : "text-on-surface"
+                                            }`}
+                                        >
+                                            {month}월
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>

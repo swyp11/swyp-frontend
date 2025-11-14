@@ -288,6 +288,19 @@ function SchedulePage() {
     if (!Array.isArray(weekSchedule)) return [];
     if (weekSchedule.length === 0) return [];
 
+    // 현재 주의 시작일(월요일)과 종료일(일요일) 계산
+    const currentDate = new Date(currentYear, currentMonth - 1, selectedDate);
+    const dayOfWeek = currentDate.getDay();
+    const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+    const weekStart = new Date(currentDate);
+    weekStart.setDate(currentDate.getDate() + daysToMonday);
+    weekStart.setHours(0, 0, 0, 0);
+
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+    weekEnd.setHours(23, 59, 59, 999);
+
     const firstItem = weekSchedule[0];
 
     // ScheduleWeekResponse[] 구조인 경우
@@ -297,18 +310,27 @@ function SchedulePage() {
           .filter((schedule: any) => schedule.startTime && schedule.endTime)
           .flatMap((schedule: any) => {
             const events = [];
-            const startDate = new Date(schedule.startDate);
-            const endDate = new Date(schedule.endDate);
+            const scheduleStart = new Date(schedule.startDate);
+            const scheduleEnd = new Date(schedule.endDate);
 
-            // startDate부터 endDate까지 각 날짜에 대해 이벤트 생성
-            const currentDate = new Date(startDate);
-            while (currentDate <= endDate) {
+            // 현재 주와 겹치는 범위만 계산
+            const displayStart = scheduleStart > weekStart ? scheduleStart : weekStart;
+            const displayEnd = scheduleEnd < weekEnd ? scheduleEnd : weekEnd;
+
+            // 현재 주에 포함되지 않으면 skip
+            if (displayStart > weekEnd || displayEnd < weekStart) {
+              return [];
+            }
+
+            // displayStart부터 displayEnd까지 각 날짜에 대해 이벤트 생성
+            const currentDate = new Date(displayStart);
+            while (currentDate <= displayEnd) {
               const jsDayOfWeek = currentDate.getDay();
               const weekCalendarDayOfWeek = jsDayOfWeek === 0 ? 6 : jsDayOfWeek - 1;
 
               // 해당 날짜의 시작/종료 시간 계산
-              const isFirstDay = currentDate.getTime() === startDate.getTime();
-              const isLastDay = currentDate.getTime() === endDate.getTime();
+              const isFirstDay = currentDate.toDateString() === scheduleStart.toDateString();
+              const isLastDay = currentDate.toDateString() === scheduleEnd.toDateString();
 
               const startHour = isFirstDay ? parseInt(schedule.startTime.split(':')[0]) : 0;
               const endHour = isLastDay ? parseInt(schedule.endTime.split(':')[0]) : 24;
@@ -335,18 +357,27 @@ function SchedulePage() {
       .filter((schedule: any) => schedule.startTime && schedule.endTime)
       .flatMap((schedule: any) => {
         const events = [];
-        const startDate = new Date(schedule.startDate);
-        const endDate = new Date(schedule.endDate);
+        const scheduleStart = new Date(schedule.startDate);
+        const scheduleEnd = new Date(schedule.endDate);
 
-        // startDate부터 endDate까지 각 날짜에 대해 이벤트 생성
-        const currentDate = new Date(startDate);
-        while (currentDate <= endDate) {
+        // 현재 주와 겹치는 범위만 계산
+        const displayStart = scheduleStart > weekStart ? scheduleStart : weekStart;
+        const displayEnd = scheduleEnd < weekEnd ? scheduleEnd : weekEnd;
+
+        // 현재 주에 포함되지 않으면 skip
+        if (displayStart > weekEnd || displayEnd < weekStart) {
+          return [];
+        }
+
+        // displayStart부터 displayEnd까지 각 날짜에 대해 이벤트 생성
+        const currentDate = new Date(displayStart);
+        while (currentDate <= displayEnd) {
           const jsDayOfWeek = currentDate.getDay();
           const weekCalendarDayOfWeek = jsDayOfWeek === 0 ? 6 : jsDayOfWeek - 1;
 
           // 해당 날짜의 시작/종료 시간 계산
-          const isFirstDay = currentDate.getTime() === startDate.getTime();
-          const isLastDay = currentDate.getTime() === endDate.getTime();
+          const isFirstDay = currentDate.toDateString() === scheduleStart.toDateString();
+          const isLastDay = currentDate.toDateString() === scheduleEnd.toDateString();
 
           const startHour = isFirstDay ? parseInt(schedule.startTime.split(':')[0]) : 0;
           const endHour = isLastDay ? parseInt(schedule.endTime.split(':')[0]) : 24;
