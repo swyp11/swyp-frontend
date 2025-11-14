@@ -19,11 +19,10 @@ const translationMap: Record<string, string> = {
   "long": "긴",
 
   // Face shapes
-  "oval": "달걀형",
-  "round": "넓은",
-  "square": "각진",
-  "heart": "하트형",
-  "oblong": "긴",
+  "oval": "계란형",
+  "wide": "넓은형",
+  "angular": "각진형",
+  "long": "긴형",
 
   // Style names
   "A-Line": "A라인",

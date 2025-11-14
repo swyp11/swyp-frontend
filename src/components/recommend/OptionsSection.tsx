@@ -69,8 +69,8 @@ export const OptionsSection = () => {
       "보통": "medium",
       "긴": "long",
       "달걀": "oval",
-      "넓은": "round",
-      "각진": "square",
+      "넓은": "wide",
+      "각진": "angular",
     };
     return mapping[value] || value;
   };
