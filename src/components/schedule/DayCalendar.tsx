@@ -12,15 +12,37 @@ interface Event {
 
 interface DayCalendarProps {
   currentDate: Date;
-  events?: Event[];
+  daySchedule: any;
   onEventClick?: (eventId: string) => void;
 }
 
 export const DayCalendar: React.FC<DayCalendarProps> = ({
   currentDate,
-  events = [],
+  daySchedule,
   onEventClick,
 }) => {
+  // 일별 뷰용 이벤트 변환
+  const getDailyEvents = (): Event[] => {
+    if (!daySchedule) return [];
+    if (!Array.isArray(daySchedule)) return [];
+
+    return daySchedule
+      .filter((schedule: any) => schedule.startTime && schedule.endTime)
+      .map((schedule: any) => {
+        const startHour = parseInt(schedule.startTime.split(':')[0]);
+        const endHour = parseInt(schedule.endTime.split(':')[0]);
+
+        return {
+          id: schedule.id.toString(),
+          title: schedule.title,
+          startTime: startHour,
+          duration: Math.max(endHour - startHour, 1),
+          color: schedule.color || "#f3335d",
+        };
+      });
+  };
+
+  const events = getDailyEvents();
 
   // 시간 라벨 생성 (12 AM부터)
   const hours = Array.from({ length: 24 }, (_, i) => {
