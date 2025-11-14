@@ -114,15 +114,13 @@ function ScheduleDetailPage() {
               <CalendarSelect
                 value={formatDateDisplay(schedule.startDate)}
                 onClick={() => {}}
-                className="flex-1 h-12 cursor-default"
-                readOnly
+                className="flex-1 h-12 cursor-default pointer-events-none"
               />
               <span className="body-2-medium text-on-surface">-</span>
               <CalendarSelect
                 value={formatDateDisplay(schedule.endDate)}
                 onClick={() => {}}
-                className="flex-1 h-12 cursor-default"
-                readOnly
+                className="flex-1 h-12 cursor-default pointer-events-none"
               />
             </div>
           </div>
@@ -135,15 +133,13 @@ function ScheduleDetailPage() {
                 <CalendarSelect
                   value={formatTimeDisplay(schedule.startTime)}
                   onClick={() => {}}
-                  className="flex-1 h-12 cursor-default"
-                  readOnly
+                  className="flex-1 h-12 cursor-default pointer-events-none"
                 />
                 <span className="body-2-medium text-on-surface">-</span>
                 <CalendarSelect
                   value={formatTimeDisplay(schedule.endTime)}
                   onClick={() => {}}
-                  className="flex-1 h-12 cursor-default"
-                  readOnly
+                  className="flex-1 h-12 cursor-default pointer-events-none"
                 />
               </div>
             </div>

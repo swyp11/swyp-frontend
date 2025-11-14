@@ -97,8 +97,12 @@ function EditSchedulePage() {
       setDescription(schedule.memo || "");
       setStartDate(formatDateToDisplay(schedule.startDate));
       setEndDate(formatDateToDisplay(schedule.endDate));
-      setStartTime(formatTimeToDisplay(schedule.startTime));
-      setEndTime(formatTimeToDisplay(schedule.endTime));
+      if (schedule.startTime) {
+        setStartTime(formatTimeToDisplay(schedule.startTime));
+      }
+      if (schedule.endTime) {
+        setEndTime(formatTimeToDisplay(schedule.endTime));
+      }
     }
   }, [schedule]);
 

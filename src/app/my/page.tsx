@@ -6,9 +6,11 @@ import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
 import { useUserInfo } from "@/hooks/useUser";
+import { useAuth } from "@/contexts/AuthContext";
 
 function MyPage() {
   const router = useRouter();
+  const { logout } = useAuth();
   const { data: userInfo, isLoading } = useUserInfo();
 
   // 결혼식까지 남은 날짜 계산
@@ -32,19 +34,19 @@ function MyPage() {
   const userName = userInfo?.nickname || "사용자";
 
   const menuItems = [
-    {
-      icon: (
-        <Image
-          className="relative w-6 h-6"
-          alt=""
-          src={getAssetPath("/img/settings.svg")}
-          width={24}
-          height={24}
-        />
-      ),
-      label: "설정",
-      onClick: () => router.push("/my/settings"),
-    },
+    // {
+    //   icon: (
+    //     <Image
+    //       className="relative w-6 h-6"
+    //       alt=""
+    //       src={getAssetPath("/img/settings.svg")}
+    //       width={24}
+    //       height={24}
+    //     />
+    //   ),
+    //   label: "설정",
+    //   onClick: () => router.push("/my/settings"),
+    // },
     {
       icon: (
         <Image
@@ -57,6 +59,23 @@ function MyPage() {
       ),
       label: "찜 목록",
       onClick: () => router.push("/my/favorites"),
+    },
+    {
+      icon: (
+        <Image
+          className="relative w-6 h-6"
+          alt=""
+          src={getAssetPath("/img/logout.svg")}
+          width={24}
+          height={24}
+        />
+      ),
+      label: "로그아웃",
+      onClick: () => {
+        if (confirm("로그아웃 하시겠습니까?")) {
+          logout();
+        }
+      },
     },
   ];
 

@@ -8,10 +8,12 @@ import { proxyToBackend } from '@/lib/apiProxy';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { provider: string } }
+  { params }: { params: Promise<{ provider: string }> }
 ) {
+  const { provider } = await params;
+
   return proxyToBackend(request, {
-    path: `/api/auth/oauth/login/${params.provider}`,
+    path: `/api/auth/oauth/login/${provider}`,
     method: 'POST',
   });
 }
