@@ -22,7 +22,6 @@ const translationMap: Record<string, string> = {
   "oval": "계란형",
   "wide": "넓은형",
   "angular": "각진형",
-  "long": "긴형",
 
   // Style names
   "A-Line": "A라인",
@@ -33,20 +32,16 @@ const translationMap: Record<string, string> = {
   "Empire": "엠파이어",
   "Tea-Length": "티 렝스",
   "High-Low": "하이로우",
-
-  // Body parts
-  "팔": "팔",
-  "다리": "다리",
-  "목": "목",
-  "얼굴형": "얼굴형",
-  "체형": "체형",
 };
 
 // Replace English words in text with Korean equivalents
 const translateText = (text: string): string => {
   let translatedText = text;
 
-  // Replace each English word with its Korean equivalent
+  // First, handle special case for face shape "long" → "긴형"
+  translatedText = translatedText.replace(/\blong\s*얼굴형\b/gi, '긴형 얼굴형');
+
+  // Then replace other English words with their Korean equivalents
   Object.entries(translationMap).forEach(([english, korean]) => {
     // Use word boundary to match whole words only
     const regex = new RegExp(`\\b${english}\\b`, 'gi');
