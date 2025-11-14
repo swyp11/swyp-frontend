@@ -20,11 +20,29 @@ export const LoadingModal = ({ isOpen, message = "로딩 중..." }: LoadingModal
         style={{ maxWidth: "320px", width: "90%" }}
       >
         {/* Spinner */}
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <div
+          className="w-12 h-12 rounded-full"
+          style={{
+            border: '4px solid #e5e7eb',
+            borderTopColor: '#8B5CF6',
+            animation: 'spin 1s linear infinite'
+          }}
+        />
 
         {/* Message */}
         <p className="body-2 text-on-surface text-center">{message}</p>
       </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
     </div>
   );
 };

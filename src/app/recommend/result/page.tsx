@@ -89,26 +89,6 @@ export default function RecommendResultPage() {
 
   return (
     <div className="flex flex-col items-start bg-white">
-      {/* Back Header */}
-      <header className="flex items-center gap-2.5 p-4 relative w-full bg-white">
-        <button
-          onClick={handleBack}
-          className="w-6 h-6 flex items-center justify-center"
-          aria-label="뒤로가기"
-        >
-          <Image
-            className="relative w-6 h-6"
-            alt=""
-            src={getAssetPath("/img/arrow_back.svg")}
-            width={24}
-            height={24}
-          />
-        </button>
-        <h2 className="title-1 font-[number:var(--title-1-font-weight)] text-on-surface text-[length:var(--title-1-font-size)] tracking-[var(--title-1-letter-spacing)] leading-[var(--title-1-line-height)] [font-style:var(--title-1-font-style)]">
-          추천 결과
-        </h2>
-      </header>
-
       {/* Main Content */}
       <div className="flex flex-col items-center gap-6 px-4 py-8 w-full pb-8">
         {/* Style Name */}
