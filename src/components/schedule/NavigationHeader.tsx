@@ -16,6 +16,7 @@ interface NavigationHeaderProps {
     currentDay?: number;
     daysInMonth?: number;
     onMonthSelect?: (month: number) => void;
+    onYearSelect?: (year: number) => void;
     onWeekSelect?: (week: number) => void;
     onDaySelect?: (day: number) => void;
 }
@@ -32,6 +33,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
     currentDay,
     daysInMonth,
     onMonthSelect,
+    onYearSelect,
     onWeekSelect,
     onDaySelect,
 }) => {
@@ -40,10 +42,12 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
 
     // 드롭다운 타입 확인
     const isMonthDropdown = onMonthSelect && currentMonth;
+    const isYearDropdown = onYearSelect && currentYear;
     const isWeekDropdown = onWeekSelect && currentWeek && totalWeeks;
     const isDayDropdown = onDaySelect && currentDay && daysInMonth;
 
     // 복합 드롭다운 확인
+    const isYearMonthDropdown = isYearDropdown && isMonthDropdown;
     const isMonthWeekDropdown = isMonthDropdown && isWeekDropdown;
     const isMonthDayDropdown = isMonthDropdown && isDayDropdown;
 
@@ -64,12 +68,22 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
         };
     }, []);
 
+    const handleYearSelect = (year: number) => {
+        if (onYearSelect) {
+            onYearSelect(year);
+        }
+        // 복합 드롭다운이 아닐 때만 닫기
+        if (!isYearMonthDropdown) {
+            setIsDropdownOpen(false);
+        }
+    };
+
     const handleMonthSelect = (month: number) => {
         if (onMonthSelect) {
             onMonthSelect(month);
         }
         // 복합 드롭다운이 아닐 때만 닫기
-        if (!isMonthWeekDropdown && !isMonthDayDropdown) {
+        if (!isMonthWeekDropdown && !isMonthDayDropdown && !isYearMonthDropdown) {
             setIsDropdownOpen(false);
         }
     };
@@ -126,8 +140,55 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                     )}
                 </button>
 
+                {/* 년도와 월을 모두 선택할 수 있는 드롭다운 */}
+                {showDropdown && isDropdownOpen && isYearMonthDropdown && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white rounded-lg shadow-1 overflow-hidden z-50 min-w-[240px]">
+                        <div className="grid grid-cols-2 divide-x divide-[#f1f1f1]">
+                            {/* 년도 선택 */}
+                            <div className="max-h-[300px] overflow-y-auto">
+                                <div className="px-3 py-2 bg-surface-2 sticky top-0">
+                                    <span className="label-2 text-on-surface-subtle">년도</span>
+                                </div>
+                                {Array.from({ length: 11 }, (_, i) => (currentYear || new Date().getFullYear()) - 5 + i).map((year) => (
+                                    <button
+                                        key={year}
+                                        onClick={() => handleYearSelect(year)}
+                                        className={`w-full px-4 py-2 text-center body-2-medium transition-colors hover:bg-surface-2 ${
+                                            currentYear === year
+                                                ? "text-primary bg-primary-container"
+                                                : "text-on-surface"
+                                        }`}
+                                    >
+                                        {year}년
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* 월 선택 */}
+                            <div className="max-h-[300px] overflow-y-auto">
+                                <div className="px-3 py-2 bg-surface-2 sticky top-0">
+                                    <span className="label-2 text-on-surface-subtle">월</span>
+                                </div>
+                                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                                    <button
+                                        key={month}
+                                        onClick={() => handleMonthSelect(month)}
+                                        className={`w-full px-4 py-2 text-center body-2-medium transition-colors hover:bg-surface-2 ${
+                                            currentMonth === month
+                                                ? "text-primary bg-primary-container"
+                                                : "text-on-surface"
+                                        }`}
+                                    >
+                                        {month}월
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* 월과 일을 모두 선택할 수 있는 드롭다운 */}
-                {showDropdown && isDropdownOpen && isMonthDayDropdown && (
+                {showDropdown && isDropdownOpen && isMonthDayDropdown && !isYearMonthDropdown && (
                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white rounded-lg shadow-1 overflow-hidden z-50 min-w-[240px]">
                         <div className="grid grid-cols-2 divide-x divide-[#f1f1f1]">
                             {/* 월 선택 */}
@@ -174,7 +235,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                 )}
 
                 {/* 월과 주차를 모두 선택할 수 있는 드롭다운 */}
-                {showDropdown && isDropdownOpen && isMonthWeekDropdown && (
+                {showDropdown && isDropdownOpen && isMonthWeekDropdown && !isYearMonthDropdown && (
                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white rounded-lg shadow-1 overflow-hidden z-50 min-w-[240px]">
                         <div className="grid grid-cols-2 divide-x divide-[#f1f1f1]">
                             {/* 월 선택 */}
@@ -221,7 +282,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                 )}
 
                 {/* 월만 선택하는 드롭다운 */}
-                {showDropdown && isDropdownOpen && isMonthDropdown && !isMonthWeekDropdown && !isMonthDayDropdown && (
+                {showDropdown && isDropdownOpen && isMonthDropdown && !isMonthWeekDropdown && !isMonthDayDropdown && !isYearMonthDropdown && (
                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white rounded-lg shadow-1 overflow-hidden z-50 min-w-[120px] max-h-[300px] overflow-y-auto">
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                             <button

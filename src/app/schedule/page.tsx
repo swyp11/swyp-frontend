@@ -504,11 +504,12 @@ function SchedulePage() {
           <NavigationHeader
             onPrev={handlePrevMonth}
             onNext={handleNextMonth}
-            title={`${currentMonth}월`}
+            title={`${currentYear}년 ${currentMonth}월`}
             showDropdown={true}
             currentMonth={currentMonth}
             currentYear={currentYear}
             onMonthSelect={setCurrentMonth}
+            onYearSelect={setCurrentYear}
           />
         )}
 
