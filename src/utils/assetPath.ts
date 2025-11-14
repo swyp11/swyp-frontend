@@ -1,15 +1,14 @@
 /**
  * Get asset path with base path prefix for GitHub Pages compatibility
- * Images from backend (/images/) use AI service URL
+ * Images from backend (/images/) use proxy to avoid HTTPS errors
  * Static assets (/img/) use base path
  * @param path - Asset path starting with /
- * @returns Full path with base path prefix or AI service URL if needed
+ * @returns Full path with base path prefix or proxy URL if needed
  */
 export function getAssetPath(path: string): string {
-  // 백엔드에서 제공하는 이미지는 AI 서비스 URL 사용
+  // 백엔드에서 제공하는 이미지는 프록시를 통해 제공 (HTTPS 에러 방지)
   if (path.startsWith('/images/')) {
-    const aiServiceUrl = process.env.NEXT_PUBLIC_BACKEND_AI_API_URL || 'http://223.130.163.203:8000';
-    return `${aiServiceUrl}${path}`;
+    return `/api/proxy/ai${path}`;
   }
 
   // 정적 에셋은 기존대로 basePath 사용
