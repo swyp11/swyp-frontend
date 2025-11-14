@@ -24,7 +24,8 @@ export const Header = () => {
         </Link>
       </div>
 
-      {isAuthenticated && (
+      {/* 알림 기능 임시 비활성화 */}
+      {/* {isAuthenticated && (
         <div className="inline-flex items-start gap-2.5 pl-4 pr-[17px] py-4 relative flex-[0_0_auto] bg-white">
           <button
             type="button"
@@ -45,7 +46,7 @@ export const Header = () => {
             />
           </button>
         </div>
-      )}
+      )} */}
     </header>
   );
 };
