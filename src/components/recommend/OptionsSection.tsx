@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { OptionGroup } from "../ui";
 import { Button } from "../ui";
+import { LoadingModal } from "../common/LoadingModal";
 import type { RecommendRequest } from "@/app/api/recommend/route";
 
 interface OptionGroupData {
@@ -114,36 +115,40 @@ export const OptionsSection = () => {
   };
 
   return (
-    <section className="flex flex-col items-start gap-8 px-4 py-8 relative self-stretch w-full flex-[0_0_auto] bg-white">
-      <div className="flex flex-col items-start gap-12 relative self-stretch w-full flex-[0_0_auto]">
-        <h1 className="relative self-stretch title-1 font-[number:var(--title-1-font-weight)] text-on-surface text-[length:var(--title-1-font-size)] tracking-[var(--title-1-letter-spacing)] leading-[var(--title-1-line-height)] [font-style:var(--title-1-font-style)] text-left">
-          드레스 추천을 위해 <br />
-          아래 옵션을 선택해주세요!
-        </h1>
+    <>
+      <section className="flex flex-col items-start gap-8 px-4 py-8 relative self-stretch w-full flex-[0_0_auto] bg-white">
+        <div className="flex flex-col items-start gap-12 relative self-stretch w-full flex-[0_0_auto]">
+          <h1 className="relative self-stretch title-1 font-[number:var(--title-1-font-weight)] text-on-surface text-[length:var(--title-1-font-size)] tracking-[var(--title-1-letter-spacing)] leading-[var(--title-1-line-height)] [font-style:var(--title-1-font-style)] text-left">
+            드레스 추천을 위해 <br />
+            아래 옵션을 선택해주세요!
+          </h1>
 
-        <div className="flex flex-col items-start gap-10 relative self-stretch w-full flex-[0_0_auto]">
-          {optionGroups.map((group) => (
-            <OptionGroup
-              key={group.id}
-              label={group.label}
-              options={group.options}
-              selectedOption={selectedOptions[group.id]}
-              onOptionSelect={(option) => handleOptionSelect(group.id, option)}
-              variant="pill"
-              className="self-stretch"
-            />
-          ))}
+          <div className="flex flex-col items-start gap-10 relative self-stretch w-full flex-[0_0_auto]">
+            {optionGroups.map((group) => (
+              <OptionGroup
+                key={group.id}
+                label={group.label}
+                options={group.options}
+                selectedOption={selectedOptions[group.id]}
+                onOptionSelect={(option) => handleOptionSelect(group.id, option)}
+                variant="pill"
+                className="self-stretch"
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
-      <Button
-        disabled={!isAllSelected || isLoading}
-        className="self-stretch"
-        variant="primary"
-        onClick={handleSubmit}
-      >
-        {isLoading ? "추천 받는 중..." : "완료"}
-      </Button>
-    </section>
+        <Button
+          disabled={!isAllSelected || isLoading}
+          className="self-stretch"
+          variant="primary"
+          onClick={handleSubmit}
+        >
+          {isLoading ? "추천 받는 중..." : "완료"}
+        </Button>
+      </section>
+
+      <LoadingModal isOpen={isLoading} message="스타일 추천 중입니다..." />
+    </>
   );
 };
