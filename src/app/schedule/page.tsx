@@ -7,11 +7,14 @@ import { WeekCalendar } from "../../components/schedule/WeekCalendar";
 import { DayCalendar } from "../../components/schedule/DayCalendar";
 import { ViewSelector, CalendarView } from "../../components/schedule/ViewSelector";
 import { NavigationHeader } from "../../components/schedule/NavigationHeader";
+import { WeddingDateModal } from "../../components/schedule/WeddingDateModal";
 import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMonthSchedule, useWeekSchedule, useDaySchedule } from "@/hooks/useSchedule";
+import { useUserInfo } from "@/hooks/useUser";
+import { calculateDaysUntilWedding, formatDDay } from "@/utils/dateUtils";
 
 interface Event {
   id: string;
@@ -28,6 +31,7 @@ function SchedulePage() {
   const { checkAuth } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: userInfo } = useUserInfo();
 
   // 초기값: query params가 있으면 사용, 없으면 현재 날짜 사용
   const today = new Date();
@@ -40,6 +44,7 @@ function SchedulePage() {
   const [currentYear, setCurrentYear] = useState(initialYear);
   const [selectedDate, setSelectedDate] = useState(initialDate);
   const [calendarView, setCalendarView] = useState<CalendarView>(initialView);
+  const [isWeddingDateModalOpen, setIsWeddingDateModalOpen] = useState(false);
 
   // URL query params 업데이트 함수
   const updateQueryParams = (year: number, month: number, date: number, view: CalendarView) => {
@@ -137,6 +142,15 @@ function SchedulePage() {
 
   const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth - 1, 1).getDay();
+
+  // D-Day 계산
+  const daysUntilWedding = useMemo(() => {
+    return calculateDaysUntilWedding(userInfo?.weddingDate);
+  }, [userInfo?.weddingDate]);
+
+  const dDayText = useMemo(() => {
+    return formatDDay(daysUntilWedding);
+  }, [daysUntilWedding]);
 
   const handlePrevMonth = () => {
     if (currentMonth === 1) {
@@ -384,6 +398,13 @@ function SchedulePage() {
 
   return (
     <div className="relative">
+      {/* Wedding Date Modal */}
+      <WeddingDateModal
+        isOpen={isWeddingDateModalOpen}
+        onClose={() => setIsWeddingDateModalOpen(false)}
+        currentWeddingDate={userInfo?.weddingDate}
+      />
+
       {/* Content Container */}
       <div className="pb-16">
 
@@ -394,13 +415,20 @@ function SchedulePage() {
               className="flex items-center gap-2"
               onClick={() => {
                 if (checkAuth()) {
-                  // TODO: D-day 수정 모달 열기
-                  console.log("D-day 수정");
+                  setIsWeddingDateModalOpen(true);
                 }
               }}
             >
-              <span className="body-2-medium text-[#787878]">결혼식까지</span>
-              <span className="body-2-medium text-primary font-bold">D-99</span>
+              {userInfo?.weddingDate ? (
+                <>
+                  <span className="body-2-medium text-[#787878]">
+                    {daysUntilWedding !== null && daysUntilWedding >= 0 ? '결혼식까지' : ''}
+                  </span>
+                  <span className="body-2-medium text-primary font-bold">{dDayText}</span>
+                </>
+              ) : (
+                <span className="body-2-medium text-[#787878]">결혼식 날짜를 입력해주세요</span>
+              )}
               <Image
                 alt=""
                 src={getAssetPath("/img/edit.svg")}
