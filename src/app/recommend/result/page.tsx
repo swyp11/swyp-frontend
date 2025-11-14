@@ -7,6 +7,56 @@ import { Button } from "@/components/ui";
 import { getAssetPath } from "@/utils/assetPath";
 import type { RecommendResponse } from "@/app/api/recommend/route";
 
+// Translation mapping for English to Korean
+const translationMap: Record<string, string> = {
+  // Body types
+  "thin": "마른",
+  "medium": "보통",
+  "heavy": "통통한",
+
+  // Lengths
+  "short": "짧은",
+  "long": "긴",
+
+  // Face shapes
+  "oval": "달걀형",
+  "round": "넓은",
+  "square": "각진",
+  "heart": "하트형",
+  "oblong": "긴",
+
+  // Style names
+  "A-Line": "A라인",
+  "Ball Gown": "볼가운",
+  "Mermaid": "머메이드",
+  "Trumpet": "트럼펫",
+  "Sheath": "시스",
+  "Empire": "엠파이어",
+  "Tea-Length": "티 렝스",
+  "High-Low": "하이로우",
+
+  // Body parts
+  "팔": "팔",
+  "다리": "다리",
+  "목": "목",
+  "얼굴형": "얼굴형",
+  "체형": "체형",
+};
+
+// Replace English words in text with Korean equivalents
+const translateText = (text: string): string => {
+  let translatedText = text;
+
+  // Replace each English word with its Korean equivalent
+  Object.entries(translationMap).forEach(([english, korean]) => {
+    // Use word boundary to match whole words only
+    const regex = new RegExp(`\\b${english}\\b`, 'gi');
+    translatedText = translatedText.replace(regex, korean);
+  });
+
+  return translatedText;
+};
+
 export default function RecommendResultPage() {
   const router = useRouter();
   const [result, setResult] = useState<RecommendResponse | null>(null);
@@ -69,7 +119,7 @@ export default function RecommendResultPage() {
       <div className="flex flex-col items-center gap-6 px-4 py-8 w-full pb-8">
         {/* Style Name */}
         <h1 className="title-2 font-[number:var(--title-2-font-weight)] text-on-surface text-[length:var(--title-2-font-size)] tracking-[var(--title-2-letter-spacing)] leading-[var(--title-2-line-height)] text-center [font-style:var(--title-2-font-style)]">
-          &quot;{recommendation.style_name}&quot;
+          &quot;{translateText(recommendation.style_name)}&quot;
         </h1>
 
         {/* Image Placeholder */}
@@ -83,10 +133,10 @@ export default function RecommendResultPage() {
         {/* Description */}
         <div className="flex flex-col gap-1 w-full max-w-md">
           <p className="body-3 font-[number:var(--body-3-font-weight)] text-on-surface-subtle text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] text-center [font-style:var(--body-3-font-style)]">
-            {recommendation.why_recommended}
+            {translateText(recommendation.why_recommended)}
           </p>
           <p className="body-3 font-[number:var(--body-3-font-weight)] text-on-surface-subtle text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] text-center [font-style:var(--body-3-font-style)] mt-2">
-            {recommendation.description}
+            {translateText(recommendation.description)}
           </p>
         </div>
 
