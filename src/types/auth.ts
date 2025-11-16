@@ -23,3 +23,25 @@ export interface TokenResponse {
 
 // OAuth Provider
 export type OAuthProvider = 'google' | 'kakao' | 'naver';
+
+// 인증 목적
+export type AuthPurpose = 'SIGNUP' | 'PASSWORD_RESET';
+
+// 이메일 인증 요청
+export interface EmailAuthRequest {
+  email: string;
+  code: string;
+}
+
+// 이메일 인증 응답 (토큰 반환)
+export interface EmailVerificationResponse {
+  token: string;
+  message: string;
+}
+
+// 비밀번호 재설정 요청
+export interface PasswordResetRequest {
+  email: string;
+  newPassword: string;
+  verificationToken: string;
+}

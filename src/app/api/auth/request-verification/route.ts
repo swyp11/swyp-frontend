@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email } = body;
+    const { email, purpose = 'SIGNUP' } = body;
 
     if (!email) {
       return NextResponse.json(
@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     if (isDevelopment) {
       console.log('✅ [DEV] 이메일 인증 요청 - 개발 모드 bypass');
       console.log('📧 [DEV] Email:', email);
+      console.log('🎯 [DEV] Purpose:', purpose);
       console.log('🔢 [DEV] 인증 코드: 999999');
       return NextResponse.json(
         { success: true, message: '인증번호가 전송되었습니다. (개발 모드: 999999 사용)' },
@@ -39,13 +40,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${BACKEND_URL}/api/auth/request-verification`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email }),
-    });
+    const response = await fetch(
+      `${BACKEND_URL}/api/user/email-auth?email=${encodeURIComponent(email)}&purpose=${purpose}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     const data = await response.json();
 
@@ -57,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: true, message: '인증번호가 전송되었습니다.' },
+      { success: true, message: data.data || '인증번호가 전송되었습니다.' },
       { status: 200 }
     );
   } catch (error) {

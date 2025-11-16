@@ -34,6 +34,7 @@ export interface UserRequest {
   birth?: string;           // 생년월일 (YYYY-MM-DD)
   weddingDate?: string;     // 결혼 날짜 (YYYY-MM-DD)
   weddingRole?: WeddingRole;  // 신랑/신부
+  verificationToken?: string; // 이메일 인증 토큰
 }
 
 // 사용자 정보 수정 요청
