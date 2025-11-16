@@ -18,11 +18,11 @@ export default function ForgotPasswordPage() {
 
     setIsRequesting(true);
     try {
-      // TODO: API call to request verification code
+      // API call to request verification code for password reset
       const response = await fetch("/api/auth/request-verification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, purpose: 'PASSWORD_RESET' }),
       });
 
       if (!response.ok) {

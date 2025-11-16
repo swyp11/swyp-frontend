@@ -26,48 +26,30 @@ export default function ForgotPasswordSuccessPage() {
       className="bg-white flex flex-col h-screen mx-auto"
       style={{ width: "var(--app-width)" }}
     >
-      <BackHeader title="임시 비밀번호 발급" />
+      <BackHeader title="비밀번호 재설정" />
 
       {/* Main Content */}
       <div className="flex-1 px-4 py-8 overflow-y-auto flex flex-col justify-between">
         <div className="flex flex-col gap-6">
-          {/* Email Icon */}
+          {/* Check Icon */}
           <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center">
             <svg
               viewBox="0 0 28 28"
               className="w-7 h-7 text-primary"
               fill="currentColor"
             >
-              <path d="M23.3333 4.66675H4.66667C3.38333 4.66675 2.34833 5.71341 2.34833 7.00008L2.33333 21.0001C2.33333 22.2867 3.38333 23.3334 4.66667 23.3334H23.3333C24.6167 23.3334 25.6667 22.2867 25.6667 21.0001V7.00008C25.6667 5.71341 24.6167 4.66675 23.3333 4.66675ZM23.3333 21.0001H4.66667V9.33341L14 15.1667L23.3333 9.33341V21.0001ZM14 12.8334L4.66667 7.00008H23.3333L14 12.8334Z" />
+              <path d="M11.6667 18.6667L6.41667 13.4167L8.1875 11.6459L11.6667 15.1251L19.8125 6.97925L21.5833 8.75008L11.6667 18.6667Z" />
             </svg>
           </div>
 
           {/* Success Message */}
           <div className="flex flex-col gap-2">
             <h1 className="title-1 text-on-surface">
-              임시 비밀번호가 전송되었습니다.
+              비밀번호가 변경되었습니다.
             </h1>
             <p className="body-1 text-on-surface">
-              이메일로 임시 비밀번호를 전송했습니다.
-              <br />
-              확인 후 로그인해 주세요.
+              새로운 비밀번호로 로그인해 주세요.
             </p>
-          </div>
-
-          {/* Notice Box */}
-          <div className="w-full bg-surface-2 rounded-lg p-3 flex flex-col gap-1">
-            <div className="flex items-start gap-1 text-on-surface-subtle label-1">
-              <span>•</span>
-              <span>메일 도착까지 최대 1~2분 걸릴 수 있어요.</span>
-            </div>
-            <div className="flex items-start gap-1 text-on-surface-subtle label-1">
-              <span>•</span>
-              <span>스팸함 · 프로모션함을 확인해보세요.</span>
-            </div>
-            <div className="flex items-start gap-1 text-on-surface-subtle label-1">
-              <span>•</span>
-              <span>로그인 후 비밀번호를 바로 변경하는 게 안전해요.</span>
-            </div>
           </div>
         </div>
 

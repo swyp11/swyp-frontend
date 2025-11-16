@@ -18,41 +18,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const isDevelopment = process.env.NODE_ENV === 'development';
-
-    // 개발 환경에서는 bypass 코드 사용
-    if (isDevelopment) {
-      const bypassCode = process.env.DEV_BYPASS_VERIFICATION_CODE || '999999';
-
-      if (code === bypassCode) {
-        console.log('✅ [DEV] 이메일 인증코드 검증 - Bypass 코드 사용');
-        console.log('📧 [DEV] Email:', email);
-        console.log('🎯 [DEV] Purpose:', purpose);
-        console.log('🔢 [DEV] Code:', code);
-
-        // 개발 모드에서는 임시 토큰 생성
-        const devToken = `dev_token_${Date.now()}_${email.replace('@', '_at_')}`;
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            token: devToken,
-            message: '이메일 인증이 완료되었습니다. (개발 모드)',
-          },
-        });
-      } else {
-        console.log('❌ [DEV] 잘못된 인증 코드');
-        console.log('📧 [DEV] Email:', email);
-        console.log('🔢 [DEV] Code:', code);
-        console.log('💡 [DEV] Bypass Code:', bypassCode);
-        return NextResponse.json(
-          { error: '인증번호가 일치하지 않습니다.' },
-          { status: 400 }
-        );
-      }
-    }
-
-    // 프로덕션 환경에서만 백엔드 호출
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
     if (!BACKEND_URL) {
@@ -63,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await fetch(
-      `${BACKEND_URL}/api/user/email-auth/verify?purpose=${purpose}`,
+      `${BACKEND_URL}/user/email-auth/verify?purpose=${purpose}`,
       {
         method: 'POST',
         headers: {
@@ -85,7 +50,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: {
-        token: data.data?.token || data.token,
+        token: data.data?.verificationToken || data.data?.token || data.verificationToken || data.token,
         message: data.data?.message || data.message || '이메일 인증이 완료되었습니다.',
       },
     });

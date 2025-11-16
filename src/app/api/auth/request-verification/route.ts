@@ -16,21 +16,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 개발 환경에서는 백엔드 호출 없이 바로 성공 응답
-    const isDevelopment = process.env.NODE_ENV === 'development';
-
-    if (isDevelopment) {
-      console.log('✅ [DEV] 이메일 인증 요청 - 개발 모드 bypass');
-      console.log('📧 [DEV] Email:', email);
-      console.log('🎯 [DEV] Purpose:', purpose);
-      console.log('🔢 [DEV] 인증 코드: 999999');
-      return NextResponse.json(
-        { success: true, message: '인증번호가 전송되었습니다. (개발 모드: 999999 사용)' },
-        { status: 200 }
-      );
-    }
-
-    // 프로덕션 환경에서만 백엔드 호출
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
     if (!BACKEND_URL) {
@@ -41,16 +26,28 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await fetch(
-      `${BACKEND_URL}/api/user/email-auth?email=${encodeURIComponent(email)}&purpose=${purpose}`,
+      `${BACKEND_URL}/user/email-auth?email=${encodeURIComponent(email)}&purpose=${purpose}`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
 
-    const data = await response.json();
+    // 응답 텍스트를 먼저 확인
+    const responseText = await response.text();
+    let data;
+
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      // JSON 파싱 실패 시 텍스트 응답 처리
+      if (!response.ok) {
+        return NextResponse.json(
+          { error: responseText || '인증번호 전송에 실패했습니다.' },
+          { status: response.status }
+        );
+      }
+      data = { data: responseText };
+    }
 
     if (!response.ok) {
       return NextResponse.json(

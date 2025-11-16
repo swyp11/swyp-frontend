@@ -72,6 +72,7 @@ export default function SignupStep3Page() {
         password: signupData.password,
         email: signupData.email,
         nickname: formData.name,            // name을 nickname으로 매핑
+        verificationToken: signupData.verificationToken, // 이메일 인증 토큰
       };
 
       // Optional fields - 값이 있을 때만 포함

@@ -3,17 +3,20 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BackHeader } from "@/components/common/BackHeader";
-import { useRequestEmailVerification } from "@/hooks/useAuth";
+import { useRequestEmailVerification, useVerifyEmail } from "@/hooks/useAuth";
 
 export default function SignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [isVerificationSent, setIsVerificationSent] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [verificationToken, setVerificationToken] = useState("");
   const [emailError, setEmailError] = useState("");
   const [codeError, setCodeError] = useState("");
 
   const requestVerificationMutation = useRequestEmailVerification();
+  const verifyEmailMutation = useVerifyEmail();
 
   // 이메일 유효성 검사
   const validateEmail = (email: string): boolean => {
@@ -50,8 +53,10 @@ export default function SignupPage() {
     setEmailError("");
 
     try {
-      await requestVerificationMutation.mutateAsync(email);
+      await requestVerificationMutation.mutateAsync({ email, purpose: 'SIGNUP' });
       setIsVerificationSent(true);
+      setIsVerified(false);
+      setVerificationToken("");
       setEmailError("");
     } catch (err: any) {
       console.error("Verification request error:", err);
@@ -59,15 +64,43 @@ export default function SignupPage() {
     }
   };
 
+  // 인증코드 검증 핸들러
+  const handleVerifyCode = async () => {
+    if (!verificationCode || verificationCode.length !== 8) {
+      setCodeError("인증번호 8자리를 입력해주세요.");
+      return;
+    }
+
+    setCodeError("");
+
+    try {
+      const result = await verifyEmailMutation.mutateAsync({
+        email,
+        code: verificationCode,
+        purpose: 'SIGNUP'
+      });
+      console.log("Verification result:", result);
+      setVerificationToken(result.token);
+      setIsVerified(true);
+      setCodeError("");
+      console.log("Token set:", result.token, "isVerified:", true);
+    } catch (err: any) {
+      console.error("Verification error:", err);
+      setCodeError(err.response?.data?.error || err.message || "인증번호가 일치하지 않습니다.");
+    }
+  };
+
   // 로딩 상태
   const isLoading = requestVerificationMutation.isPending;
+  const isVerifying = verifyEmailMutation.isPending;
 
   // 다음 버튼 활성화 조건
   const isFormValid =
     email &&
     validateEmail(email) &&
     isVerificationSent &&
-    verificationCode.trim() !== "" &&
+    isVerified &&
+    verificationToken &&
     !emailError &&
     !codeError;
 
@@ -76,8 +109,8 @@ export default function SignupPage() {
     if (!isFormValid) return;
 
     // 회원가입 1단계 데이터 저장 (localStorage에 임시 저장)
-    localStorage.setItem("signupData", JSON.stringify({ email, verificationCode }));
-    console.log("Sign up step 1 data:", { email, verificationCode });
+    localStorage.setItem("signupData", JSON.stringify({ email, verificationToken }));
+    console.log("Sign up step 1 data:", { email, verificationToken });
     router.push("/signup/step2");
   };
 
@@ -151,29 +184,50 @@ export default function SignupPage() {
               <label className="body-3 font-medium text-secondary">
                 인증번호 입력
               </label>
-              <input
-                type="text"
-                name="verificationCode"
-                value={verificationCode}
-                onChange={handleCodeChange}
-                placeholder="인증번호 6자리를 입력해주세요."
-                maxLength={6}
-                className={`field h-12 w-full ${
-                  codeError ? "field-error" : ""
-                }`}
-              />
+              <div className="flex gap-2 items-end">
+                <input
+                  type="text"
+                  name="verificationCode"
+                  value={verificationCode}
+                  onChange={handleCodeChange}
+                  placeholder="인증번호 8자리를 입력해주세요."
+                  maxLength={8}
+                  disabled={isVerified}
+                  className={`field h-12 w-full ${
+                    codeError ? "field-error" : isVerified ? "field-success" : ""
+                  }`}
+                />
+                <button
+                  onClick={handleVerifyCode}
+                  disabled={!verificationCode || verificationCode.length !== 8 || isVerifying || isVerified}
+                  className={`btn h-12 px-5 shrink-0 ${
+                    isVerified
+                      ? "btn-primary opacity-40"
+                      : !verificationCode || verificationCode.length !== 8 || isVerifying
+                      ? "btn-tertiary opacity-40"
+                      : "btn-tertiary"
+                  }`}
+                >
+                  {isVerifying ? "확인 중..." : isVerified ? "인증완료" : "인증확인"}
+                </button>
+              </div>
               {codeError && (
                 <p className="field-error-text">{codeError}</p>
               )}
+              {isVerified && (
+                <p className="label-1 text-success">이메일 인증이 완료되었습니다.</p>
+              )}
               {/* Info Text */}
-              <div className="flex flex-col gap-1">
-                <p className="label-1 text-on-surface-subtle">
-                  • 메일 도착까지 최대 1~2분 걸릴 수 있어요.
-                </p>
-                <p className="label-1 text-on-surface-subtle">
-                  • 스팸함・프로모션함을 확인해보세요.
-                </p>
-              </div>
+              {!isVerified && (
+                <div className="flex flex-col gap-1">
+                  <p className="label-1 text-on-surface-subtle">
+                    • 메일 도착까지 최대 1~2분 걸릴 수 있어요.
+                  </p>
+                  <p className="label-1 text-on-surface-subtle">
+                    • 스팸함・프로모션함을 확인해보세요.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

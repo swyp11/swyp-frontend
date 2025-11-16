@@ -3,7 +3,7 @@
  */
 
 import { apiClient } from './client';
-import { OAuthCodeRequest, LoginRequest, TokenResponse, OAuthProvider } from '@/types/auth';
+import { OAuthCodeRequest, LoginRequest, TokenResponse, OAuthProvider, AuthPurpose, EmailVerificationResponse } from '@/types/auth';
 import { ApiResponse } from '@/types/common';
 
 export const authApi = {
@@ -29,21 +29,32 @@ export const authApi = {
   /**
    * 이메일 인증 요청
    */
-  requestEmailVerification: async (email: string) => {
+  requestEmailVerification: async (email: string, purpose: AuthPurpose = 'SIGNUP') => {
     const response = await apiClient.post<ApiResponse<boolean>>(
       '/auth/request-verification',
-      { email }
+      { email, purpose }
     );
     return response.data.data;
   },
 
   /**
-   * 이메일 인증번호 확인
+   * 이메일 인증번호 확인 (토큰 반환)
    */
-  verifyEmail: async (email: string, code: string) => {
-    const response = await apiClient.post<ApiResponse<boolean>>(
-      '/auth/verify-email',
-      { email, code }
+  verifyEmail: async (email: string, code: string, purpose: AuthPurpose = 'SIGNUP') => {
+    const response = await apiClient.post<{ success: boolean; data: EmailVerificationResponse }>(
+      '/auth/verify-code',
+      { email, code, purpose }
+    );
+    return response.data.data;
+  },
+
+  /**
+   * 비밀번호 재설정
+   */
+  resetPassword: async (email: string, newPassword: string, verificationToken: string) => {
+    const response = await apiClient.patch<ApiResponse<string>>(
+      '/user/password/reset',
+      { email, newPassword, verificationToken }
     );
     return response.data.data;
   },
