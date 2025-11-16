@@ -39,7 +39,7 @@ export async function PATCH(request: NextRequest) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: data.message || '비밀번호 재설정에 실패했습니다.' },
+        { error: data.error?.message || data.message || '비밀번호 재설정에 실패했습니다.' },
         { status: response.status }
       );
     }

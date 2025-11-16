@@ -42,15 +42,17 @@ export default function ForgotPasswordEmailPage() {
         body: JSON.stringify({ email, purpose: 'PASSWORD_RESET' }),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error("인증 요청에 실패했습니다.");
+        setEmailError(result.error || "인증 요청에 실패했습니다.");
+        return;
       }
 
       setIsVerificationSent(true);
       setIsVerified(false);
       setVerificationToken("");
-    } catch (error) {
-      console.error("Request error:", error);
+    } catch {
       setEmailError("인증 요청 중 오류가 발생했습니다.");
     } finally {
       setIsRequesting(false);
@@ -88,8 +90,7 @@ export default function ForgotPasswordEmailPage() {
       setVerificationToken(result.data.token);
       setIsVerified(true);
       setCodeError("");
-    } catch (error) {
-      console.error("💥 Verification error:", error);
+    } catch {
       setCodeError("인증 중 오류가 발생했습니다.");
     } finally {
       setIsVerifying(false);

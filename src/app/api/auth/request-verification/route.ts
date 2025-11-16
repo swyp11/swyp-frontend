@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: data.message || '인증번호 전송에 실패했습니다.' },
+        { error: data.error?.message || data.message || '인증번호 전송에 실패했습니다.' },
         { status: response.status }
       );
     }

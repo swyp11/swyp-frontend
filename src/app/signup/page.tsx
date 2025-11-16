@@ -59,8 +59,8 @@ export default function SignupPage() {
       setVerificationToken("");
       setEmailError("");
     } catch (err: any) {
-      console.error("Verification request error:", err);
-      setEmailError(err.response?.data?.error || err.message || "인증요청에 실패했습니다.");
+      const errorMessage = err.response?.data?.error || err.message || "인증요청에 실패했습니다.";
+      setEmailError(errorMessage);
     }
   };
 
