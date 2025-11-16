@@ -6,7 +6,7 @@ import Image from "next/image";
 import { BackHeader } from "@/components/common/BackHeader";
 import { getAssetPath } from "@/utils/assetPath";
 import { withAuth } from "@/components/auth/withAuth";
-import { useUserInfo, useUpdateUserInfo } from "@/hooks/useUser";
+import { useUserInfo, useUpdateUserInfo, useUpdatePassword } from "@/hooks/useUser";
 
 type FieldType = "name" | "birthDate" | "role" | "weddingDate" | "password";
 
@@ -26,6 +26,7 @@ function ProfileEditContent() {
   // 사용자 정보 가져오기
   const { data: userInfo, isLoading } = useUserInfo();
   const updateUserMutation = useUpdateUserInfo();
+  const updatePasswordMutation = useUpdatePassword();
 
   // 사용자 정보로 초기값 설정
   useEffect(() => {
@@ -116,10 +117,22 @@ function ProfileEditContent() {
         return;
       }
 
-      // TODO: 백엔드에 비밀번호 변경 API 추가 필요
-      // 현재 PUT /api/user/info는 password 필드를 지원하지 않음
-      // 별도의 비밀번호 변경 엔드포인트 필요 (예: PUT /api/user/password)
-      setErrorMessage("비밀번호 변경 기능은 현재 지원되지 않습니다.");
+      // 비밀번호 변경 API 호출
+      try {
+        await updatePasswordMutation.mutateAsync({
+          currentPassword,
+          newPassword,
+        });
+        alert("비밀번호가 변경되었습니다.");
+        router.back();
+      } catch (error: any) {
+        setErrorMessage(
+          error.response?.data?.error?.message ||
+          error.response?.data?.message ||
+          error.message ||
+          "비밀번호 변경에 실패했습니다."
+        );
+      }
       return;
     }
 
@@ -288,12 +301,12 @@ function ProfileEditContent() {
       <div className="fixed bottom-0 left-0 right-0 px-4 pb-8 pt-4 bg-white" style={{ maxWidth: "var(--app-width)", margin: "0 auto" }}>
         <button
           onClick={handleSave}
-          disabled={updateUserMutation.isPending || (field === "password" && (!currentPassword || !newPassword || !confirmPassword))}
+          disabled={updateUserMutation.isPending || updatePasswordMutation.isPending || (field === "password" && (!currentPassword || !newPassword || !confirmPassword))}
           className={`h-12 w-full bg-primary rounded-lg body-2-medium text-on-primary ${
-            (updateUserMutation.isPending || (field === "password" && (!currentPassword || !newPassword || !confirmPassword))) ? "opacity-40" : ""
+            (updateUserMutation.isPending || updatePasswordMutation.isPending || (field === "password" && (!currentPassword || !newPassword || !confirmPassword))) ? "opacity-40" : ""
           }`}
         >
-          {updateUserMutation.isPending ? "처리 중..." : "완료"}
+          {(updateUserMutation.isPending || updatePasswordMutation.isPending) ? "처리 중..." : "완료"}
         </button>
       </div>
     </>

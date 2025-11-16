@@ -55,3 +55,9 @@ export interface OAuthExtraInfoRequest {
   weddingDate?: string;     // YYYY-MM-DD
   weddingRole?: WeddingRole;
 }
+
+// 비밀번호 변경 요청 (로그인된 사용자용)
+export interface PasswordUpdateRequest {
+  currentPassword: string;
+  newPassword: string;
+}

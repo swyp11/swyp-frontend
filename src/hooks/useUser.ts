@@ -4,7 +4,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { userApi } from '@/api';
-import { UserRequest, UserUpdateRequest, OAuthExtraInfoRequest } from '@/types';
+import { UserRequest, UserUpdateRequest, OAuthExtraInfoRequest, PasswordUpdateRequest } from '@/types';
 
 /**
  * 회원가입 훅
@@ -51,5 +51,14 @@ export const useUpdateUserInfo = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user', 'info'] });
     },
+  });
+};
+
+/**
+ * 비밀번호 변경 훅 (로그인된 사용자)
+ */
+export const useUpdatePassword = () => {
+  return useMutation({
+    mutationFn: (data: PasswordUpdateRequest) => userApi.updatePassword(data),
   });
 };

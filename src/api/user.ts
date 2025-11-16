@@ -8,6 +8,7 @@ import {
   UserResponse,
   UserUpdateRequest,
   OAuthExtraInfoRequest,
+  PasswordUpdateRequest,
 } from '@/types/user';
 import { ApiResponse } from '@/types/common';
 
@@ -44,6 +45,14 @@ export const userApi = {
    */
   updateUserInfo: async (data: UserUpdateRequest) => {
     const response = await apiClient.put<ApiResponse<UserResponse>>('/user/info', data);
+    return response.data.data;
+  },
+
+  /**
+   * 비밀번호 변경 (로그인된 사용자)
+   */
+  updatePassword: async (data: PasswordUpdateRequest) => {
+    const response = await apiClient.patch<ApiResponse<string>>('/user/password', data);
     return response.data.data;
   },
 };
