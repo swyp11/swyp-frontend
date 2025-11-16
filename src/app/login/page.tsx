@@ -57,8 +57,7 @@ export default function LoginPage() {
       // 메인 페이지로 이동
       router.push("/main");
     } catch (err: any) {
-      console.error("Login error:", err);
-      setError(err.response?.data?.error || err.message || "로그인에 실패했습니다.");
+      setError(err.response?.data?.error?.message || err.response?.data?.message || err.message || "로그인에 실패했습니다.");
     }
   };
 
