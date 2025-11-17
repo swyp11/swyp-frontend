@@ -90,8 +90,9 @@ export default function RecommendResultPage() {
     );
   }
 
-  // Only show the first recommendation
-  const recommendation = result.recommendations[0];
+  // Randomly select one recommendation
+  const randomIndex = Math.floor(Math.random() * result.recommendations.length);
+  const recommendation = result.recommendations[randomIndex];
 
   const handleRetry = () => {
     // Clear stored result and go back to form
