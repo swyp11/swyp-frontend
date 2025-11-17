@@ -34,6 +34,22 @@ const translationMap: Record<string, string> = {
   "High-Low": "하이로우",
 };
 
+// Map style names to dress images (Korean style names from API)
+const styleImageMap: Record<string, string> = {
+  "A라인": "/dress/에이라인.jpg",
+  "볼가운": "/dress/볼가운.jpg",
+  "머메이드": "/dress/머메이드.jpg",
+  "트럼펫": "/dress/트럼펫.jpg",
+  "시스": "/dress/시스.jpg",
+  "엠파이어": "/dress/엠파이어.jpg",
+  "프린세스": "/dress/프린세스.jpg",
+  "슬립드레스": "/dress/슬립.jpg",
+  "티어드": "/dress/티어드.jpg",
+  "하이-로우": "/dress/하이로우.jpg",
+  "오프숄더": "/dress/오프숄더.jpg",
+  "홀터넥": "/dress/홀터넥.jpg",
+};
+
 // Replace English words in text with Korean equivalents
 const translateText = (text: string): string => {
   let translatedText = text;
@@ -96,12 +112,21 @@ export default function RecommendResultPage() {
           &quot;{translateText(recommendation.style_name)}&quot;
         </h1>
 
-        {/* Image Placeholder */}
+        {/* Dress Image */}
         <div className="relative w-[260px] h-[360px] rounded-3xl border border-[#dfdfdf] overflow-hidden bg-surface-2">
-          {/* This would be replaced with actual dress images */}
-          <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-surface-2 to-surface-1">
-            <p className="text-on-surface-subtle text-sm">드레스 이미지</p>
-          </div>
+          {styleImageMap[recommendation.style_name] ? (
+            <Image
+              src={getAssetPath(styleImageMap[recommendation.style_name])}
+              alt={`${recommendation.style_name} 드레스`}
+              fill
+              className="object-cover"
+              sizes="260px"
+            />
+          ) : (
+            <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-surface-2 to-surface-1">
+              <p className="text-on-surface-subtle text-sm">드레스 이미지</p>
+            </div>
+          )}
         </div>
 
         {/* Description */}
