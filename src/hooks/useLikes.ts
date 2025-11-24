@@ -65,40 +65,36 @@ export const useDeleteLikes = () => {
 
   return useMutation({
     mutationFn: ({
-      id,
       category,
       postId
     }: {
-      id: number;
-      category?: LikesCategory;
-      postId?: number;
-    }) => likesApi.delete(id),
+      category: LikesCategory;
+      postId: number;
+    }) => likesApi.delete(category, postId),
     onSuccess: (_, variables) => {
       const { category, postId } = variables;
 
       // 상세 페이지 캐시를 직접 업데이트 (API 재호출 없이)
-      if (category && postId) {
-        if (category === 'wedding_hall') {
-          queryClient.setQueryData(['weddingHall', 'detail', postId], (old: any) =>
-            old ? { ...old, isLiked: false } : old
-          );
-        } else if (category === 'dress_shop') {
-          queryClient.setQueryData(['dressShop', 'detail', postId], (old: any) =>
-            old ? { ...old, isLiked: false } : old
-          );
-        } else if (category === 'makeup_shop') {
-          queryClient.setQueryData(['makeupShop', 'detail', postId], (old: any) =>
-            old ? { ...old, isLiked: false } : old
-          );
-        } else if (category === 'dress') {
-          queryClient.setQueryData(['dress', 'detail', postId], (old: any) =>
-            old ? { ...old, isLiked: false } : old
-          );
-        } else if (category === 'hall') {
-          queryClient.setQueryData(['hall', 'detail', postId], (old: any) =>
-            old ? { ...old, isLiked: false } : old
-          );
-        }
+      if (category === 'wedding_hall') {
+        queryClient.setQueryData(['weddingHall', 'detail', postId], (old: any) =>
+          old ? { ...old, isLiked: false } : old
+        );
+      } else if (category === 'dress_shop') {
+        queryClient.setQueryData(['dressShop', 'detail', postId], (old: any) =>
+          old ? { ...old, isLiked: false } : old
+        );
+      } else if (category === 'makeup_shop') {
+        queryClient.setQueryData(['makeupShop', 'detail', postId], (old: any) =>
+          old ? { ...old, isLiked: false } : old
+        );
+      } else if (category === 'dress') {
+        queryClient.setQueryData(['dress', 'detail', postId], (old: any) =>
+          old ? { ...old, isLiked: false } : old
+        );
+      } else if (category === 'hall') {
+        queryClient.setQueryData(['hall', 'detail', postId], (old: any) =>
+          old ? { ...old, isLiked: false } : old
+        );
       }
 
       // 목록 쿼리들은 무효화 (다음 조회 시 최신 데이터)
@@ -122,17 +118,15 @@ export const useToggleLikes = () => {
   return {
     toggleLikes: ({
       isLiked,
-      likesId,
       category,
       postId,
     }: {
       isLiked: boolean;
-      likesId?: number;
       category: LikesCategory;
       postId: number;
     }) => {
-      if (isLiked && likesId) {
-        return deleteLikes.mutate({ id: likesId, category, postId });
+      if (isLiked) {
+        return deleteLikes.mutate({ category, postId });
       } else {
         return storeLikes.mutate({ category, postId });
       }

@@ -98,7 +98,6 @@ function FavoritesPageContent() {
     }
 
     deleteLikes({
-      id: like.id,
       category,
       postId: like.targetId,
     });

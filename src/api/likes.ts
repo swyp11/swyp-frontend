@@ -17,11 +17,11 @@ export const likesApi = {
   },
 
   /**
-   * 찜 삭제
+   * 찜 삭제 (category, postId 기반)
    */
-  delete: async (id: number) => {
+  delete: async (category: LikesCategory, postId: number) => {
     const response = await apiClient.delete<ApiResponse<boolean>>(
-      `/likes/delete/${id}`
+      `/likes/${category}/${postId}`
     );
     return response.data.data;
   },

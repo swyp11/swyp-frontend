@@ -110,7 +110,6 @@ export default function DetailPage() {
 
     toggleLikes({
       isLiked: itemData.isLiked,
-      likesId: undefined, // TODO: API에서 likesId를 받아야 함
       category,
       postId: id,
     });
