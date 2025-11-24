@@ -62,21 +62,35 @@ export default function DetailPage() {
   const itemData = currentData ? (() => {
     const item = currentData as any;
 
-    // Use images from API response (proxy API handles fallback images)
-    let images = ["/img/placeholder.jpg"]; // Default image
-
-    if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+    // 이미지 처리: imageUrl 단일 필드 또는 images 배열
+    let images = ["/img/placeholder.jpg"];
+    if (item.imageUrl) {
+      images = [item.imageUrl];
+    } else if (item.images && Array.isArray(item.images) && item.images.length > 0) {
       images = item.images;
-    } else if (item.image || item.imageUrl || item.thumbnail) {
-      images = [item.image || item.imageUrl || item.thumbnail];
     }
+
+    // 타입별 이름 필드 매핑 (백엔드 DTO 기준)
+    const getName = () => {
+      switch (tab) {
+        case 'wedding-hall':
+          return item.name;  // WeddingHallResponse.name
+        case 'dress-shop':
+        case 'makeup-shop':
+          return item.shopName;  // DressShopResponse.shopName, MakeupShopResponse.shopName
+        case 'dress':
+          return item.name;  // DressResponse.name
+        default:
+          return item.name || item.shopName;
+      }
+    };
 
     return {
       id: item.id,
-      title: item.shopName || item.hallName || item.dressName || item.title || "업체명",
-      phone: item.phone || "전화번호 없음",
-      description: item.description || item.features || "소개 정보 없음",
-      address: item.address || "주소 정보 없음",
+      title: getName() || "정보 없음",
+      phone: item.phone || "",
+      description: item.description || "",
+      address: item.address || "",
       specialty: item.specialty || "",
       features: item.features || "",
       snsUrl: item.snsUrl || "",

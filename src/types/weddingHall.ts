@@ -29,12 +29,11 @@ export enum LightType {
 
 // 웨딩홀 등록/수정 요청
 export interface WeddingHallRequest {
-  hallName: string;              // @NotNull in backend
-  description?: string;
+  name: string;                  // @NotNull in backend
   address?: string;
   phone?: string;
+  email?: string;
   parking?: number;              // Integer in backend
-  snsUrl?: string;
   imageUrl?: string;
   venueType?: WeddingHallVenueType;
 }
@@ -42,12 +41,11 @@ export interface WeddingHallRequest {
 // 웨딩홀 응답
 export interface WeddingHallResponse {
   id: number;
-  hallName: string;
-  description?: string;
+  name: string;
   address?: string;
   phone?: string;
+  email?: string;
   parking?: number;
-  snsUrl?: string;
   imageUrl?: string;
   venueType?: WeddingHallVenueType;
   isLiked?: boolean;       // 찜 여부
@@ -82,7 +80,7 @@ export interface HallResponse {
 
 // 웨딩홀 검색 파라미터 (프론트엔드 전용)
 export interface WeddingHallSearchParams {
-  hallName?: string;
+  name?: string;
   address?: string;
   venueType?: WeddingHallVenueType;
   sort?: 'RECENT' | 'FAVORITE';

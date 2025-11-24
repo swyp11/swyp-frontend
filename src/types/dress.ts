@@ -57,33 +57,41 @@ export enum DressFabric {
 
 // 드레스 등록/수정 요청
 export interface DressRequest {
-  dressShopId: number;      // @NotNull in backend
-  dressName?: string;
-  price?: number;           // Integer in backend
-  description?: string;
-  imageUrl?: string;
+  name?: string;
+  color?: string;
+  shape?: string;
+  priceRange?: string;
   length?: DressLength;
   season?: DressSeason;
+  shopName?: string;
+  designer?: string;
   type?: DressType;
   neckline?: DressNeckline;
   mood?: DressMood;
-  fabric?: DressFabric;
+  fabric?: string;          // 여러 원단 타입을 콤마로 구분
+  imageUrl?: string;
+  features?: string;
 }
 
 // 드레스 응답
 export interface DressResponse {
   id: number;
-  dressShopId: number;
-  dressName?: string;
-  price?: number;
-  description?: string;
-  imageUrl?: string;
+  name?: string;
+  color?: string;
+  shape?: string;
+  priceRange?: string;
   length?: DressLength;
   season?: DressSeason;
+  shopName?: string;        // DressShop 이름 (브랜드명)
+  designer?: string;
   type?: DressType;
-  neckline?: DressNeckline;
+  neckLine?: DressNeckline;
   mood?: DressMood;
-  fabric?: DressFabric;
+  fabric?: string;
+  imageUrl?: string;
+  features?: string;
+  regDt?: string;
+  updateDt?: string;
   isLiked?: boolean;       // 찜 여부
 }
 
