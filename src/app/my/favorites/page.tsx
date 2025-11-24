@@ -15,10 +15,11 @@ function FavoritesPageContent() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get('tab') || "wedding-hall";
   const [activeTab, setActiveTab] = useState<string>(initialTab);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   // 찜 목록 조회
   const { data: likesData, isLoading } = useLikesList();
-  const { mutate: deleteLikes } = useDeleteLikes();
+  const { mutate: deleteLikes, isPending: isDeleting } = useDeleteLikes();
 
   // URL에서 탭 정보 읽어오기
   useEffect(() => {
@@ -97,10 +98,11 @@ function FavoritesPageContent() {
         break;
     }
 
-    deleteLikes({
-      category,
-      postId: like.targetId,
-    });
+    setDeletingId(like.id);
+    deleteLikes(
+      { category, postId: like.targetId },
+      { onSettled: () => setDeletingId(null) }
+    );
   };
 
   const tabs: NavigationTab[] = [
@@ -169,14 +171,19 @@ function FavoritesPageContent() {
                     onClick={(e) => handleDeleteLike(like, e)}
                     className="p-2 flex items-center justify-center shrink-0"
                     aria-label="찜 해제"
+                    disabled={deletingId === like.id}
                   >
-                    <Image
-                      className="relative w-6 h-6"
-                      alt=""
-                      src={getAssetPath("/img/favorite_color.svg")}
-                      width={24}
-                      height={24}
-                    />
+                    {deletingId === like.id ? (
+                      <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Image
+                        className="relative w-6 h-6"
+                        alt=""
+                        src={getAssetPath("/img/favorite_color.svg")}
+                        width={24}
+                        height={24}
+                      />
+                    )}
                   </button>
                 </div>
               );
