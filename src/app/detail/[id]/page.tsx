@@ -6,7 +6,9 @@ import Image from "next/image";
 import { getAssetPath } from "@/utils/assetPath";
 import { BackHeader } from "@/components/common/BackHeader";
 import { useDressDetail } from "@/hooks/useDress";
-import { useDressShopDetail, useMakeupShopDetail } from "@/hooks/useShops";
+import { useDressShopDetail, useDressShopDresses, useMakeupShopDetail } from "@/hooks/useShops";
+import { DressResponse } from "@/types/dress";
+import { HorizontalSlider } from "@/components/common/HorizontalSlider";
 import { useWeddingHallDetail } from "@/hooks/useWeddingHall";
 import { useToggleLikes } from "@/hooks/useLikes";
 
@@ -36,6 +38,11 @@ export default function DetailPage() {
   const { data: dress, isLoading: dressLoading } = useDressDetail(
     id,
     { enabled: tab === 'dress' }
+  );
+
+  // 드레스샵일 때 해당 샵의 드레스 목록 조회
+  const { data: shopDresses, isLoading: shopDressesLoading } = useDressShopDresses(
+    tab === 'dress-shop' ? id : 0
   );
 
   const { toggleLikes, isLoading: isTogglingLikes } = useToggleLikes();
@@ -303,6 +310,50 @@ export default function DetailPage() {
             </div>
           )}
         </div>
+
+        {/* 드레스샵일 때 드레스 목록 표시 */}
+        {tab === 'dress-shop' && (
+          <div className="flex flex-col gap-4 w-full mt-4">
+            <h3 className="title-2 text-on-surface">보유 드레스</h3>
+            {shopDressesLoading ? (
+              <p className="body-2 text-on-surface-subtle">드레스 목록 로딩 중...</p>
+            ) : shopDresses && shopDresses.length > 0 ? (
+              <HorizontalSlider gap={12} className="w-full -mx-6 px-6">
+                {shopDresses.map((dress: DressResponse) => (
+                  <article
+                    key={dress.id}
+                    onClick={() => router.push(`/detail/${dress.id}?tab=dress`)}
+                    className="flex flex-col min-w-[140px] w-[140px] md:min-w-[180px] md:w-[180px] lg:min-w-[220px] lg:w-[220px] items-start gap-2 flex-shrink-0 cursor-pointer"
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
+                  >
+                    <div className="relative self-stretch w-full rounded aspect-[1.5] overflow-hidden">
+                      <Image
+                        src={getAssetPath(dress.imageUrl || "/img/placeholder.jpg")}
+                        alt={dress.name || "드레스"}
+                        width={220}
+                        height={147}
+                        className="object-cover w-full h-full"
+                        draggable={false}
+                        onDragStart={(e) => e.preventDefault()}
+                      />
+                    </div>
+                    <div className="inline-flex flex-col items-start relative flex-[0_0_auto] w-full">
+                      <h4 className="w-full mt-[-1.00px] body-2-medium font-[number:var(--body-2-medium-font-weight)] text-black text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] relative truncate [font-style:var(--body-2-medium-font-style)]">
+                        {dress.name || "드레스"}
+                      </h4>
+                      <p className="w-full label-1-regular font-[number:var(--label-1-regular-font-weight)] text-on-surface-subtle text-[length:var(--label-1-regular-font-size)] tracking-[var(--label-1-regular-letter-spacing)] leading-[var(--label-1-regular-line-height)] relative truncate [font-style:var(--label-1-regular-font-style)]">
+                        {dress.type || dress.priceRange || ""}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </HorizontalSlider>
+            ) : (
+              <p className="body-2 text-on-surface-subtle">등록된 드레스가 없습니다.</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
