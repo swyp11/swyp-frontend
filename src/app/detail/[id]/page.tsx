@@ -8,8 +8,9 @@ import { BackHeader } from "@/components/common/BackHeader";
 import { useDressDetail } from "@/hooks/useDress";
 import { useDressShopDetail, useDressShopDresses, useMakeupShopDetail } from "@/hooks/useShops";
 import { DressResponse } from "@/types/dress";
+import { HallResponse } from "@/types/weddingHall";
 import { HorizontalSlider } from "@/components/common/HorizontalSlider";
-import { useWeddingHallDetail } from "@/hooks/useWeddingHall";
+import { useWeddingHallDetail, useWeddingHallHalls, useHallDetail } from "@/hooks/useWeddingHall";
 import { useToggleLikes } from "@/hooks/useLikes";
 
 export default function DetailPage() {
@@ -40,9 +41,18 @@ export default function DetailPage() {
     { enabled: tab === 'dress' }
   );
 
+  const { data: hall, isLoading: hallLoading } = useHallDetail(
+    tab === 'hall' ? id : 0
+  );
+
   // 드레스샵일 때 해당 샵의 드레스 목록 조회
   const { data: shopDresses, isLoading: shopDressesLoading } = useDressShopDresses(
     tab === 'dress-shop' ? id : 0
+  );
+
+  // 웨딩홀일 때 해당 웨딩홀의 홀 목록 조회
+  const { data: weddingHallHalls, isLoading: weddingHallHallsLoading } = useWeddingHallHalls(
+    tab === 'wedding-hall' ? id : 0
   );
 
   const { toggleLikes, isLoading: isTogglingLikes } = useToggleLikes();
@@ -58,6 +68,8 @@ export default function DetailPage() {
         return { data: makeupShop, isLoading: makeupLoading };
       case 'dress':
         return { data: dress, isLoading: dressLoading };
+      case 'hall':
+        return { data: hall, isLoading: hallLoading };
       default:
         return { data: null, isLoading: false };
     }
@@ -87,6 +99,8 @@ export default function DetailPage() {
           return item.shopName;  // DressShopResponse.shopName, MakeupShopResponse.shopName
         case 'dress':
           return item.name;  // DressResponse.name
+        case 'hall':
+          return item.name;  // HallResponse.name
         default:
           return item.name || item.shopName;
       }
@@ -112,6 +126,19 @@ export default function DetailPage() {
         { day: "토", time: "10:00 - 20:00" },
         { day: "일", time: "휴무일" },
       ], // Mock business hours for now
+      // 홀 관련 필드
+      capacityMin: item.capacityMin,
+      capacityMax: item.capacityMax,
+      hallType: item.hallType,
+      lightType: item.lightType,
+      ceilingHeight: item.ceilingHeight,
+      areaM2: item.areaM2,
+      floorNo: item.floorNo,
+      stage: item.stage,
+      ledWall: item.ledWall,
+      aisleLength: item.aisleLength,
+      pillar: item.pillar,
+      desc: item.desc,
     };
   })() : null;
 
@@ -302,14 +329,162 @@ export default function DetailPage() {
           {itemData.description && itemData.description !== "소개 정보 없음" && (
             <div className="flex gap-4 items-start w-full">
               <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
-                가게소개
+                {tab === 'hall' ? '홀소개' : '가게소개'}
               </p>
               <p className="body-2 text-on-surface flex-1">
                 {itemData.description}
               </p>
             </div>
           )}
+
+          {/* 홀 전용 정보 */}
+          {tab === 'hall' && (
+            <>
+              {(itemData.capacityMin || itemData.capacityMax) && (
+                <div className="flex gap-4 items-start w-full">
+                  <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                    수용인원
+                  </p>
+                  <p className="body-2 text-on-surface flex-1">
+                    {itemData.capacityMin && itemData.capacityMax
+                      ? `${itemData.capacityMin}~${itemData.capacityMax}명`
+                      : itemData.capacityMax
+                      ? `최대 ${itemData.capacityMax}명`
+                      : `최소 ${itemData.capacityMin}명`}
+                  </p>
+                </div>
+              )}
+              {itemData.floorNo && (
+                <div className="flex gap-4 items-start w-full">
+                  <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                    층수
+                  </p>
+                  <p className="body-2 text-on-surface flex-1">
+                    {itemData.floorNo}층
+                  </p>
+                </div>
+              )}
+              {itemData.hallType && (
+                <div className="flex gap-4 items-start w-full">
+                  <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                    홀타입
+                  </p>
+                  <p className="body-2 text-on-surface flex-1">
+                    {itemData.hallType}
+                  </p>
+                </div>
+              )}
+              {itemData.lightType && (
+                <div className="flex gap-4 items-start w-full">
+                  <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                    조명
+                  </p>
+                  <p className="body-2 text-on-surface flex-1">
+                    {itemData.lightType}
+                  </p>
+                </div>
+              )}
+              {itemData.areaM2 && (
+                <div className="flex gap-4 items-start w-full">
+                  <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                    면적
+                  </p>
+                  <p className="body-2 text-on-surface flex-1">
+                    {itemData.areaM2}㎡
+                  </p>
+                </div>
+              )}
+              {itemData.ceilingHeight && (
+                <div className="flex gap-4 items-start w-full">
+                  <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                    천장높이
+                  </p>
+                  <p className="body-2 text-on-surface flex-1">
+                    {itemData.ceilingHeight}m
+                  </p>
+                </div>
+              )}
+              {itemData.aisleLength && (
+                <div className="flex gap-4 items-start w-full">
+                  <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                    버진로드
+                  </p>
+                  <p className="body-2 text-on-surface flex-1">
+                    {itemData.aisleLength}m
+                  </p>
+                </div>
+              )}
+              {(itemData.stage !== undefined || itemData.ledWall !== undefined || itemData.pillar !== undefined) && (
+                <div className="flex gap-4 items-start w-full">
+                  <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                    시설
+                  </p>
+                  <p className="body-2 text-on-surface flex-1">
+                    {[
+                      itemData.stage && '무대',
+                      itemData.ledWall && 'LED월',
+                      itemData.pillar === false && '무기둥',
+                    ].filter(Boolean).join(', ') || '-'}
+                  </p>
+                </div>
+              )}
+              {itemData.desc && (
+                <div className="flex gap-4 items-start w-full">
+                  <p className="body-2-medium text-on-surface-subtle flex-shrink-0 w-[52px]">
+                    홀소개
+                  </p>
+                  <p className="body-2 text-on-surface flex-1">
+                    {itemData.desc}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
         </div>
+
+        {/* 웨딩홀일 때 홀 목록 표시 */}
+        {tab === 'wedding-hall' && (
+          <div className="flex flex-col gap-4 w-full mt-4">
+            <h3 className="title-2 text-on-surface">보유 홀</h3>
+            {weddingHallHallsLoading ? (
+              <p className="body-2 text-on-surface-subtle">홀 목록 로딩 중...</p>
+            ) : weddingHallHalls && weddingHallHalls.length > 0 ? (
+              <HorizontalSlider gap={12} className="w-full -mx-6 px-6">
+                {weddingHallHalls.map((hall: HallResponse) => (
+                  <article
+                    key={hall.id}
+                    onClick={() => router.push(`/detail/${hall.id}?tab=hall`)}
+                    className="flex flex-col min-w-[140px] w-[140px] md:min-w-[180px] md:w-[180px] lg:min-w-[220px] lg:w-[220px] items-start gap-2 flex-shrink-0 cursor-pointer"
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
+                  >
+                    <div className="relative self-stretch w-full rounded aspect-[1.5] overflow-hidden">
+                      <Image
+                        src={getAssetPath(hall.imageUrl && hall.imageUrl.trim() ? hall.imageUrl : "/img/placeholder.jpg")}
+                        alt={hall.name || "홀"}
+                        width={220}
+                        height={147}
+                        className="object-cover w-full h-full"
+                        draggable={false}
+                        onDragStart={(e) => e.preventDefault()}
+                      />
+                    </div>
+                    <div className="inline-flex flex-col items-start relative flex-[0_0_auto] w-full">
+                      <h4 className="w-full mt-[-1.00px] body-2-medium font-[number:var(--body-2-medium-font-weight)] text-black text-[length:var(--body-2-medium-font-size)] tracking-[var(--body-2-medium-letter-spacing)] leading-[var(--body-2-medium-line-height)] relative truncate [font-style:var(--body-2-medium-font-style)]">
+                        {hall.name || "홀"}
+                      </h4>
+                      <p className="w-full label-1-regular font-[number:var(--label-1-regular-font-weight)] text-on-surface-subtle text-[length:var(--label-1-regular-font-size)] tracking-[var(--label-1-regular-letter-spacing)] leading-[var(--label-1-regular-line-height)] relative truncate [font-style:var(--label-1-regular-font-style)]">
+                        {hall.capacityMax ? `최대 ${hall.capacityMax}명` : hall.hallType || ""}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </HorizontalSlider>
+            ) : (
+              <p className="body-2 text-on-surface-subtle">등록된 홀이 없습니다.</p>
+            )}
+          </div>
+        )}
 
         {/* 드레스샵일 때 드레스 목록 표시 */}
         {tab === 'dress-shop' && (

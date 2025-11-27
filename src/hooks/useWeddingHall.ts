@@ -8,6 +8,7 @@ import {
   WeddingHallRequest,
   WeddingHallResponse,
   HallRequest,
+  HallResponse,
   WeddingHallSearchParams,
 } from '@/types';
 
@@ -102,6 +103,17 @@ export const useWeddingHallSearch = (
     enabled: keyword.trim().length > 0,
     staleTime: 1 * 60 * 1000, // 1분
     ...options,
+  });
+};
+
+/**
+ * 웨딩홀의 홀 목록 조회 훅
+ */
+export const useWeddingHallHalls = (weddingHallId: number) => {
+  return useQuery({
+    queryKey: ['weddingHall', weddingHallId, 'halls'],
+    queryFn: () => weddingHallApi.getHalls(weddingHallId),
+    enabled: !!weddingHallId,
   });
 };
 

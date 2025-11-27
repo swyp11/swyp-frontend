@@ -7,6 +7,7 @@ import {
   WeddingHallResponse,
   WeddingHallRequest,
   WeddingHallSearchParams,
+  HallResponse,
 } from '@/types/weddingHall';
 import { ApiResponse } from '@/types/common';
 
@@ -73,5 +74,15 @@ export const weddingHallApi = {
       { params: { keyword } }
     );
     return response.data.data || [];
+  },
+
+  /**
+   * 웨딩홀의 홀 목록 조회
+   */
+  getHalls: async (weddingHallId: number) => {
+    const response = await apiClient.get<ApiResponse<HallResponse[]>>(
+      `/wedding/${weddingHallId}/halls`
+    );
+    return response.data.data;
   },
 };
