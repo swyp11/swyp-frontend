@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${BACKEND_URL}/auth/verify-and-reset`, {
+    const response = await fetch(`${BACKEND_URL}/v1/auth/verify-and-reset`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

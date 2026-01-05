@@ -9,14 +9,14 @@ import { proxyToBackend } from '@/lib/apiProxy';
 
 export async function GET(request: NextRequest) {
   return proxyToBackend(request, {
-    path: '/api/user/info',
+    path: '/api/v1/users/me',
     method: 'GET',
   });
 }
 
 export async function PUT(request: NextRequest) {
   return proxyToBackend(request, {
-    path: '/api/user/info',
+    path: '/api/v1/users/me',
     method: 'PUT',
   });
 }

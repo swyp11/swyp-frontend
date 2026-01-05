@@ -12,7 +12,7 @@ export async function GET(
 ) {
   const { category } = await params;
   return proxyToBackend(request, {
-    path: `/api/likes/category/${category}`,
+    path: `/api/v1/bookmarks/category/${category}`,
     method: 'GET',
   });
 }

@@ -8,7 +8,7 @@ import { proxyToBackend } from '@/lib/apiProxy';
 
 export async function PATCH(request: NextRequest) {
   return proxyToBackend(request, {
-    path: '/api/user/password',
+    path: '/api/v1/users/password',
     method: 'PATCH',
   });
 }

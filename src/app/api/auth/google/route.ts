@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       throw new Error('Backend API URL not configured');
     }
 
-    const apiUrl = `${backendUrl}/auth/oauth/login/google?code=${code}&redirectUri=${encodeURIComponent(redirectUri)}`;
+    const apiUrl = `${backendUrl}/v1/auth/oauth/login/google?code=${code}&redirectUri=${encodeURIComponent(redirectUri)}`;
     console.log('🔵 Calling backend OAuth API:', apiUrl);
     console.log('🔵 Code:', code);
     console.log('🔵 Redirect URI:', redirectUri);

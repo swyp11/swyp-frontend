@@ -8,7 +8,7 @@ import { proxyToBackend } from '@/lib/apiProxy';
 
 export async function POST(request: NextRequest) {
   return proxyToBackend(request, {
-    path: '/api/auth/login',
+    path: '/api/v1/auth/login',
     method: 'POST',
   });
 }

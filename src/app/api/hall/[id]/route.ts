@@ -11,7 +11,7 @@ export async function GET(
 ) {
   const { id } = await params;
   return proxyToBackend(request, {
-    path: `/api/hall/${id}`,
+    path: `/api/v1/halls/${id}`,
     method: 'GET',
   });
 }
@@ -22,7 +22,7 @@ export async function PUT(
 ) {
   const { id } = await params;
   return proxyToBackend(request, {
-    path: `/api/hall/${id}`,
+    path: `/api/v1/halls/${id}`,
     method: 'PUT',
   });
 }
@@ -33,7 +33,7 @@ export async function DELETE(
 ) {
   const { id } = await params;
   return proxyToBackend(request, {
-    path: `/api/hall/${id}`,
+    path: `/api/v1/halls/${id}`,
     method: 'DELETE',
   });
 }

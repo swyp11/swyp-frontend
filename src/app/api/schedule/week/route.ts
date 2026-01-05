@@ -8,7 +8,7 @@ import { proxyToBackend, buildQueryString } from '@/lib/apiProxy';
 export async function GET(request: NextRequest) {
   const queryString = buildQueryString(request.nextUrl.searchParams);
   return proxyToBackend(request, {
-    path: `/api/schedule/week${queryString}`,
+    path: `/api/v1/schedules/week${queryString}`,
     method: 'GET',
   });
 }

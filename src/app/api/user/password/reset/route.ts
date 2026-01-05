@@ -27,7 +27,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${BACKEND_URL}/user/password/reset`, {
+    const response = await fetch(`${BACKEND_URL}/v1/auth/password/reset`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

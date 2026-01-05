@@ -13,7 +13,7 @@ export async function POST(
 ) {
   const { category, postId } = await params;
   return proxyToBackend(request, {
-    path: `/api/likes/${category}/${postId}`,
+    path: `/api/v1/bookmarks/${category}/${postId}`,
     method: 'POST',
   });
 }
@@ -24,7 +24,7 @@ export async function DELETE(
 ) {
   const { category, postId } = await params;
   return proxyToBackend(request, {
-    path: `/api/likes/${category}/${postId}`,
+    path: `/api/v1/bookmarks/${category}/${postId}`,
     method: 'DELETE',
   });
 }

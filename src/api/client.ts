@@ -53,7 +53,9 @@ apiClient.interceptors.response.use(
     // 401 에러 (인증 실패) 처리
     // 로그인/비밀번호 변경 등 인증 관련 API는 리다이렉트하지 않음
     const isAuthEndpoint = originalRequest?.url?.includes('/auth/login') ||
-                           originalRequest?.url?.includes('/user/password');
+                           originalRequest?.url?.includes('/v1/auth/login') ||
+                           originalRequest?.url?.includes('/user/password') ||
+                           originalRequest?.url?.includes('/v1/users/password');
 
     if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true;
