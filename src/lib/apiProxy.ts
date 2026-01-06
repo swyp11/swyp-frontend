@@ -121,16 +121,48 @@ export async function proxyToBackend(
   } catch (error) {
     console.log('');
     console.error('❌ [PROXY] ===== ERROR OCCURRED =====');
+    console.error('❌ [PROXY] Request URL:', `${BACKEND_URL}${options.path}`);
+    console.error('❌ [PROXY] Request Method:', options.method || request.method);
     console.error('❌ [PROXY] Error Type:', error?.constructor?.name);
     console.error('❌ [PROXY] Error Message:', String(error));
+
+    // fetch failed의 실제 원인은 error.cause에 있음
+    if (error instanceof Error && error.cause) {
+      console.error('❌ [PROXY] Error Cause:', error.cause);
+      if (error.cause instanceof Error) {
+        console.error('❌ [PROXY] Cause Type:', error.cause.constructor?.name);
+        console.error('❌ [PROXY] Cause Message:', error.cause.message);
+        console.error('❌ [PROXY] Cause Code:', (error.cause as NodeJS.ErrnoException).code);
+        console.error('❌ [PROXY] Cause Errno:', (error.cause as NodeJS.ErrnoException).errno);
+        console.error('❌ [PROXY] Cause Syscall:', (error.cause as NodeJS.ErrnoException).syscall);
+        console.error('❌ [PROXY] Cause Address:', (error.cause as NodeJS.ErrnoException).address);
+        console.error('❌ [PROXY] Cause Port:', (error.cause as NodeJS.ErrnoException).port);
+      }
+    }
+
     console.error('❌ [PROXY] Error Stack:', error instanceof Error ? error.stack : 'N/A');
     console.error('❌ [PROXY] ===== ERROR END =====');
     console.log('');
 
-    return NextResponse.json(
-      { error: 'Internal Server Error', message: String(error) },
-      { status: 500 }
-    );
+    // 에러 응답에도 더 상세한 정보 포함
+    const errorDetails: Record<string, unknown> = {
+      error: 'Internal Server Error',
+      message: String(error),
+      targetUrl: `${BACKEND_URL}${options.path}`,
+    };
+
+    if (error instanceof Error && error.cause instanceof Error) {
+      const cause = error.cause as NodeJS.ErrnoException;
+      errorDetails.cause = {
+        code: cause.code,
+        message: cause.message,
+        syscall: cause.syscall,
+        address: cause.address,
+        port: cause.port,
+      };
+    }
+
+    return NextResponse.json(errorDetails, { status: 500 });
   }
 }
 
