@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await fetch(
-      `${BACKEND_URL}/v1/auth/email/send-code?email=${encodeURIComponent(email)}&purpose=${purpose}`,
+      `${BACKEND_URL}/api/v1/auth/email/send-code?email=${encodeURIComponent(email)}&purpose=${purpose}`,
       {
         method: 'POST',
       }

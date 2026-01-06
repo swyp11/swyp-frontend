@@ -4,7 +4,9 @@ import { NextRequest, NextResponse } from 'next/server';
  * 이메일 인증 및 비밀번호 재설정 API
  * POST /api/auth/verify-and-reset
  *
- * 개발 모드: .env의 DEV_BYPASS_VERIFICATION_CODE 값으로 bypass 가능
+ * MSA 구조에서는 두 단계로 분리됨:
+ * 1. /api/v1/auth/password/verify-code - 인증 코드 검증
+ * 2. /api/v1/auth/password/reset - 비밀번호 재설정
  */
 export async function POST(request: NextRequest) {
   try {
@@ -58,20 +60,49 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${BACKEND_URL}/v1/auth/verify-and-reset`, {
+    // Step 1: 인증 코드 검증
+    const verifyResponse = await fetch(`${BACKEND_URL}/api/v1/auth/password/verify-code`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, verificationCode }),
+      body: JSON.stringify({ email, code: verificationCode }),
     });
 
-    const data = await response.json();
+    const verifyData = await verifyResponse.json();
 
-    if (!response.ok) {
+    if (!verifyResponse.ok) {
       return NextResponse.json(
-        { error: data.message || '인증에 실패했습니다.' },
-        { status: response.status }
+        { error: verifyData.message || '인증번호가 일치하지 않습니다.' },
+        { status: verifyResponse.status }
+      );
+    }
+
+    // Step 2: 임시 비밀번호 생성 및 비밀번호 재설정
+    const temporaryPassword = generateTemporaryPassword();
+    const resetToken = verifyData.data?.token;
+
+    if (!resetToken) {
+      return NextResponse.json(
+        { error: '인증 토큰을 받지 못했습니다.' },
+        { status: 500 }
+      );
+    }
+
+    const resetResponse = await fetch(`${BACKEND_URL}/api/v1/auth/password/reset`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token: resetToken, newPassword: temporaryPassword }),
+    });
+
+    const resetData = await resetResponse.json();
+
+    if (!resetResponse.ok) {
+      return NextResponse.json(
+        { error: resetData.message || '비밀번호 재설정에 실패했습니다.' },
+        { status: resetResponse.status }
       );
     }
 
@@ -79,7 +110,7 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         message: '인증이 완료되었습니다.',
-        temporaryPassword: data.temporaryPassword,
+        temporaryPassword: temporaryPassword,
       },
       { status: 200 }
     );
@@ -90,4 +121,13 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+function generateTemporaryPassword(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let password = '';
+  for (let i = 0; i < 8; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password + '!';
 }

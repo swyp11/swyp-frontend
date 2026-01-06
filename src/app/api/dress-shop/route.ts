@@ -8,14 +8,14 @@ import { proxyToBackend, buildQueryString } from '@/lib/apiProxy';
 export async function GET(request: NextRequest) {
   const queryString = buildQueryString(request.nextUrl.searchParams);
   return proxyToBackend(request, {
-    path: `/api/dress-shop${queryString}`,
+    path: `/api/v1/dress-shops${queryString}`,
     method: 'GET',
   });
 }
 
 export async function POST(request: NextRequest) {
   return proxyToBackend(request, {
-    path: '/api/dress-shop',
+    path: '/api/v1/dress-shops',
     method: 'POST',
   });
 }

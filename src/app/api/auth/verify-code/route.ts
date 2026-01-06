@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await fetch(
-      `${BACKEND_URL}/v1/auth/email/verify?purpose=${purpose}`,
+      `${BACKEND_URL}/api/v1/auth/email/verify?purpose=${purpose}`,
       {
         method: 'POST',
         headers: {
