@@ -130,13 +130,14 @@ export async function proxyToBackend(
     if (error instanceof Error && error.cause) {
       console.error('❌ [PROXY] Error Cause:', error.cause);
       if (error.cause instanceof Error) {
-        console.error('❌ [PROXY] Cause Type:', error.cause.constructor?.name);
-        console.error('❌ [PROXY] Cause Message:', error.cause.message);
-        console.error('❌ [PROXY] Cause Code:', (error.cause as NodeJS.ErrnoException).code);
-        console.error('❌ [PROXY] Cause Errno:', (error.cause as NodeJS.ErrnoException).errno);
-        console.error('❌ [PROXY] Cause Syscall:', (error.cause as NodeJS.ErrnoException).syscall);
-        console.error('❌ [PROXY] Cause Address:', (error.cause as NodeJS.ErrnoException).address);
-        console.error('❌ [PROXY] Cause Port:', (error.cause as NodeJS.ErrnoException).port);
+        const cause = error.cause as NodeJS.ErrnoException & { address?: string; port?: number };
+        console.error('❌ [PROXY] Cause Type:', cause.constructor?.name);
+        console.error('❌ [PROXY] Cause Message:', cause.message);
+        console.error('❌ [PROXY] Cause Code:', cause.code);
+        console.error('❌ [PROXY] Cause Errno:', cause.errno);
+        console.error('❌ [PROXY] Cause Syscall:', cause.syscall);
+        console.error('❌ [PROXY] Cause Address:', cause.address);
+        console.error('❌ [PROXY] Cause Port:', cause.port);
       }
     }
 
@@ -152,7 +153,7 @@ export async function proxyToBackend(
     };
 
     if (error instanceof Error && error.cause instanceof Error) {
-      const cause = error.cause as NodeJS.ErrnoException;
+      const cause = error.cause as NodeJS.ErrnoException & { address?: string; port?: number };
       errorDetails.cause = {
         code: cause.code,
         message: cause.message,
