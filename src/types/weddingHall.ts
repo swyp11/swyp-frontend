@@ -90,5 +90,7 @@ export interface WeddingHallSearchParams {
   name?: string;
   address?: string;
   venueType?: WeddingHallVenueType;
-  sort?: 'RECENT' | 'FAVORITE';
+  sortType?: 'RECENT' | 'FAVORITE';
+  page?: number;
+  size?: number;
 }

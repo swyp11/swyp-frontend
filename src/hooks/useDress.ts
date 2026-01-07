@@ -4,14 +4,14 @@
 
 import { useMutation, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { dressApi } from '@/api';
-import { DressRequest, DressResponse, DressSearchParams } from '@/types';
+import { DressRequest, DressResponse, DressSearchParams, PageResponse } from '@/types';
 
 /**
- * 드레스 목록 조회 훅
+ * 드레스 목록 조회 훅 (페이지네이션)
  */
 export const useDressList = (
   params?: DressSearchParams,
-  options?: Omit<UseQueryOptions<DressResponse[]>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<PageResponse<DressResponse>>, 'queryKey' | 'queryFn'>
 ) => {
   return useQuery({
     queryKey: ['dress', 'list', params],

@@ -34,9 +34,40 @@ export interface Pagination {
   total: number;
 }
 
+// Spring Data Page 응답 타입 (백엔드 페이지네이션 응답)
+export interface PageResponse<T> {
+  content: T[];
+  pageable: {
+    pageNumber: number;
+    pageSize: number;
+    sort: SortInfo[];
+    offset: number;
+    unpaged: boolean;
+    paged: boolean;
+  };
+  totalPages: number;
+  totalElements: number;
+  last: boolean;
+  size: number;
+  number: number;
+  sort: SortInfo[];
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
+}
+
+export interface SortInfo {
+  direction: 'ASC' | 'DESC';
+  property: string;
+  ignoreCase: boolean;
+  nullHandling: string;
+  descending: boolean;
+  ascending: boolean;
+}
+
 // 검색 파라미터
 export interface SearchParams {
-  sort?: SortType;
+  sortType?: SortType;
   page?: number;
   size?: number;
 }

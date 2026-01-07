@@ -97,10 +97,13 @@ export interface DressResponse {
 
 // 드레스 검색 파라미터 (프론트엔드 전용)
 export interface DressSearchParams {
+  keyword?: string;           // 검색 키워드
   shopNameContains?: string;
   dressShopId?: number;
   sort?: 'RECENT' | 'FAVORITE';
   length?: DressLength;
   season?: DressSeason;
   type?: DressType;
+  page?: number;
+  size?: number;
 }

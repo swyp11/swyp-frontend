@@ -10,16 +10,17 @@ import {
   HallRequest,
   HallResponse,
   WeddingHallSearchParams,
+  PageResponse,
 } from '@/types';
 
 // ===== 웨딩홀 훅 =====
 
 /**
- * 웨딩홀 목록 조회 훅
+ * 웨딩홀 목록 조회 훅 (페이지네이션)
  */
 export const useWeddingHallList = (
   params?: WeddingHallSearchParams,
-  options?: Omit<UseQueryOptions<WeddingHallResponse[]>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<PageResponse<WeddingHallResponse>>, 'queryKey' | 'queryFn'>
 ) => {
   return useQuery({
     queryKey: ['weddingHall', 'list', params],

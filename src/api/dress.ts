@@ -4,14 +4,14 @@
 
 import { apiClient } from './client';
 import { DressResponse, DressRequest, DressSearchParams } from '@/types/dress';
-import { ApiResponse } from '@/types/common';
+import { ApiResponse, PageResponse } from '@/types/common';
 
 export const dressApi = {
   /**
-   * 드레스 목록 조회 (검색/정렬)
+   * 드레스 목록 조회 (검색/정렬, 페이지네이션)
    */
   getList: async (params?: DressSearchParams) => {
-    const response = await apiClient.get<ApiResponse<DressResponse[]>>('/dress', {
+    const response = await apiClient.get<ApiResponse<PageResponse<DressResponse>>>('/dress', {
       params,
     });
     return response.data.data;

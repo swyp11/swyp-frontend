@@ -4,14 +4,14 @@
 
 import { apiClient } from './client';
 import { MakeupShopResponse, MakeupShopRequest, ShopSearchParams } from '@/types/shop';
-import { ApiResponse } from '@/types/common';
+import { ApiResponse, PageResponse } from '@/types/common';
 
 export const makeupShopApi = {
   /**
-   * 메이크업샵 목록 조회 (검색/정렬)
+   * 메이크업샵 목록 조회 (검색/정렬, 페이지네이션)
    */
   getList: async (params?: ShopSearchParams) => {
-    const response = await apiClient.get<ApiResponse<MakeupShopResponse[]>>(
+    const response = await apiClient.get<ApiResponse<PageResponse<MakeupShopResponse>>>(
       '/makeup-shop',
       { params }
     );

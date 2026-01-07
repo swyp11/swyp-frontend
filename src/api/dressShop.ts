@@ -5,14 +5,14 @@
 import { apiClient } from './client';
 import { DressShopResponse, DressShopRequest, ShopSearchParams } from '@/types/shop';
 import { DressResponse } from '@/types/dress';
-import { ApiResponse } from '@/types/common';
+import { ApiResponse, PageResponse } from '@/types/common';
 
 export const dressShopApi = {
   /**
-   * 드레스샵 목록 조회 (검색/정렬)
+   * 드레스샵 목록 조회 (검색/정렬, 페이지네이션)
    */
   getList: async (params?: ShopSearchParams) => {
-    const response = await apiClient.get<ApiResponse<DressShopResponse[]>>(
+    const response = await apiClient.get<ApiResponse<PageResponse<DressShopResponse>>>(
       '/dress-shop',
       { params }
     );
@@ -30,11 +30,12 @@ export const dressShopApi = {
   },
 
   /**
-   * 특정 샵의 드레스 목록 조회
+   * 특정 샵의 드레스 목록 조회 (페이지네이션)
    */
-  getDresses: async (id: number) => {
-    const response = await apiClient.get<ApiResponse<DressResponse[]>>(
-      `/dress-shop/${id}/dresses`
+  getDresses: async (id: number, params?: { page?: number; size?: number }) => {
+    const response = await apiClient.get<ApiResponse<PageResponse<DressResponse>>>(
+      `/dress-shop/${id}/dresses`,
+      { params }
     );
     return response.data.data;
   },

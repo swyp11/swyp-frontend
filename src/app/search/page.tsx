@@ -36,27 +36,31 @@ function SearchResultsContent() {
   );
 
   const { data: weddingHallsList, isLoading: weddingListLoading } = useWeddingHallList(
-    { sort: sortOrder },
+    { sortType: sortOrder },
     { enabled: activeTab === 'wedding-hall' && query.trim().length === 0 }
   );
 
-  const weddingHalls = query.trim().length > 0 ? weddingHallsSearch : weddingHallsList;
+  // PageResponse에서 content 추출
+  const weddingHalls = query.trim().length > 0 ? weddingHallsSearch : weddingHallsList?.content;
   const weddingLoading = query.trim().length > 0 ? weddingSearchLoading : weddingListLoading;
 
-  const { data: dressShops, isLoading: dressShopLoading } = useDressShopList(
+  const { data: dressShopsData, isLoading: dressShopLoading } = useDressShopList(
     { shopName: query, sort: sortOrder },
     { enabled: activeTab === 'dress-shop' }
   );
+  const dressShops = dressShopsData?.content;
 
-  const { data: makeupShops, isLoading: makeupLoading } = useMakeupShopList(
+  const { data: makeupShopsData, isLoading: makeupLoading } = useMakeupShopList(
     { shopName: query, sort: sortOrder },
     { enabled: activeTab === 'makeup-shop' }
   );
+  const makeupShops = makeupShopsData?.content;
 
-  const { data: dresses, isLoading: dressLoading } = useDressList(
+  const { data: dressesData, isLoading: dressLoading } = useDressList(
     { shopNameContains: query, sort: sortOrder },
     { enabled: activeTab === 'dress' }
   );
+  const dresses = dressesData?.content;
 
   // 현재 탭의 데이터 및 로딩 상태
   const getCurrentData = () => {

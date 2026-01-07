@@ -26,7 +26,7 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
   // 탭에 따라 조건부로 API 호출
   // 인기 있는 샵 (FAVORITE 정렬)
   const { data: popularWeddingHalls, isLoading: popularWeddingLoading } = useWeddingHallList(
-    { sort: 'FAVORITE' },
+    { sortType: 'FAVORITE' },
     { enabled: activeTab === 'wedding-hall' }
   );
 
@@ -42,7 +42,7 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
 
   // 신규 샵 (RECENT 정렬)
   const { data: newWeddingHalls, isLoading: newWeddingLoading } = useWeddingHallList(
-    { sort: 'RECENT' },
+    { sortType: 'RECENT' },
     { enabled: activeTab === 'wedding-hall' }
   );
 
@@ -56,15 +56,15 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
     { enabled: activeTab === 'makeup-shop' }
   );
 
-  // 현재 탭의 데이터 가져오기
+  // 현재 탭의 데이터 가져오기 (PageResponse에서 content 추출)
   const getPopularData = () => {
     switch (activeTab) {
       case 'wedding-hall':
-        return { data: popularWeddingHalls, isLoading: popularWeddingLoading };
+        return { data: popularWeddingHalls?.content, isLoading: popularWeddingLoading };
       case 'dress-shop':
-        return { data: popularDressShops, isLoading: popularDressLoading };
+        return { data: popularDressShops?.content, isLoading: popularDressLoading };
       case 'makeup-shop':
-        return { data: popularMakeupShops, isLoading: popularMakeupLoading };
+        return { data: popularMakeupShops?.content, isLoading: popularMakeupLoading };
       default:
         return { data: [], isLoading: false };
     }
@@ -73,11 +73,11 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
   const getNewData = () => {
     switch (activeTab) {
       case 'wedding-hall':
-        return { data: newWeddingHalls, isLoading: newWeddingLoading };
+        return { data: newWeddingHalls?.content, isLoading: newWeddingLoading };
       case 'dress-shop':
-        return { data: newDressShops, isLoading: newDressLoading };
+        return { data: newDressShops?.content, isLoading: newDressLoading };
       case 'makeup-shop':
-        return { data: newMakeupShops, isLoading: newMakeupLoading };
+        return { data: newMakeupShops?.content, isLoading: newMakeupLoading };
       default:
         return { data: [], isLoading: false };
     }

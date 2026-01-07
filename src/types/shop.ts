@@ -58,7 +58,10 @@ export interface MakeupShopResponse {
 // 샵 검색 파라미터 (프론트엔드 전용)
 export interface ShopSearchParams {
   shopName?: string;
+  name?: string;          // 메이크업샵용
   address?: string;
   specialty?: string;
   sort?: 'RECENT' | 'FAVORITE';
+  page?: number;
+  size?: number;
 }

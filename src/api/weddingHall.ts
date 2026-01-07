@@ -9,14 +9,14 @@ import {
   WeddingHallSearchParams,
   HallResponse,
 } from '@/types/weddingHall';
-import { ApiResponse } from '@/types/common';
+import { ApiResponse, PageResponse } from '@/types/common';
 
 export const weddingHallApi = {
   /**
-   * 웨딩홀 목록 조회 (정렬)
+   * 웨딩홀 목록 조회 (정렬, 페이지네이션)
    */
   getList: async (params?: WeddingHallSearchParams) => {
-    const response = await apiClient.get<ApiResponse<WeddingHallResponse[]>>(
+    const response = await apiClient.get<ApiResponse<PageResponse<WeddingHallResponse>>>(
       '/wedding',
       { params }
     );
