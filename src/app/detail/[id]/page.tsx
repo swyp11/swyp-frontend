@@ -46,9 +46,10 @@ export default function DetailPage() {
   );
 
   // 드레스샵일 때 해당 샵의 드레스 목록 조회
-  const { data: shopDresses, isLoading: shopDressesLoading } = useDressShopDresses(
+  const { data: shopDressesData, isLoading: shopDressesLoading } = useDressShopDresses(
     tab === 'dress-shop' ? id : 0
   );
+  const shopDresses = shopDressesData?.content;
 
   // 웨딩홀일 때 해당 웨딩홀의 홀 목록 조회
   const { data: weddingHallHalls, isLoading: weddingHallHallsLoading } = useWeddingHallHalls(

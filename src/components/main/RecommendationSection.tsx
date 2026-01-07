@@ -31,12 +31,12 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
   );
 
   const { data: popularDressShops, isLoading: popularDressLoading } = useDressShopList(
-    { sort: 'FAVORITE' },
+    { sortType: 'FAVORITE' },
     { enabled: activeTab === 'dress-shop' }
   );
 
   const { data: popularMakeupShops, isLoading: popularMakeupLoading } = useMakeupShopList(
-    { sort: 'FAVORITE' },
+    { sortType: 'FAVORITE' },
     { enabled: activeTab === 'makeup-shop' }
   );
 
@@ -47,12 +47,12 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
   );
 
   const { data: newDressShops, isLoading: newDressLoading } = useDressShopList(
-    { sort: 'RECENT' },
+    { sortType: 'RECENT' },
     { enabled: activeTab === 'dress-shop' }
   );
 
   const { data: newMakeupShops, isLoading: newMakeupLoading } = useMakeupShopList(
-    { sort: 'RECENT' },
+    { sortType: 'RECENT' },
     { enabled: activeTab === 'makeup-shop' }
   );
 

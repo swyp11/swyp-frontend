@@ -100,7 +100,7 @@ export interface DressSearchParams {
   keyword?: string;           // 검색 키워드
   shopNameContains?: string;
   dressShopId?: number;
-  sort?: 'RECENT' | 'FAVORITE';
+  sortType?: 'RECENT' | 'FAVORITE';
   length?: DressLength;
   season?: DressSeason;
   type?: DressType;

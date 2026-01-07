@@ -61,7 +61,7 @@ export interface ShopSearchParams {
   name?: string;          // 메이크업샵용
   address?: string;
   specialty?: string;
-  sort?: 'RECENT' | 'FAVORITE';
+  sortType?: 'RECENT' | 'FAVORITE';
   page?: number;
   size?: number;
 }

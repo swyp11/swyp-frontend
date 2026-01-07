@@ -45,19 +45,19 @@ function SearchResultsContent() {
   const weddingLoading = query.trim().length > 0 ? weddingSearchLoading : weddingListLoading;
 
   const { data: dressShopsData, isLoading: dressShopLoading } = useDressShopList(
-    { shopName: query, sort: sortOrder },
+    { shopName: query, sortType: sortOrder },
     { enabled: activeTab === 'dress-shop' }
   );
   const dressShops = dressShopsData?.content;
 
   const { data: makeupShopsData, isLoading: makeupLoading } = useMakeupShopList(
-    { shopName: query, sort: sortOrder },
+    { shopName: query, sortType: sortOrder },
     { enabled: activeTab === 'makeup-shop' }
   );
   const makeupShops = makeupShopsData?.content;
 
   const { data: dressesData, isLoading: dressLoading } = useDressList(
-    { shopNameContains: query, sort: sortOrder },
+    { shopNameContains: query, sortType: sortOrder },
     { enabled: activeTab === 'dress' }
   );
   const dresses = dressesData?.content;
