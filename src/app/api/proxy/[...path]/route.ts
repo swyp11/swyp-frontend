@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://223.130.163.203:8080/api';
-const BACKEND_AI_API_URL = process.env.NEXT_PUBLIC_BACKEND_AI_API_URL || 'http://223.130.163.203:8000';
+// MSA Gateway URL
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:8080';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || `${GATEWAY_URL}/api/v1`;
 
 export async function GET(
   request: NextRequest,
@@ -51,11 +52,13 @@ async function handleProxy(
   try {
     const path = pathSegments.join('/');
 
-    // AI API인지 일반 API인지 구분
-    const isAiApi = path.startsWith('ai/');
-    const targetUrl = isAiApi
-      ? `${BACKEND_AI_API_URL}/${path.replace('ai/', '')}`
-      : `${BACKEND_API_URL}/${path}`;
+    // ai/ prefix 제거
+    const cleanPath = path.startsWith('ai/') ? path.replace('ai/', '') : path;
+
+    // images/는 gateway 루트로, 나머지는 /api/v1/ 경로로
+    const targetUrl = cleanPath.startsWith('images/')
+      ? `${GATEWAY_URL}/${cleanPath}`
+      : `${BACKEND_API_URL}/${cleanPath}`;
 
     // 쿼리 파라미터 추가
     const searchParams = request.nextUrl.searchParams.toString();

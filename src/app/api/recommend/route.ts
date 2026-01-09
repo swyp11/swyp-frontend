@@ -32,8 +32,9 @@ export interface RecommendResponse {
   cached: boolean;
 }
 
-const BACKEND_AI_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_AI_API_URL || 'http://223.130.163.203:8000';
+// MSA Gateway URL
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:8080';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || `${GATEWAY_URL}/api/v1`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,8 +58,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call backend AI API
-    const response = await fetch(`${BACKEND_AI_API_URL}/recommend`, {
+    // Call backend AI API (gateway에서 /api/v1/recommend → /recommend 로 rewrite)
+    const response = await fetch(`${BACKEND_API_URL}/recommend`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

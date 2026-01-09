@@ -8,7 +8,7 @@
 export function getAssetPath(path: string): string {
   // 백엔드에서 제공하는 이미지는 프록시를 통해 제공 (HTTPS 에러 방지)
   if (path.startsWith('/images/')) {
-    return `/api/proxy/ai${path}`;
+    return `/api/proxy${path}`;
   }
 
   // 정적 에셋은 기존대로 basePath 사용
