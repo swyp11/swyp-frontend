@@ -82,7 +82,7 @@ function SearchResultsContent() {
 
   // 데이터 포맷팅
   const results = (currentData || []).map((item: any) => {
-    const image = item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg';
+    const image = item.coverImage || item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg';
     const title = item.hallName || item.shopName || item.dressName || item.name || item.title || '업체명';
     const description = item.address || item.description || '';
 

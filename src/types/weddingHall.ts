@@ -38,17 +38,28 @@ export interface WeddingHallRequest {
   venueType?: WeddingHallVenueType;
 }
 
-// 웨딩홀 응답
+// 웨딩홀 응답 (백엔드 WeddingHallResponse 기준)
 export interface WeddingHallResponse {
   id: number;
   name: string;
-  address?: string;
+  address: string;
+  hallType: string;        // 백엔드 HallType enum (HOTEL, CONVENTION 등)
+  description?: string;
+  minGuarantee?: number;
+  maxCapacity?: number;
+  mealPrice?: number;
+  hallRentalPrice?: number;
+  coverImage?: string;     // 백엔드 이미지 필드
+  imageUrl?: string;       // 프론트 호환용
+  avgRating?: number;
+  reviewCount?: number;
+  bookmarkCount?: number;
+  isLiked?: boolean;
+  // 프론트 호환용 (deprecated)
   phone?: string;
   email?: string;
   parking?: number;
-  imageUrl?: string;
   venueType?: WeddingHallVenueType;
-  isLiked?: boolean;       // 찜 여부
 }
 
 // 홀 등록/수정 요청 (웨딩홀 내부 홀)
@@ -64,25 +75,35 @@ export interface HallRequest {
   area?: number;                 // BigDecimal in backend
 }
 
-// 홀 응답 (실제 백엔드 응답 기준)
+// 홀 응답 (백엔드 HallResponse 기준)
 export interface HallResponse {
   id: number;
-  name?: string;              // 홀 이름
-  capacityMin?: number;       // 최소 수용인원
-  capacityMax?: number;       // 최대 수용인원
-  hallType?: string;          // 홀 타입 (COMPLEX 등)
-  floorNo?: number;           // 층수
-  lightType?: string;         // 조명 타입 (DIM 등)
-  areaM2?: number;            // 면적 (㎡)
-  ceilingHeight?: number;     // 천장 높이
-  stage?: boolean;            // 무대 유무
-  ledWall?: boolean;          // LED 월 유무
-  aisleLength?: number;       // 버진로드 길이
-  pillar?: boolean;           // 기둥 유무
-  status?: boolean;           // 상태
-  desc?: string;              // 설명
-  regDt?: string;             // 등록일
+  weddingHallId?: number;     // 소속 웨딩홀 ID
+  name: string;               // 홀 이름
+  floor?: number;             // 층수 (백엔드: floor)
+  minCapacity?: number;       // 최소 수용인원 (백엔드: minCapacity)
+  maxCapacity?: number;       // 최대 수용인원 (백엔드: maxCapacity)
+  rentalPrice?: number;       // 대관료
+  mealPrice?: number;         // 식대
+  description?: string;       // 설명 (백엔드: description)
   imageUrl?: string;          // 이미지 URL
+  coverImage?: string;        // 프론트 호환용
+  isAvailable?: boolean;      // 이용 가능 여부
+  // 프론트 호환용 필드 (deprecated)
+  capacityMin?: number;       // → minCapacity 사용
+  capacityMax?: number;       // → maxCapacity 사용
+  floorNo?: number;           // → floor 사용
+  desc?: string;              // → description 사용
+  hallType?: string;
+  lightType?: string;
+  areaM2?: number;
+  ceilingHeight?: number;
+  stage?: boolean;
+  ledWall?: boolean;
+  aisleLength?: number;
+  pillar?: boolean;
+  status?: boolean;
+  regDt?: string;
 }
 
 // 웨딩홀 검색 파라미터 (프론트엔드 전용)

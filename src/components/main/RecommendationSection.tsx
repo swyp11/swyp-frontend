@@ -90,7 +90,7 @@ export const RecommendationSection = ({ activeTab }: RecommendationSectionProps)
   const formatShopData = (data: any[]): ShopCard[] => {
     return (data || []).map((item: any) => ({
       id: item.id,
-      image: item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
+      image: item.coverImage || item.imageUrl || item.image || item.thumbnail || '/img/placeholder.jpg',
       title: item.name || item.shopName || item.hallName || item.dressName || '업체명',
       description: item.address || item.description || '주소 정보 없음',
       category: activeTab as 'wedding-hall' | 'dress-shop' | 'makeup-shop'

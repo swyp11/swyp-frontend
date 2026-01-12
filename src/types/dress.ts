@@ -89,6 +89,7 @@ export interface DressResponse {
   mood?: DressMood;
   fabric?: string;
   imageUrl?: string;
+  coverImage?: string;      // 백엔드 coverImage 필드
   features?: string;
   regDt?: string;
   updateDt?: string;

@@ -82,12 +82,17 @@ export default function DetailPage() {
   const itemData = currentData ? (() => {
     const item = currentData as any;
 
-    // 이미지 처리: imageUrl 단일 필드 또는 images 배열
+    // 이미지 처리: coverImage, imageUrl 또는 images 배열
     let images = ["/img/placeholder.jpg"];
-    if (item.imageUrl) {
-      images = [item.imageUrl];
+    const imageSource = item.coverImage || item.imageUrl;
+    if (imageSource) {
+      images = [imageSource];
+      console.log(`[Detail] 이미지 소스: ${imageSource}`);
     } else if (item.images && Array.isArray(item.images) && item.images.length > 0) {
       images = item.images;
+      console.log(`[Detail] 이미지 배열:`, item.images);
+    } else {
+      console.log(`[Detail] 이미지 없음, placeholder 사용. item:`, item);
     }
 
     // 타입별 이름 필드 매핑 (백엔드 DTO 기준)
@@ -96,8 +101,9 @@ export default function DetailPage() {
         case 'wedding-hall':
           return item.name;  // WeddingHallResponse.name
         case 'dress-shop':
+          return item.shopName;  // DressShopResponse.shopName
         case 'makeup-shop':
-          return item.shopName;  // DressShopResponse.shopName, MakeupShopResponse.shopName
+          return item.name || item.shopName;  // MakeupShopResponse.name (백엔드는 name 사용)
         case 'dress':
           return item.name;  // DressResponse.name
         case 'hall':
@@ -127,19 +133,23 @@ export default function DetailPage() {
         { day: "토", time: "10:00 - 20:00" },
         { day: "일", time: "휴무일" },
       ], // Mock business hours for now
-      // 홀 관련 필드
-      capacityMin: item.capacityMin,
-      capacityMax: item.capacityMax,
+      // 홀 관련 필드 (백엔드: minCapacity/maxCapacity/floor/description)
+      capacityMin: item.minCapacity || item.capacityMin,
+      capacityMax: item.maxCapacity || item.capacityMax,
       hallType: item.hallType,
       lightType: item.lightType,
       ceilingHeight: item.ceilingHeight,
       areaM2: item.areaM2,
-      floorNo: item.floorNo,
+      floorNo: item.floor || item.floorNo,
       stage: item.stage,
       ledWall: item.ledWall,
       aisleLength: item.aisleLength,
       pillar: item.pillar,
-      desc: item.desc,
+      desc: item.description || item.desc,
+      // 웨딩홀 관련 필드
+      rentalPrice: item.rentalPrice || item.hallRentalPrice,
+      mealPrice: item.mealPrice,
+      avgRating: item.avgRating,
     };
   })() : null;
 
@@ -461,7 +471,7 @@ export default function DetailPage() {
                   >
                     <div className="relative self-stretch w-full rounded aspect-[1.5] overflow-hidden">
                       <Image
-                        src={getAssetPath(hall.imageUrl && hall.imageUrl.trim() ? hall.imageUrl : "/img/placeholder.jpg")}
+                        src={getAssetPath((hall.coverImage || hall.imageUrl)?.trim() || "/img/placeholder.jpg")}
                         alt={hall.name || "홀"}
                         width={220}
                         height={147}
@@ -475,7 +485,7 @@ export default function DetailPage() {
                         {hall.name || "홀"}
                       </h4>
                       <p className="w-full label-1-regular font-[number:var(--label-1-regular-font-weight)] text-on-surface-subtle text-[length:var(--label-1-regular-font-size)] tracking-[var(--label-1-regular-letter-spacing)] leading-[var(--label-1-regular-line-height)] relative truncate [font-style:var(--label-1-regular-font-style)]">
-                        {hall.capacityMax ? `최대 ${hall.capacityMax}명` : hall.hallType || ""}
+                        {(hall.maxCapacity || hall.capacityMax) ? `최대 ${hall.maxCapacity || hall.capacityMax}명` : hall.hallType || ""}
                       </p>
                     </div>
                   </article>
@@ -505,7 +515,7 @@ export default function DetailPage() {
                   >
                     <div className="relative self-stretch w-full rounded aspect-[1.5] overflow-hidden">
                       <Image
-                        src={getAssetPath(dress.imageUrl || "/img/placeholder.jpg")}
+                        src={getAssetPath(dress.coverImage || dress.imageUrl || "/img/placeholder.jpg")}
                         alt={dress.name || "드레스"}
                         width={220}
                         height={147}

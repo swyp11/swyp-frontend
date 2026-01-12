@@ -15,7 +15,7 @@ export interface DressShopRequest {
   features?: string;
 }
 
-// 드레스샵 응답
+// 드레스샵 응답 (백엔드 DressShopResponse 기준)
 export interface DressShopResponse {
   id: number;
   shopName: string;
@@ -24,9 +24,12 @@ export interface DressShopResponse {
   phone?: string;
   snsUrl?: string;
   imageUrl?: string;
+  coverImage?: string;     // 프론트 호환용
   specialty?: string;
   features?: string;
-  isLiked?: boolean;       // 찜 여부
+  avgRating?: number;
+  bookmarkCount?: number;
+  isLiked?: boolean;
 }
 
 // 메이크업샵 등록/수정 요청
@@ -41,18 +44,23 @@ export interface MakeupShopRequest {
   features?: string;
 }
 
-// 메이크업샵 응답
+// 메이크업샵 응답 (백엔드 MakeupShopResponse 기준)
 export interface MakeupShopResponse {
   id: number;
-  shopName: string;
-  description?: string;
-  address?: string;
+  name: string;            // 백엔드는 name 사용 (shopName 아님)
+  shopName?: string;       // 프론트 호환용 (deprecated)
+  address: string;
+  serviceType: string;     // MakeupServiceType enum
+  basePrice?: number;
+  coverImage?: string;     // 백엔드 이미지 필드
+  imageUrl?: string;       // 프론트 호환용
   phone?: string;
   snsUrl?: string;
-  imageUrl?: string;
   specialty?: string;
-  features?: string;
-  isLiked?: boolean;       // 찜 여부
+  avgRating?: number;
+  onSiteAvailable?: boolean;
+  bookmarkCount?: number;
+  isLiked?: boolean;
 }
 
 // 샵 검색 파라미터 (프론트엔드 전용)
