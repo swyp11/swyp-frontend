@@ -64,6 +64,11 @@ async function handleProxy(
     const searchParams = request.nextUrl.searchParams.toString();
     const url = searchParams ? `${targetUrl}?${searchParams}` : targetUrl;
 
+    // 🔍 이미지 요청 로그
+    console.log(`[Proxy] ${method} 요청`);
+    console.log(`  원본 경로: /${path}`);
+    console.log(`  변환된 URL: ${url}`);
+
     // 헤더 복사 (Authorization 등)
     const headers = new Headers();
     request.headers.forEach((value, key) => {
@@ -93,6 +98,10 @@ async function handleProxy(
       body,
     });
 
+    // 🔍 응답 로그
+    console.log(`  응답 상태: ${response.status} ${response.statusText}`);
+    console.log(`  Content-Type: ${response.headers.get('content-type')}`);
+
     // 응답 헤더 복사
     const responseHeaders = new Headers();
     response.headers.forEach((value, key) => {
@@ -118,7 +127,8 @@ async function handleProxy(
     });
 
   } catch (error) {
-    console.error('Proxy error:', error);
+    console.error('[Proxy] ❌ 에러 발생:', error);
+    console.error(`  에러 메시지: ${error instanceof Error ? error.message : 'Unknown error'}`);
     return NextResponse.json(
       { error: 'Proxy request failed', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
