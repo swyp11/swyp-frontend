@@ -148,6 +148,7 @@ function EditSchedulePage() {
       await updateSchedule.mutateAsync({
         id: scheduleId,
         data: {
+          serviceType: schedule?.serviceType || 'WEDDING',
           title: title.trim(),
           memo: description.trim() || undefined,
           startDate: formattedStartDate,

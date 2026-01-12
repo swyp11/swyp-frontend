@@ -98,6 +98,7 @@ function AddSchedulePage() {
     try {
       // 일정 생성 API 호출
       await scheduleApi.create({
+        serviceType: 'WEDDING',
         title: title.trim(),
         memo: description.trim() || undefined,
         startDate: formattedStartDate,

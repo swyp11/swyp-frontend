@@ -30,7 +30,7 @@ export const scheduleApi = {
     const response = await apiClient.get<ApiResponse<ScheduleMonthResponse[]>>(
       '/schedule/month',
       {
-        params: { year, month },
+        params: { year, month, serviceType: 'WEDDING' },
       }
     );
     return response.data.data || [];
@@ -43,7 +43,7 @@ export const scheduleApi = {
     const response = await apiClient.get<ApiResponse<ScheduleWeekResponse[]>>(
       '/schedule/week',
       {
-        params: { startDate },
+        params: { startDate, serviceType: 'WEDDING' },
       }
     );
     return response.data.data || [];
@@ -56,7 +56,7 @@ export const scheduleApi = {
     const response = await apiClient.get<ApiResponse<ScheduleResponse[]>>(
       '/schedule/day',
       {
-        params: { date },
+        params: { date, serviceType: 'WEDDING' },
       }
     );
     return response.data.data || [];
