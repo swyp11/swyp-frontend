@@ -8,6 +8,7 @@ import "../styles/globals.css";
 import { NavigationProvider } from "../contexts/NavigationContext";
 import { AuthProvider } from "../contexts/AuthContext";
 import { QueryProvider } from "../providers/QueryProvider";
+import { MswProvider } from "../mocks/MswProvider";
 import { Header } from "../components/common/Header";
 import { BottomNavigation } from "../components/common/BottomNavigation";
 import { usePathname } from "next/navigation";
@@ -88,6 +89,7 @@ export default function RootLayout({
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} ${roboto.variable} ${pretendard.variable} antialiased`}
       >
+        <MswProvider>
         <QueryProvider>
           <AuthProvider>
             <NavigationProvider>
@@ -129,6 +131,7 @@ export default function RootLayout({
             </NavigationProvider>
           </AuthProvider>
         </QueryProvider>
+        </MswProvider>
       </body>
     </html>
   );
