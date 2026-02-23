@@ -133,7 +133,7 @@ function FavoritesPageContent() {
           <div className="flex flex-col">
             {filteredLikes.map((like) => {
               const details = like.itemDetails || {};
-              const image = details.imageUrl || '/img/placeholder.jpg';
+              const image = details.coverImage || details.imageUrl || '/img/placeholder.jpg';
               // 백엔드 DTO 기준: 웨딩홀/드레스는 name, 샵은 shopName
               const title = details.name || details.shopName || '업체명';
               const description = details.address || details.description || '';

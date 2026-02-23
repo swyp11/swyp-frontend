@@ -7,14 +7,14 @@ import { proxyToBackend } from '@/lib/apiProxy';
 
 export async function GET(request: NextRequest) {
   return proxyToBackend(request, {
-    path: '/api/hall',
+    path: '/api/v1/halls',
     method: 'GET',
   });
 }
 
 export async function POST(request: NextRequest) {
   return proxyToBackend(request, {
-    path: '/api/hall',
+    path: '/api/v1/halls',
     method: 'POST',
   });
 }

@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   }
 
   const result = await proxyToBackend(request, {
-    path: '/api/user/join',
+    path: '/api/v1/auth/signup',
     method: 'POST',
   });
 

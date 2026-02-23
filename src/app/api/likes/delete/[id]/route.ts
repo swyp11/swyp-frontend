@@ -8,7 +8,7 @@ export async function DELETE(
   const { id } = await params;
 
   return proxyToBackend(request, {
-    path: `/api/likes/${id}`,
+    path: `/api/v1/bookmarks/${id}`,
     method: 'DELETE',
   });
 }

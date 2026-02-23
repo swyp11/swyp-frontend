@@ -8,7 +8,7 @@ import { proxyToBackend } from '@/lib/apiProxy';
 
 export async function GET(request: NextRequest) {
   return proxyToBackend(request, {
-    path: '/api/likes',
+    path: '/api/v1/bookmarks',
     method: 'GET',
   });
 }

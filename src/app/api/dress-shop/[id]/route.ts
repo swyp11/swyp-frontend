@@ -11,7 +11,7 @@ export async function GET(
 ) {
   const { id } = await params;
   return proxyToBackend(request, {
-    path: `/api/dress-shop/${id}`,
+    path: `/api/v1/dress-shops/${id}`,
     method: 'GET',
   });
 }
@@ -22,7 +22,7 @@ export async function PUT(
 ) {
   const { id } = await params;
   return proxyToBackend(request, {
-    path: `/api/dress-shop/${id}`,
+    path: `/api/v1/dress-shops/${id}`,
     method: 'PUT',
   });
 }
@@ -33,7 +33,7 @@ export async function DELETE(
 ) {
   const { id } = await params;
   return proxyToBackend(request, {
-    path: `/api/dress-shop/${id}`,
+    path: `/api/v1/dress-shops/${id}`,
     method: 'DELETE',
   });
 }

@@ -4,16 +4,16 @@
 
 import { useMutation, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { dressShopApi, makeupShopApi } from '@/api';
-import { DressShopRequest, MakeupShopRequest, ShopSearchParams, DressShopResponse, MakeupShopResponse } from '@/types';
+import { DressShopRequest, MakeupShopRequest, ShopSearchParams, DressShopResponse, MakeupShopResponse, PageResponse } from '@/types';
 
 // ===== 드레스샵 훅 =====
 
 /**
- * 드레스샵 목록 조회 훅
+ * 드레스샵 목록 조회 훅 (페이지네이션)
  */
 export const useDressShopList = (
   params?: ShopSearchParams,
-  options?: Omit<UseQueryOptions<DressShopResponse[]>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<PageResponse<DressShopResponse>>, 'queryKey' | 'queryFn'>
 ) => {
   return useQuery({
     queryKey: ['dressShop', 'list', params],
@@ -39,12 +39,12 @@ export const useDressShopDetail = (
 };
 
 /**
- * 드레스샵의 드레스 목록 조회 훅
+ * 드레스샵의 드레스 목록 조회 훅 (페이지네이션)
  */
-export const useDressShopDresses = (shopId: number) => {
+export const useDressShopDresses = (shopId: number, params?: { page?: number; size?: number }) => {
   return useQuery({
-    queryKey: ['dressShop', shopId, 'dresses'],
-    queryFn: () => dressShopApi.getDresses(shopId),
+    queryKey: ['dressShop', shopId, 'dresses', params],
+    queryFn: () => dressShopApi.getDresses(shopId, params),
     enabled: !!shopId,
   });
 };
@@ -98,11 +98,11 @@ export const useDeleteDressShop = () => {
 // ===== 메이크업샵 훅 =====
 
 /**
- * 메이크업샵 목록 조회 훅
+ * 메이크업샵 목록 조회 훅 (페이지네이션)
  */
 export const useMakeupShopList = (
   params?: ShopSearchParams,
-  options?: Omit<UseQueryOptions<MakeupShopResponse[]>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<PageResponse<MakeupShopResponse>>, 'queryKey' | 'queryFn'>
 ) => {
   return useQuery({
     queryKey: ['makeupShop', 'list', params],

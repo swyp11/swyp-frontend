@@ -13,7 +13,7 @@ export async function POST(
   const { provider } = await params;
 
   return proxyToBackend(request, {
-    path: `/api/auth/oauth/login/${provider}`,
+    path: `/api/v1/auth/oauth/login/${provider}`,
     method: 'POST',
   });
 }

@@ -12,7 +12,7 @@ export async function GET(
   const { id } = await params;
 
   return proxyToBackend(request, {
-    path: `/api/dress-shop/${id}/dresses`,
+    path: `/api/v1/dress-shops/${id}/dresses`,
     method: 'GET',
   });
 }
