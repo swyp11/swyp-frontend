@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { mockMakeupShops } from '../data';
+import { toPageResponse } from '../utils';
 import type { MakeupShopResponse } from '@/types/shop';
 
 let makeupShops: MakeupShopResponse[] = [...mockMakeupShops];
@@ -9,8 +10,10 @@ export const makeupShopHandlers = [
   // 메이크업샵 목록 조회
   http.get('/api/makeup-shop', ({ request }) => {
     const url = new URL(request.url);
-    const sort = url.searchParams.get('sort');
+    const sort = url.searchParams.get('sortType') || url.searchParams.get('sort');
     const shopName = url.searchParams.get('shopName') || url.searchParams.get('name');
+    const page = Number(url.searchParams.get('page') || 0);
+    const size = Number(url.searchParams.get('size') || 20);
 
     let result = [...makeupShops];
 
@@ -21,10 +24,10 @@ export const makeupShopHandlers = [
     }
 
     if (sort === 'FAVORITE') {
-      result = result.filter((s) => s.isLiked);
+      result = result.sort((a, b) => (b.bookmarkCount || 0) - (a.bookmarkCount || 0));
     }
 
-    return HttpResponse.json({ success: true, data: result });
+    return HttpResponse.json({ success: true, data: toPageResponse(result, page, size) });
   }),
 
   // 메이크업샵 상세 조회

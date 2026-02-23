@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { mockWeddingHalls, mockHalls, weddingHallToHalls } from '../data';
+import { toPageResponse } from '../utils';
 import type { WeddingHallResponse } from '@/types/weddingHall';
 
 let weddingHalls: WeddingHallResponse[] = [...mockWeddingHalls];
@@ -9,15 +10,17 @@ export const weddingHallHandlers = [
   // 웨딩홀 목록 조회
   http.get('/api/wedding', ({ request }) => {
     const url = new URL(request.url);
-    const sort = url.searchParams.get('sort');
+    const sort = url.searchParams.get('sortType') || url.searchParams.get('sort');
+    const page = Number(url.searchParams.get('page') || 0);
+    const size = Number(url.searchParams.get('size') || 20);
 
     let result = [...weddingHalls];
 
     if (sort === 'FAVORITE') {
-      result = result.filter((h) => h.isLiked);
+      result = result.sort((a, b) => (b.bookmarkCount || 0) - (a.bookmarkCount || 0));
     }
 
-    return HttpResponse.json({ success: true, data: result });
+    return HttpResponse.json({ success: true, data: toPageResponse(result, page, size) });
   }),
 
   // 웨딩홀 검색

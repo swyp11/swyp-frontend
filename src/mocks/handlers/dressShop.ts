@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { mockDressShops, mockDresses } from '../data';
+import { toPageResponse } from '../utils';
 import type { DressShopResponse } from '@/types/shop';
 
 let dressShops: DressShopResponse[] = [...mockDressShops];
@@ -9,8 +10,10 @@ export const dressShopHandlers = [
   // 드레스샵 목록 조회
   http.get('/api/dress-shop', ({ request }) => {
     const url = new URL(request.url);
-    const sort = url.searchParams.get('sort');
+    const sort = url.searchParams.get('sortType') || url.searchParams.get('sort');
     const shopName = url.searchParams.get('shopName');
+    const page = Number(url.searchParams.get('page') || 0);
+    const size = Number(url.searchParams.get('size') || 20);
 
     let result = [...dressShops];
 
@@ -21,10 +24,10 @@ export const dressShopHandlers = [
     }
 
     if (sort === 'FAVORITE') {
-      result = result.filter((s) => s.isLiked);
+      result = result.sort((a, b) => (b.bookmarkCount || 0) - (a.bookmarkCount || 0));
     }
 
-    return HttpResponse.json({ success: true, data: result });
+    return HttpResponse.json({ success: true, data: toPageResponse(result, page, size) });
   }),
 
   // 드레스샵 상세 조회
@@ -40,7 +43,7 @@ export const dressShopHandlers = [
   }),
 
   // 드레스샵의 드레스 목록
-  http.get('/api/dress-shop/:id/dresses', ({ params }) => {
+  http.get('/api/dress-shop/:id/dresses', ({ params, request }) => {
     const shopId = Number(params.id);
     const shop = dressShops.find((s) => s.id === shopId);
     if (!shop) {
@@ -49,11 +52,15 @@ export const dressShopHandlers = [
         { status: 404 }
       );
     }
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('page') || 0);
+    const size = Number(url.searchParams.get('size') || 20);
     // 해당 샵 이름의 드레스 반환, 없으면 전체 드레스 반환
     const shopDresses = mockDresses.filter((d) => d.shopName === shop.shopName);
+    const items = shopDresses.length > 0 ? shopDresses : mockDresses;
     return HttpResponse.json({
       success: true,
-      data: shopDresses.length > 0 ? shopDresses : mockDresses,
+      data: toPageResponse(items, page, size),
     });
   }),
 
