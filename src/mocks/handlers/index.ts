@@ -7,6 +7,7 @@ import { hallHandlers } from './hall';
 import { makeupShopHandlers } from './makeupShop';
 import { likesHandlers } from './likes';
 import { scheduleHandlers } from './schedule';
+import { recommendHandlers } from './recommend';
 
 export const handlers = [
   ...authHandlers,
@@ -18,4 +19,5 @@ export const handlers = [
   ...makeupShopHandlers,
   ...likesHandlers,
   ...scheduleHandlers,
+  ...recommendHandlers,
 ];

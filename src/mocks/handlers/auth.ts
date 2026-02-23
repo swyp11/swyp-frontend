@@ -63,11 +63,19 @@ export const authHandlers = [
     });
   }),
 
-  // 비밀번호 재설정
+  // 비밀번호 재설정 (POST + PATCH 둘 다 지원)
+  http.post('/api/auth/verify-and-reset', async () => {
+    return HttpResponse.json({
+      success: true,
+      message: '인증이 완료되었습니다.',
+      temporaryPassword: 'temp1234!',
+    });
+  }),
   http.patch('/api/auth/verify-and-reset', async () => {
     return HttpResponse.json({
       success: true,
-      data: '비밀번호가 성공적으로 변경되었습니다.',
+      message: '인증이 완료되었습니다.',
+      temporaryPassword: 'temp1234!',
     });
   }),
 ];

@@ -40,7 +40,13 @@ export const userHandlers = [
     });
   }),
 
-  // 비밀번호 재설정
+  // 비밀번호 재설정 (POST + PATCH 둘 다 지원)
+  http.post('/api/user/password/reset', async () => {
+    return HttpResponse.json({
+      success: true,
+      data: '비밀번호가 재설정되었습니다.',
+    });
+  }),
   http.patch('/api/user/password/reset', async () => {
     return HttpResponse.json({
       success: true,
