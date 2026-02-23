@@ -10,13 +10,13 @@ export const makeupShopHandlers = [
   http.get('/api/makeup-shop', ({ request }) => {
     const url = new URL(request.url);
     const sort = url.searchParams.get('sort');
-    const shopName = url.searchParams.get('shopName');
+    const shopName = url.searchParams.get('shopName') || url.searchParams.get('name');
 
     let result = [...makeupShops];
 
     if (shopName) {
       result = result.filter((s) =>
-        s.shopName.toLowerCase().includes(shopName.toLowerCase())
+        s.name.toLowerCase().includes(shopName.toLowerCase())
       );
     }
 
@@ -45,7 +45,9 @@ export const makeupShopHandlers = [
     const newShop: MakeupShopResponse = {
       ...body,
       id: nextId++,
-      shopName: body.shopName || '새로운 메이크업샵',
+      name: body.name || '새로운 메이크업샵',
+      address: body.address || '',
+      serviceType: body.serviceType || 'WEDDING',
       isLiked: false,
     } as MakeupShopResponse;
     makeupShops.push(newShop);

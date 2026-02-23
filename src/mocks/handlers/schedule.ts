@@ -12,6 +12,7 @@ export const scheduleHandlers = [
     const now = new Date().toISOString();
     const newSchedule: ScheduleResponse = {
       id: nextId++,
+      serviceType: body.serviceType || 'WEDDING',
       userId: 1,
       title: body.title || '새 일정',
       memo: body.memo,

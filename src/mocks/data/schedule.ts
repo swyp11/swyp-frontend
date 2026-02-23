@@ -3,6 +3,7 @@ import type { ScheduleResponse } from '@/types/schedule';
 export const mockSchedules: ScheduleResponse[] = [
   {
     id: 1,
+    serviceType: 'WEDDING',
     userId: 1,
     title: '드레스 피팅',
     memo: '로즈브라이덜 오후 2시 방문. 머메이드 & A라인 피팅 예정',
@@ -15,6 +16,7 @@ export const mockSchedules: ScheduleResponse[] = [
   },
   {
     id: 2,
+    serviceType: 'WEDDING',
     userId: 1,
     title: '웨딩홀 투어',
     memo: '더 라움, 그랜드 하얏트 방문 예정',
@@ -27,6 +29,7 @@ export const mockSchedules: ScheduleResponse[] = [
   },
   {
     id: 3,
+    serviceType: 'WEDDING',
     userId: 1,
     title: '메이크업 리허설',
     memo: '르누아 메이크업 리허설. 자연스러운 글로우 스타일로 요청',
@@ -39,6 +42,7 @@ export const mockSchedules: ScheduleResponse[] = [
   },
   {
     id: 4,
+    serviceType: 'WEDDING',
     userId: 1,
     title: '웨딩 촬영',
     memo: '스튜디오 촬영 + 야외 스냅',
@@ -51,6 +55,7 @@ export const mockSchedules: ScheduleResponse[] = [
   },
   {
     id: 5,
+    serviceType: 'WEDDING',
     userId: 1,
     title: '청첩장 발송',
     memo: '모바일 청첩장 + 실물 청첩장 발송 마감일',
@@ -61,6 +66,7 @@ export const mockSchedules: ScheduleResponse[] = [
   },
   {
     id: 6,
+    serviceType: 'WEDDING',
     userId: 1,
     title: '예식 당일',
     memo: '그랜드 하얏트 서울 크리스탈홀 오후 1시',
